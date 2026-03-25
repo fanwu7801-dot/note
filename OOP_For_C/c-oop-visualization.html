@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C语言面向对象编程 - LED驱动架构可视化教学</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            color: white;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            height: fit-content;
+            animation: slideInLeft 1s ease 1s both;
+        }
+
+        .sidebar h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .concept-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .concept-btn:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .concept-btn.active {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .visualization-area {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            min-height: 600px;
+            animation: slideInRight 1s ease 1s both;
+        }
+
+        .concept-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .concept-content.active {
+            display: block;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .highlight {
+            background: rgba(255, 237, 117, 0.2);
+            padding: 2px 4px;
+            border-radius: 3px;
+            animation: pulse 2s infinite;
+        }
+
+        .struct-diagram {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .led-animation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            gap: 30px;
+        }
+
+        .led {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffeb3b, #ff9800);
+            box-shadow: 0 0 30px rgba(255, 152, 0, 0.8);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .led.off {
+            background: radial-gradient(circle, #666, #333);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .led-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .pointer-demo {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .memory-block {
+            background: white;
+            border: 3px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            min-width: 120px;
+            text-align: center;
+            position: relative;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #667eea;
+            animation: bounce 2s infinite;
+        }
+
+        .explanation {
+            background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #00acc1;
+        }
+
+        .explanation h3 {
+            color: #00838f;
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+        }
+
+        .interactive-struct {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .struct-member {
+            padding: 12px;
+            margin: 8px 0;
+            background: linear-gradient(90deg, #f5f5f5, #e8e8e8);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .struct-member:hover {
+            transform: translateX(10px);
+            background: linear-gradient(90deg, #e3f2fd, #bbdefb);
+        }
+
+        .struct-member::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: #667eea;
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .struct-member:hover::before {
+            transform: scaleY(1);
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 C语言面向对象编程艺术</h1>
+            <p class="subtitle">深入理解LED驱动架构中的结构体与指针魔法</p>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h2>📚 核心概念导航</h2>
+                <button class="concept-btn active" onclick="showConcept('overview')">架构总览</button>
+                <button class="concept-btn" onclick="showConcept('struct')">结构体封装</button>
+                <button class="concept-btn" onclick="showConcept('pointer')">函数指针</button>
+                <button class="concept-btn" onclick="showConcept('self')">Self指针</button>
+                <button class="concept-btn" onclick="showConcept('instance')">对象实例化</button>
+                <button class="concept-btn" onclick="showConcept('demo')">动态演示</button>
+            </div>
+
+            <div class="visualization-area">
+                <!-- 架构总览 -->
+                <div id="overview" class="concept-content active">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">🏗️ LED驱动架构全景图</h2>
+                    
+                    <div class="explanation">
+                        <h3>💡 核心理念</h3>
+                        <p>在嵌入式系统中，虽然使用C语言，但我们可以借鉴面向对象的思想来组织代码。这个LED驱动系统展示了如何优雅地实现：</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>📦 <strong>数据封装</strong>：使用结构体封装属性和方法</li>
+                            <li>🔗 <strong>接口抽象</strong>：通过函数指针实现多态</li>
+                            <li>🏭 <strong>实例管理</strong>：支持多个LED对象的创建和管理</li>
+                        </ul>
+                    </div>
+
+                    <div class="struct-diagram">
+                        <svg width="100%" height="400" viewBox="0 0 800 400">
+                            <!-- Handler层 -->
+                            <rect x="50" y="50" width="200" height="100" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" rx="10"/>
+                            <text x="150" y="90" text-anchor="middle" font-size="18" font-weight="bold" fill="#1976d2">LED Handler</text>
+                            <text x="150" y="120" text-anchor="middle" font-size="14" fill="#1976d2">管理多个LED实例</text>
+                            
+                            <!-- Driver层 -->
+                            <rect x="350" y="50" width="200" height="100" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2" rx="10"/>
+                            <text x="450" y="90" text-anchor="middle" font-size="18" font-weight="bold" fill="#7b1fa2">LED Driver</text>
+                            <text x="450" y="120" text-anchor="middle" font-size="14" fill="#7b1fa2">单个LED控制逻辑</text>
+                            
+                            <!-- 硬件抽象层 -->
+                            <rect x="200" y="250" width="200" height="100" fill="#e8f5e9" stroke="#4caf50" stroke-width="2" rx="10"/>
+                            <text x="300" y="290" text-anchor="middle" font-size="18" font-weight="bold" fill="#388e3c">硬件抽象层</text>
+                            <text x="300" y="320" text-anchor="middle" font-size="14" fill="#388e3c">GPIO操作接口</text>
+                            
+                            <!-- 连接线 -->
+                            <line x1="150" y1="150" x2="300" y2="250" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <line x1="450" y1="150" x2="300" y2="250" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <line x1="250" y1="100" x2="350" y2="100" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
+                            
+                            <!-- 箭头定义 -->
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                    <polygon points="0 0, 10 3, 0 6" fill="#666"/>
+                                </marker>
+                            </defs>
+                            
+                            <!-- 标注 -->
+                            <text x="280" y="85" font-size="12" fill="#666">注册管理</text>
+                            <text x="180" y="195" font-size="12" fill="#666">调用</text>
+                            <text x="420" y="195" font-size="12" fill="#666">实现</text>
+                        </svg>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>设计优势</h3>
+                        <p>这种架构设计让我们的嵌入式代码具有：</p>
+                        <ul style="margin-top: 10px; margin-left: 20px; line-height: 1.8;">
+                            <li>✅ 高度的模块化和可复用性</li>
+                            <li>✅ 清晰的层次结构</li>
+                            <li>✅ 易于扩展和维护</li>
+                            <li>✅ 硬件无关性设计</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 结构体封装 -->
+                <div id="struct" class="concept-content">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">📦 结构体封装 - C语言的"类"</h2>
+                    
+                    <div class="explanation">
+                        <h3>🎯 核心概念</h3>
+                        <p>在C语言中，结构体就是我们的"类"。通过结构体，我们可以将数据成员和函数指针封装在一起，实现面向对象的封装特性。</p>
+                    </div>
+
+                    <div class="code-block">
+                        <pre>// LED驱动"类"的定义
+typedef struct {
+    <span class="highlight">// 属性成员（相当于类的成员变量）</span>
+    led_drv_attr_t    attr;           // LED属性
+    
+    <span class="highlight">// 方法成员（通过函数指针实现）</span>
+    led_drv_ops_t     *p_ops;         // 硬件操作接口
+    led_drv_time_t    *p_time_base;   // 时间服务接口
+    
+    <span class="highlight">// 成员方法</span>
+    led_drv_status_t  (*pf_led_controler)(
+        struct bsp_led_drv_t  *const self,
+        led_drv_attr_t        *const attr
+    );
+} bsp_led_drv_t;</pre>
+                    </div>
+
+                    <div class="interactive-struct">
+                        <h3 style="color: #667eea; margin-bottom: 15px;">🔍 结构体成员解析（点击查看）</h3>
+                        <div class="struct-member" onclick="explainMember('attr')">
+                            <strong>led_drv_attr_t attr</strong> - LED属性配置
+                            <div id="attr-detail" style="display:none; margin-top:10px; color:#666;">
+                                包含：闪烁次数、周期时间、占空比等参数
+                            </div>
+                        </div>
+                        <div class="struct-member" onclick="explainMember('ops')">
+                            <strong>led_drv_ops_t *p_ops</strong> - 硬件操作接口
+                            <div id="ops-detail" style="display:none; margin-top:10px; color:#666;">
+                                指向LED开关操作的函数指针表
+                            </div>
+                        </div>
+                        <div class="struct-member" onclick="explainMember('method')">
+                            <strong>(*pf_led_controler)</strong> - 控制方法
+                            <div id="method-detail" style="display:none; margin-top:10px; color:#666;">
+                                LED控制的核心方法，注意第一个参数是self指针！
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">💡</div>
+                        <h3>设计精髓</h3>
+                        <p>这种设计模式让C语言也能享受面向对象的优势：</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>📊 数据和操作的紧密结合</li>
+                            <li>🔒 通过函数接口访问，实现封装</li>
+                            <li>🔄 易于创建多个实例</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 函数指针 -->
+                <div id="pointer" class="concept-content">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">🔗 函数指针 - 实现多态的魔法</h2>
+                    
+                    <div class="explanation">
+                        <h3>🎪 函数指针的魔力</h3>
+                        <p>函数指针是C语言实现面向对象多态性的关键。通过函数指针，我们可以在运行时动态绑定不同的函数实现。</p>
+                    </div>
+
+                    <div class="code-block">
+                        <pre>// 操作接口定义（类似于接口或抽象类）
+typedef struct {
+    void (*pf_led_on)(void);   // LED开启方法
+    void (*pf_led_off)(void);  // LED关闭方法
+} led_drv_ops_t;
+
+// 时间服务接口
+typedef struct {
+    void (*pf_delay_ms)(uint32_t ms);  // 延时方法
+} led_drv_time_t;</pre>
+                    </div>
+
+                    <div class="pointer-demo">
+                        <div class="memory-block">
+                            <strong>函数指针</strong>
+                            <p style="margin-top:10px; font-size:14px;">pf_led_on</p>
+                            <p style="color:#667eea;">0x08001234</p>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="memory-block">
+                            <strong>实际函数</strong>
+                            <p style="margin-top:10px; font-size:14px;">GPIO_SetBits()</p>
+                            <p style="color:#4caf50;">硬件操作代码</p>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <pre>// 使用示例：通过函数指针调用
+static led_drv_status_t led_blink(bsp_led_drv_t * const self)
+{
+    // 通过函数指针调用LED开关
+    <span class="highlight">self->p_ops->pf_led_on();</span>   // 开灯
+    
+    // 通过函数指针调用延时
+    <span class="highlight">self->p_time_base->pf_delay_ms(on_time_ms);</span>
+    
+    // 关灯
+    <span class="highlight">self->p_ops->pf_led_off();</span>
+}</pre>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>优势解析</h3>
+                        <ul style="margin-top: 10px; margin-left: 20px; line-height: 1.8;">
+                            <li>🔄 <strong>动态绑定</strong>：运行时决定调用哪个函数</li>
+                            <li>🔌 <strong>硬件抽象</strong>：不同硬件平台只需提供不同的函数实现</li>
+                            <li>🧪 <strong>易于测试</strong>：可以注入模拟函数进行单元测试</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Self指针 -->
+                <div id="self" class="concept-content">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">👤 Self指针 - C语言的"this"</h2>
+                    
+                    <div class="explanation">
+                        <h3>🎯 Self指针的作用</h3>
+                        <p>在面向对象语言中，我们有this指针指向当前对象。在C语言中，我们通过显式传递self指针来实现相同的功能。</p>
+                    </div>
+
+                    <div class="code-block">
+                        <pre>// 注意每个"成员函数"的第一个参数都是self指针
+static led_drv_status_t led_controler(
+    <span class="highlight">bsp_led_drv_t * const self</span>,  // 相当于this指针
+    led_drv_attr_t * const attr
+)
+{
+    // 通过self访问对象的成员
+    <span class="highlight">self->attr.blink_times = attr->blink_times;</span>
+    <span class="highlight">self->attr.cycle_time_ms = attr->cycle_time_ms;</span>
+    
+    // 调用其他成员方法
+    ret = led_blink(<span class="highlight">self</span>);
+    
+    return ret;
+}</pre>
+                    </div>
+
+                    <div class="struct-diagram">
+                        <svg width="100%" height="300" viewBox="0 0 700 300">
+                            <!-- Self指针指向的对象 -->
+                            <rect x="50" y="100" width="200" height="150" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" rx="10"/>
+                            <text x="150" y="130" text-anchor="middle" font-size="16" font-weight="bold" fill="#1976d2">LED对象实例</text>
+                            <text x="150" y="155" text-anchor="middle" font-size="12" fill="#666">attr: {...}</text>
+                            <text x="150" y="175" text-anchor="middle" font-size="12" fill="#666">p_ops: 0x...</text>
+                            <text x="150" y="195" text-anchor="middle" font-size="12" fill="#666">p_time_base: 0x...</text>
+                            
+                            <!-- Self指针 -->
+                            <rect x="400" y="150" width="150" height="50" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2" rx="10"/>
+                            <text x="475" y="180" text-anchor="middle" font-size="16" font-weight="bold" fill="#7b1fa2">self指针</text>
+                            
+                            <!-- 箭头 -->
+                            <line x1="400" y1="175" x2="250" y2="175" stroke="#9c27b0" stroke-width="2" marker-end="url(#arrow)"/>
+                            
+                            <defs>
+                                <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" fill="#9c27b0">
+                                    <polygon points="0 0, 10 3, 0 6"/>
+                                </marker>
+                            </defs>
+                            
+                            <text x="325" y="165" font-size="12" fill="#666">指向当前对象</text>
+                        </svg>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🔑</div>
+                        <h3>关键要点</h3>
+                        <ul style="margin-top: 10px; margin-left: 20px; line-height: 1.8;">
+                            <li>📌 Self指针必须显式传递</li>
+                            <li>🔐 通常声明为const，防止意外修改指针本身</li>
+                            <li>🎯 通过self访问所有成员变量和方法</li>
+                            <li>🔄 支持方法链式调用</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 对象实例化 -->
+                <div id="instance" class="concept-content">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">🏭 对象实例化 - "构造函数"</h2>
+                    
+                    <div class="explanation">
+                        <h3>🎨 初始化过程</h3>
+                        <p>C语言没有构造函数，但我们可以通过初始化函数来模拟构造过程，完成对象的创建和初始化。</p>
+                    </div>
+
+                    <div class="code-block">
+                        <pre>// "构造函数" - 实例化LED驱动对象
+led_drv_status_t bsp_led_drv_inst(
+    bsp_led_drv_t    * const self,      // 要初始化的对象
+    led_drv_ops_t    * const ops,       // 注入的硬件操作接口
+    led_drv_time_t   * const time_base  // 注入的时间服务
+)
+{
+    <span class="highlight">// 1. 参数检查（防御性编程）</span>
+    assert(NULL != self || NULL != ops || NULL != time_base);
+    
+    <span class="highlight">// 2. 检查资源状态</span>
+    if(true == self->attr.is_inited) {
+        return LED_DRV_ERR_RESOURCE;
+    }
+    
+    <span class="highlight">// 3. 依赖注入 - 绑定接口</span>
+    self->p_ops = ops;
+    self->p_time_base = time_base;
+    
+    <span class="highlight">// 4. 绑定成员方法</span>
+    self->pf_led_controler = led_controler;
+    
+    <span class="highlight">// 5. 初始化属性</span>
+    self->attr.blink_times = 0;
+    self->attr.cycle_time_ms = 0;
+    self->attr.is_inited = true;
+    
+    return LED_DRV_OK;
+}</pre>
+                    </div>
+
+                    <div class="interactive-struct">
+                        <h3 style="color: #667eea; margin-bottom: 15px;">📋 初始化步骤</h3>
+                        <div class="struct-member">
+                            <strong>步骤1：参数验证</strong>
+                            <p style="margin-top:5px; color:#666; font-size:14px;">确保所有必需的参数都有效</p>
+                        </div>
+                        <div class="struct-member">
+                            <strong>步骤2：状态检查</strong>
+                            <p style="margin-top:5px; color:#666; font-size:14px;">防止重复初始化</p>
+                        </div>
+                        <div class="struct-member">
+                            <strong>步骤3：依赖注入</strong>
+                            <p style="margin-top:5px; color:#666; font-size:14px;">注入外部依赖，实现解耦</p>
+                        </div>
+                        <div class="struct-member">
+                            <strong>步骤4：方法绑定</strong>
+                            <p style="margin-top:5px; color:#666; font-size:14px;">绑定对象的方法实现</p>
+                        </div>
+                        <div class="struct-member">
+                            <strong>步骤5：属性初始化</strong>
+                            <p style="margin-top:5px; color:#666; font-size:14px;">设置默认值，标记初始化完成</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>设计模式亮点</h3>
+                        <ul style="margin-top: 10px; margin-left: 20px; line-height: 1.8;">
+                            <li>💉 <strong>依赖注入</strong>：通过参数注入依赖，提高灵活性</li>
+                            <li>🛡️ <strong>防御性编程</strong>：多重检查确保安全</li>
+                            <li>🏷️ <strong>状态管理</strong>：通过is_inited标志管理对象生命周期</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 动态演示 -->
+                <div id="demo" class="concept-content">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">🎮 动态演示 - 看看LED如何工作</h2>
+                    
+                    <div class="explanation">
+                        <h3>🚀 完整的使用流程</h3>
+                        <p>让我们通过一个动态演示，看看如何使用这个面向对象的LED驱动系统。</p>
+                    </div>
+
+                    <div class="led-animation">
+                        <div class="led off" id="led1">
+                            <span class="led-label">LED 1</span>
+                        </div>
+                        <div class="led off" id="led2">
+                            <span class="led-label">LED 2</span>
+                        </div>
+                        <div class="led off" id="led3">
+                            <span class="led-label">LED 3</span>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin: 30px 0;">
+                        <button onclick="startDemo()" style="padding: 12px 30px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; margin: 0 10px;">
+                            ▶️ 开始演示
+                        </button>
+                        <button onclick="stopDemo()" style="padding: 12px 30px; background: linear-gradient(135deg, #f093fb, #f5576c); color: white; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; margin: 0 10px;">
+                            ⏹️ 停止演示
+                        </button>
+                    </div>
+
+                    <div class="code-block">
+                        <pre id="demo-code">// 使用示例代码
+// 1. 创建LED对象
+bsp_led_drv_t led1, led2, led3;
+
+// 2. 准备硬件接口和时间服务
+led_drv_ops_t led_ops = {
+    .pf_led_on = GPIO_LED_ON,
+    .pf_led_off = GPIO_LED_OFF
+};
+
+led_drv_time_t time_service = {
+    .pf_delay_ms = HAL_Delay
+};
+
+// 3. 初始化LED对象（调用"构造函数"）
+bsp_led_drv_inst(&led1, &led_ops, &time_service);
+bsp_led_drv_inst(&led2, &led_ops, &time_service);
+bsp_led_drv_inst(&led3, &led_ops, &time_service);
+
+// 4. 配置LED参数
+led_drv_attr_t config = {
+    .blink_times = 5,        // 闪烁5次
+    .cycle_time_ms = 1000,   // 周期1秒
+    .proportion_on_off = 50  // 50%占空比
+};
+
+// 5. 控制LED
+led1.pf_led_controler(&led1, &config);  // 注意传递self指针！</pre>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>总结：C语言面向对象的精髓</h3>
+                        <div style="margin-top: 15px; line-height: 1.8;">
+                            <p>通过这个LED驱动系统，我们展示了如何在C语言中实现面向对象编程：</p>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>✨ <strong>结构体</strong> = 类</li>
+                                <li>✨ <strong>函数指针</strong> = 成员方法</li>
+                                <li>✨ <strong>Self指针</strong> = this指针</li>
+                                <li>✨ <strong>初始化函数</strong> = 构造函数</li>
+                                <li>✨ <strong>依赖注入</strong> = 提高灵活性</li>
+                            </ul>
+                            <p style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #ffeaa7, #fdcb6e); border-radius: 10px;">
+                                <strong>🏆 大厂经验：</strong>这种设计模式在实际的嵌入式项目中广泛应用，它让C代码具有良好的结构性、可维护性和可扩展性，是每个嵌入式工程师必须掌握的技能！
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let demoInterval = null;
+
+        function showConcept(conceptId) {
+            // 隐藏所有内容
+            const contents = document.querySelectorAll('.concept-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // 显示选中的内容
+            document.getElementById(conceptId).classList.add('active');
+            
+            // 更新按钮状态
+            const buttons = document.querySelectorAll('.concept-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function explainMember(memberId) {
+            const detail = document.getElementById(memberId + '-detail');
+            if (detail.style.display === 'none') {
+                detail.style.display = 'block';
+            } else {
+                detail.style.display = 'none';
+            }
+        }
+
+        function startDemo() {
+            stopDemo(); // 先停止之前的动画
+            
+            let ledIndex = 0;
+            const leds = ['led1', 'led2', 'led3'];
+            
+            // 动画函数
+            function animateLED() {
+                // 关闭所有LED
+                leds.forEach(id => {
+                    document.getElementById(id).classList.add('off');
+                });
+                
+                // 打开当前LED
+                document.getElementById(leds[ledIndex]).classList.remove('off');
+                
+                // 更新代码高亮
+                updateDemoCode(ledIndex);
+                
+                // 循环到下一个LED
+                ledIndex = (ledIndex + 1) % leds.length;
+            }
+            
+            // 开始动画
+            animateLED();
+            demoInterval = setInterval(animateLED, 1000);
+        }
+
+        function stopDemo() {
+            if (demoInterval) {
+                clearInterval(demoInterval);
+                demoInterval = null;
+            }
+            
+            // 关闭所有LED
+            ['led1', 'led2', 'led3'].forEach(id => {
+                document.getElementById(id).classList.add('off');
+            });
+        }
+
+        function updateDemoCode(index) {
+            const codeElement = document.getElementById('demo-code');
+            const lines = codeElement.innerHTML.split('\n');
+            
+            // 移除之前的高亮
+            lines.forEach((line, i) => {
+                lines[i] = line.replace(/<span class="highlight">/g, '').replace(/<\/span>/g, '');
+            });
+            
+            // 添加新的高亮
+            if (index === 0) {
+                lines[21] = '<span class="highlight">' + lines[21] + '</span>';
+            } else if (index === 1) {
+                lines[22] = '<span class="highlight">' + lines[22] + '</span>';
+            } else if (index === 2) {
+                lines[23] = '<span class="highlight">' + lines[23] + '</span>';
+            }
+            
+            codeElement.innerHTML = lines.join('\n');
+        }
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加一些初始动画效果
+            setTimeout(() => {
+                document.querySelector('.sidebar').style.opacity = '1';
+                document.querySelector('.visualization-area').style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+## LED驱动找对象
+
+
+### 桥接模式
+
+桥接模式： 把抽象部分和他的现实部分分离，使他们可以独立的变化。
+- 可拓展性：可以方便的新添加LED类型和新的处理器逻辑
+- 可维护性：改动一部分的代码不会影响到另一部分
+- 灵活性：抽象和实现部分可以单独变化，不会影响
+
+### 尝试理解面向对象
+
+写面向对象的程序的时候，怎么找到对象
+
+类：（class）
+
+写类的时候，需要考虑哪些属性，哪些方法
+
+例如： 分析LED驱动的特点
+> 1. 它的闪烁周期
+> 2. 它需要闪缩几次
+> 3. 亮灭的时间占比 
+
+对象：(Instance)
+
+![alt text](image.png)
+
+#### 基于面向对象的概念时装
+
+bsp 层： 把硬件资源抽象出来，提供统一的接口
+> 要想bsp层写的好，就需要再这里只对一个硬件资源进行抽象，不要把多个硬件资源都抽象出来。
+
+使用typdef struct 这样就等价于了一个类型，这个类型就是一个对象。
+
+> 类：
+> 外部特性需求的接口
+> 1. 它的闪缩周期
+> 2. 它需要闪缩几次
+> 3. 亮灭的时间占比
+>
+> 内部用到的接口
+> Core：
+> 1. GPIO的控制
+> 2. MCU的时间基准
+>RTOS：
+> CPU的延时函数(切换走CPU)
+>
+> 向外提供接口
+> 1. 控制某个LED，按特定方式去闪烁
+
+
+
+``` h
+/*******************************************************
+ * @file bsp_led_diver.h
+ * @author fanzx (fanzx@1456925916.com)
+ * @brief provide led driver api
+ * @version 0.1
+ * @date 2026-03-20
+ * @note 1 tab == 4 space
+ * @copyright Copyright (c) 2026
+ *
+ *******************************************************/
+
+
+#ifndef __BSP_LED_DRIVER_H__
+#define __BSP_LED_DRIVER_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+//*************************************Includes*****************************************/
+#include <stdio.h>
+#include <stdint.h>
+//*************************************Includes*****************************************/
+
+
+//*************************************Defines*****************************************/
+#define INITLEDSTATUS   1   /* LED的状态 用于判断是否初始化*/
+#define NOT_INITLEDSTATUS 0 /* LED的状态 用于判断是否初始化*/
+#define OS_SUPPORT 1        /* 是否支持OS */
+#define DEBUG      1         /* 是否开启调试模式 */
+#define DEBUG_OUT(X) printf(X)     /* 调试输出接口 */
+typedef enum { LED_OK = 0, LED_ERROR, LED_ERRORTIMOUT, LED_ON, LED_BLINKING } 
+led_status_t;
+
+typedef enum {
+    PROPORTION_1_3 = 0,
+    PROPORTION_1_2,
+    PROPORTION_1_1,
+    PROPORTION_x_x = 0xff,
+} proportion_t;
+
+/**
+ * @brief led 的操作接口
+ *
+ */
+typedef struct {
+    led_status_t (*pf_led_on)();
+    led_status_t (*pf_led_off)();
+} led_operations_t;
+
+typedef struct {
+    led_status_t (*pf_get_time_ms)(uint32_t *const);
+
+} time_base_t;
+
+typedef struct {
+    led_status_t (*pf_os_delay_ms)(uint32_t delay_ms);
+} os_delay_t;
+
+typedef led_status_t (*pf_led_control_t)(bsp_led_driver_t *const p_led_driver_inst);
+typedef struct {
+    / **target of inernal status* /
+    uint8_t init_status; /* LED的状态 用于判断是否初始化*/
+    /** Target of Features**** */
+    /*1. 亮的时间
+      2. 亮几次
+      3. 亮和灭的比值 */
+    uint32_t cycle_time_ms;     /* 闪烁周期时间 */
+    uint32_t blink_times;       /* 闪烁周期次数 */
+    uint32_t proportion_on_off; /* 闪烁周期占空比 */
+    /****Target of Features****/
+
+
+    /****************IOS 需要的的接口*****************/
+    /*1.GPIO的配置
+      2.时间基准配置
+     */
+    led_operations_t *p_led_opes_inst;
+
+    time_base_t *p_time_base_ms;
+
+    os_delay_t *p_os_delay_ms;
+
+
+    /*************提供的API********************/
+    pf_led_control_t pf_led_control;
+
+
+} bsp_led_driver_t;
+
+
+//*************************************Defines*****************************************/
+
+
+//*************************************Typedefs*****************************************/
+/*** @brief led驱动的实例对象
+ *
+ * @param p_led_driver_inst led驱动的实例对象
+ * @return led_status_t 返回LED的状态
+ * @note 按照arm的规范，如果参数>4个的时候，就要用stack来传了 S-BUS --->flash里面会把code读出来然后进行压栈 （优化方向，进行参数优化，包装到一个结构体里面）
+ */
+led_status_t led_driver_inst(bsp_led_driver_t *  const   self
+                             const  led_operations_t * const led_ops
+#ifdef OS_SUPPORT
+                             const time_base_t      *const time_base
+                             const os_delay_t       * const os_delay
+#endif
+                             );
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* BSP_LED_DIVER_H */
+```
+
+
+写完bsp层，就可以在应用层去new一个具体的对象了.
+
+1. 构造函数 用于创建对象，初始化对象的属性 能够方便用户去填入参数，一般来说，对于.c文件会封装成为lib文件，防止别人去修改.c文件，导致代码的不可维护性。
+
+``` c
+#inclued "bsp_led_driver.h"
+
+/** @brief led驱动默认的数据
+ * @param self led驱动的实例对象
+ * @return led_status_t 返回LED的状态
+ * @note 1. 初始化LED的状态
+ *       2. 初始化LED的特性
+ *       3. 初始化LED的接口
+ *       4. 初始化LED的控制接口
+ */
+led_status_t led_driver_init(bsp_led_driver_t * const self)
+{   
+    led_status_t ret = LED_OK;
+    if(NULL == self)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance is NULL\r\n");
+#endif // DEBUG
+        return LEDERRORPARAM;
+    }
+   self->p_led_opes_inst->pf_led_on ();
+   self->p_os_time_delay->pf_os_delay_ms(1000);
+   uint32_t time_ms = 0;
+   self->p_time_base_ms->pf_get_time_ms(&time_ms);
+
+    return ret;
+}
+
+/** @brief instaiation of led driver instance 
+ * steps:
+ * 1. adding the core interfaces into the led driver instance
+ * 2. adding OS interfaces into the led driver instance
+ * 3. adding the timebase interfaces into the led driver instance 
+ * @param p_led_driver_inst led驱动的实例对象
+ * @return led_status_t 返回LED的状态
+ * @note 按照arm的规范，如果参数>4个的时候，就要用stack来传了 S-BUS --->flash里面会把code读出来然后进行压栈 （优化方向，进行参数优化，包装到一个结构体里面）
+ */
+led_status_t led_driver_inst(bsp_led_driver_t *  const   self
+                            led_operations_t * const led_ops
+#ifdef OS_SUPPORT
+                            time_base_t      *const time_base
+                            os_delay_t       * const os_delay
+#endif
+                             )
+{   
+/**********checking the parameters**********/ 
+    if (NULL == self || 
+        NULL == led_ops ||
+        NULL == time_base ||
+        NULL == os_delay) 
+        {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance is NULL\r\n");
+#endif // DEBUG
+        return LED_ERROR;
+         }
+         
+#ifdef DEBUG
+    DEBUG_OUT("led driver instance is created successfully\r\n");
+#endif // DEBUG
+
+/**********checking the Resource**********/
+    if(INITED == self-> is_inited)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance is already inited\r\n");
+#endif // DEBUG
+        return LED_ERROR;
+    }
+
+
+/*updata new parameters for the led driver instance */
+    self->p_led_opes_inst = led_ops;
+    self->p_time_base_ms = time_base;
+    self->p_os_delay_ms = os_delay;
+    self->is_inited = INITED;
+/*************default status of the led driver instance************/
+    self->blink_times = 0;
+    self->cycle_time_ms = 0;
+    self->proportion_on_off = 0; 
+
+    ret = led_driver_init (self) // 外部的接口调用
+    if(LED_OK != ret)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance is initialized failed\r\n");
+#endif // DEBUG
+
+       self->p_led_opes_inst = NULL;
+       self->p_time_base_ms = NULL;
+       self->p_os_delay_ms = NULL;
+       return ret
+    }
+    self-> is_inited = INITED;
+    return LED_OK;
+}
+
+``` 
+
+
+在task的任务里面去new一个对象，去调用这个对象的接口
+``` cpp
+
+#define LED_DIVER_TEST 0
+// *************Unit test for led driver************** */
+#ifdef LED_DIVER_TEST
+led_status_t led_on_myown()
+{
+    printf("led on\r\n");
+    return LED_OK;
+}
+
+led_status_t led_off_myown()
+{
+    printf("led off\r\n");
+    return LED_OK;
+}
+
+led_operations_t led_ops = {
+    .pf_led_on = led_on_myown,
+    .pf_led_off = led_off_myown,
+};
+
+
+led_status_t get_time_ms_myown(uint32_t *const time_ms)
+{   
+    printf("get time ms\r\n");
+    *time_ms = 1000;
+    return LED_OK;
+}
+
+time_base_t time_base = {
+    .pf_get_time_ms = get_time_ms_myown,
+};
+
+led_status_t os_delay_myown(uint32_t delay_ms)
+{
+    printf("os delay %d ms\r\n", delay_ms);
+    for(int i = 0; i < delay_ms * 1000; i++);   
+    printf（"flish led for %d ms\r\n", delay_ms);s
+    return LED_OK;
+}
+os_delay_t os_delay = {
+    .pf_os_delay_ms = os_delay_myown,
+};
+
+#endif
+/************* end of unit test for led driver****************/
+
+
+void StartDefaultTask(void *argument)
+{
+  /* USER CODE BEGIN StartDefaultTask */
+  /* Infinite loop */
+  printf("hello world\r\n");
+  bsp_led_driver_t led_driver;// 在这里都是脏数据，都是随机的，不能直接使用
+  led_driver_inst(&led_driver, &led_ops, &time_base, &os_delay);
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartDefaultTask */
+}
+```     

@@ -1,0 +1,18 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build C program",
+			"type": "shell",
+			"command": "gcc",
+			"args": [
+				"-finput-charset=utf-8",
+				"-fexec-charset=gbk",
+				"test.c",
+				"-o",
+				"test.exe"
+			],
+			"group": "build"
+		}
+	]
+}
