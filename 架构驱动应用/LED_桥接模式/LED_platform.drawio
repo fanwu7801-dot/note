@@ -1,0 +1,121 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-03-25T00:00:00.000Z" agent="GitHub Copilot" etag="1">
+	<diagram id="LED-handler" name="LED_Handler">
+		<mxGraphModel dx="1200" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100">
+			<root>
+				<mxCell id="0"/>
+				<mxCell id="1" parent="0"/>
+
+				<!-- Top handler box -->
+				<mxCell id="2" value="&lt;div style=&quot;text-align:center;font-weight:bold;font-size:16px;&quot;&gt;LED_Handler&lt;/div&gt;&lt;div style=&quot;text-align:center;font-size:12px;&quot;&gt;管理多个 LED 实例 / 桥接 HAL 操作&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fbff;strokeColor=#2b6ea3;strokeWidth=2;fontSize=14" vertex="1" parent="1">
+					<mxGeometry x="220" y="40" width="760" height="110" as="geometry"/>
+				</mxCell>
+
+				<!-- small handler file box -->
+				<mxCell id="3" value="ec_bsp_led_handler.c\nec_bsp_led_handler.h" style="whiteSpace=wrap;html=1;fillColor=#e6f2ff;strokeColor=#2b6ea3;strokeWidth=1.5;fontSize=12" vertex="1" parent="1">
+					<mxGeometry x="56" y="60" width="140" height="64" as="geometry"/>
+				</mxCell>
+
+				<!-- LED instances -->
+				<mxCell id="4" value="LED#1_instance\n频率: 1.1s\n亮灭次数: 3次" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b6ea3;strokeWidth=2;fontSize=12" vertex="1" parent="1">
+					<mxGeometry x="60" y="220" width="160" height="120" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="5" value="LED#2_instance\n频率: 1.2s\n亮灭次数: 4次" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b6ea3;strokeWidth=2;fontSize=12" vertex="1" parent="1">
+					<mxGeometry x="240" y="220" width="160" height="120" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="6" value="LED#3_instance\n频率: 1.3s\n亮灭次数: 2次" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b6ea3;strokeWidth=2;fontSize=12" vertex="1" parent="1">
+					<mxGeometry x="420" y="220" width="160" height="120" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="7" value="LED#4_instance\n频率: 0.8s\n亮灭次数: 1:3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b6ea3;strokeWidth=2;fontSize=12" vertex="1" parent="1">
+					<mxGeometry x="600" y="220" width="160" height="120" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="8" value="LED#5_instance\n频率: 1.0s\n亮灭次数: 1:1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b6ea3;strokeWidth=2;fontSize=12" vertex="1" parent="1">
+					<mxGeometry x="780" y="220" width="160" height="120" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="9" value="LED#6_instance\n频率: 1.4s\n亮灭次数: 2:1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b6ea3;strokeWidth=2;fontSize=12" vertex="1" parent="1">
+					<mxGeometry x="960" y="220" width="160" height="120" as="geometry"/>
+				</mxCell>
+
+				<!-- Connections from top handler to instances -->
+				<mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=none;strokeColor=#666;strokeWidth=2" edge="1" parent="1" source="2" target="4">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=none;strokeColor=#666;strokeWidth=2" edge="1" parent="1" source="2" target="5">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=none;strokeColor=#666;strokeWidth=2" edge="1" parent="1" source="2" target="6">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=none;strokeColor=#666;strokeWidth=2" edge="1" parent="1" source="2" target="7">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=none;strokeColor=#666;strokeWidth=2" edge="1" parent="1" source="2" target="8">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=none;strokeColor=#666;strokeWidth=2" edge="1" parent="1" source="2" target="9">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<!-- Vertical arrows down to LED symbols (simple triangles) -->
+				<mxCell id="t1" value="" style="shape=triangle;direction=south;fillColor=#ffffff;strokeColor=#333;strokeWidth=2" vertex="1" parent="1">
+					<mxGeometry x="120" y="420" width="40" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="vt1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=none;strokeColor=#666;strokeWidth=2" edge="1" parent="1" source="4" target="t1">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="t2" value="" style="shape=triangle;direction=south;fillColor=#ffffff;strokeColor=#333;strokeWidth=2" vertex="1" parent="1">
+					<mxGeometry x="300" y="420" width="40" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="vt2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=none;strokeColor=#666;strokeWidth=2" edge="1" parent="1" source="5" target="t2">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="t3" value="" style="shape=triangle;direction=south;fillColor=#ffffff;strokeColor=#333;strokeWidth=2" vertex="1" parent="1">
+					<mxGeometry x="480" y="420" width="40" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="vt3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=none;strokeColor=#666;strokeWidth=2" edge="1" parent="1" source="6" target="t3">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="t4" value="" style="shape=triangle;direction=south;fillColor=#ffffff;strokeColor=#333;strokeWidth=2" vertex="1" parent="1">
+					<mxGeometry x="660" y="420" width="40" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="vt4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=none;strokeColor=#666;strokeWidth=2" edge="1" parent="1" source="7" target="t4">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="t5" value="" style="shape=triangle;direction=south;fillColor=#ffffff;strokeColor=#333;strokeWidth=2" vertex="1" parent="1">
+					<mxGeometry x="840" y="420" width="40" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="vt5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=none;strokeColor=#666;strokeWidth=2" edge="1" parent="1" source="8" target="t5">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<mxCell id="t6" value="" style="shape=triangle;direction=south;fillColor=#ffffff;strokeColor=#333;strokeWidth=2" vertex="1" parent="1">
+					<mxGeometry x="1020" y="420" width="40" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="vt6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=none;strokeColor=#666;strokeWidth=2" edge="1" parent="1" source="9" target="t6">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<!-- caption -->
+				<mxCell id="caption" value="说明: 顶层 `LED_Handler` 管理多个 `LED#n_instance`，每个实例通过 HAL/GPIO 控制单独 LED。" style="html=1;whiteSpace=wrap;fontSize=12;fillColor=none;strokeColor=none" vertex="1" parent="1">
+					<mxGeometry x="20" y="660" width="1160" height="30" as="geometry"/>
+				</mxCell>
+
+			</root>
+		</mxGraphModel>
+	</diagram>
+</mxfile>

@@ -23,9 +23,9 @@
 
 对象：(Instance)
 
-![alt text](image.png)
+![alt text](image-4.png)
 
-#### 基于面向对象的概念时装
+#### 基于面向对象的概念实装
 
 bsp 层： 把硬件资源抽象出来，提供统一的接口
 > 要想bsp层写的好，就需要再这里只对一个硬件资源进行抽象，不要把多个硬件资源都抽象出来。
@@ -50,7 +50,7 @@ bsp 层： 把硬件资源抽象出来，提供统一的接口
 
 
 
-``` h
+``` cpp
 /*******************************************************
  * @file bsp_led_diver.h
  * @author fanzx (fanzx@1456925916.com)
@@ -515,3 +515,210 @@ void StartDefaultTask(void *argument)
   /* USER CODE END StartDefaultTask */
 }
 ```
+
+
+### 构造桥接模式
+
+![alt text](image-1.png)
+![alt text](image-3.png)
+在这里，写完了ec_bsp_led_driver.h和ec_bsp_led_driver.c之后，就完成了一个led驱动的桥接模式的构造了，来满足不同的LED驱动的需求了。
+可能每一个公司都是LED_handler.c和LED_handler.h，来实现不同的LED驱动的需求了。
+
+思考，到底怎么去挂载到`LED_Handler` 上
+![alt text](image-2.png)
+> 为了实现解耦，需要分析到底实现的部分的类，那一些是给外部用户暴露的？或者是保留的
+>向handler暴露亮和灭的接口，来控制LED的状态，来实现不同的闪烁效果了。
+> 分析
+> hanlder的内部职责
+> 1. 内部特性
+>  > - 1.CPU的延时函数（切走CPU）
+>  > - 2.MCU的时间基准 告诉我tick数
+> 2. 内部接口
+> 3. 向外提供接口
+>    >- 1.控制某个LED，按特定方式去闪烁
+>    >- 2.挂载LED的具体对象
+
+多态的实现：
+一般写完bsp的时候，就可以在git上创建一个new的分支，`git -checkout -b "桥接模式的实现"`，来实现这个桥接模式了，来满足不同的LED驱动的需求了。
+
+![alt text](image-5.png)
+![alt text](image-6.png)
+在src和inc里面，去创建bsp_led_handler.c和bsp_led_handler.h，来实现这个桥接模式了，来满足不同的LED驱动的需求了。
+
+
+``` cpp  h
+/*******************************************************
+ * @file bsp_led_handler.h
+ * @author fanzx (fanzx@1456925916.com)
+ * @brief provide led handler api
+ * @version 0.1
+ * @date 2026-03-20
+ * @note 1 tab == 4 space
+ * @copyright Copyright (c) 2026
+ *
+ *******************************************************/
+
+
+#ifndef __BSO_LED_HANDLER_H__
+#define __BSO_LED_HANDLER_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+//*************************************Includes*****************************************/
+#incude "bsp_led_driver.h"
+#include <stdio.h>
+#include <stdint.h>
+//*************************************Includes*****************************************/
+
+
+//*************************************Defines*****************************************
+
+#define OS_SUPPORT 1        /* 是否支持OS 这里可以定义全局宏*/
+#define DEBUG      1         /* 是否开启调试模式 */
+#define DEBUG_OUT(X) printf(X)     /* 调试输出接口 */
+
+
+
+typedef struct bsp_led_driver bsp_led_driver_t; // 前向声明，来解决循环依赖的问题了
+typedef struct bsp_led_handler bsp_led_handler_t; // 前向声明，来解决循环依赖的问题了
+typedef led_handler_status_t (*led_register_inst_t)(
+                                bsp_led_handler_t * const self,
+                                bsp_led_driver_t * const led_driver_inst);
+typedef enum {
+    HANDLER_NOT_INITED = 0,
+    HANDLER_INITED,
+} handler_init_status_t;
+
+typedef enum { HAN_OK = 0,
+               HAN_ERROR,
+               HAN_ERRORTIMOUT,
+               HAN_ON, 
+               HAN_BLINKING } 
+led_handler_status_t;
+
+
+typedef struct {
+    led_handler_status_t (*pf_get_time_ms)(uint32_t *const);
+
+} time_base_t;
+
+#ifdef OS_SUPPORT
+typedef struct {
+    led_handler_status_t (*pf_os_delay_ms)(uint32_t delay_ms);
+} os_delay_t;
+#endif
+
+typedef led_status_t (*pf_led_control_t)(bsp_led_driver_t *const p_led_driver_inst);
+
+typedef struct {
+    / **target of inernal status* /
+    uint8_t init_status; /* LED的状态 用于判断是否初始化*/
+    bsp_led_driver_t * led_instance_group [10]; /* 目标LED对象 指针数组*/
+
+    /****Target of Features****/
+
+
+    /****************IOS 需要的的接口*****************/
+    time_base_t *p_time_base_ms;
+#ifdef OS_SUPPORT
+    os_delay_t *p_os_delay_ms;
+#endif
+
+    /*************提供的API********************/
+    pf_led_control_t pf_led_control;
+    
+    pf_led_register_t pf_led_register; 
+
+} bsp_led_handler_t;
+
+
+//*************************************Defines*****************************************/
+
+
+//*************************************Typedefs****************************************
+/** @brief led_handler的实例对象
+ *
+ * @param bsp_led_driver_t *  const   self led驱动的实例对象
+ * @param os_delay_t    * const led_ops led驱动的操作接口
+ * @param time_base_t      *const time_base 时间基准接口
+ * @return led_handler_status_t 返回LED的状态
+ * @note 管理所有的LED驱动的实例对象，来实现不同的LED驱动的需求了。
+ */
+led_handler_status_t led_driver_inst(bsp_led_driver_t *  const   self
+#ifdef OS_SUPPORT
+                             const time_base_t      *const time_base
+                             const os_delay_t       * const os_delay
+#endif
+                             );
+
+#ifdef __cplusplus
+}
+#endif
+
+
+/** * @brief Register the target bsp_led_handler_t
+    @param self led_handler的实例对象
+    @param led_driver_inst led驱动的实例对象
+    @return led_handler_status_t 返回LED的状态    
+ */
+led_handler_status_t led_register_inst(bsp_led_handler_t * const self,
+                                bsp_led_driver_t * const led_driver_inst);
+
+
+#endif /* BSP_LED_HANDLER_H */
+```
+> 当然在这里，每一个handler可以跑在不同的core上，这样体现了一个多核的设计，并发。
+
+--- 
+
+``` cpp
+/*******************************************************
+ * @file bsp_led_handler.c
+ * @author fanzx (1456925916@qq.com)
+ * @brief provide led handler api
+    * @version 0.1
+    * @date 2026-03-20
+    * @note 1 tab == 4 space    
+、*******************************************************/
+
+#incude "bsp_led_handler.h"
+
+
+led_handler_status_t led_register_inst(bsp_led_handler_t * const self,
+#ifdef OS_SUPPORT
+                                       os_delay_t * const os_delay,         
+#endif
+                                        time_base_t * const time_base,
+                                 )
+{
+    led_handler_status_t ret = HAN_OK;
+    if(NULL == self || 
+#ifdef OS_SUPPORT
+    NULL == os_delay ||
+#endif
+    NULL == time_base)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led handler instance or led driver instance is NULL\r\n");
+#endif // DEBUG
+        ret = HAN_ERROR;
+        return ret;
+    }
+
+    if(HANDLER_INITED == self->init_status)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led handler instance is already inited\r\n");
+#endif // DEBUG
+        ret = HAN_ERROR;
+
+
+/* adding the inetrface of time base and os delay into the led handler instance */
+
+    return ret;
+}
+
+
+
