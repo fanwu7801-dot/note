@@ -164,6 +164,23 @@ led_status_t led_driver_inst(bsp_led_driver_t *  const   self
 }
 #endif
 
+
+/* @brief Control the target bsp_led_drver
+ * @param self led驱动的实例对象
+ * @param cycle_time_ms 闪烁周期时间
+ * @param blink_times 闪烁次数
+ * @param proportion_on_off 闪烁占空比
+
+ * @return led_status_t 返回LED的状态
+ * @note 1. 根据LED的特性，来控制LED的闪烁
+ *       2. 根据LED的状态，来控制LED的闪烁
+ */
+ led_status_t led_driver_control(bsp_led_driver_t * const self,
+                                uint32_t cycle_time_ms,
+                                uint32_t blink_times,
+                                proportion_t proportion_on_off);
+
+
 #endif /* BSP_LED_DIVER_H */
 ```
 
@@ -200,7 +217,126 @@ led_status_t led_driver_init(bsp_led_driver_t * const self)
 
     return ret;
 }
+led_status_t led_blink(bsp_led_driver_t * const self)
+{
+    led_status_t ret = LED_OK;
+    if(NULL == self)
+    { 
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance is NULL\r\n");
+#endif // DEBUG
+        ret = LEDERRORPARAM; // 错误参数
+        return ret;
+    }
 
+    /*2.根据cycle_time 去控制LED的闪烁开关*/
+    {
+        uint32_t cycle_time_local;
+        uint32_t  blink_time_local;
+        proportion_t proportion_on_off_local;
+        uint32_t   led_toggle_time;
+
+        cycle_time_local = self->cycle_time_ms;
+        blink_time_local = self->blink_times;
+        proportion_on_off_local = self->proportion_on_off;
+    /*2.21 define the time value for saving the features*/
+        switch (proportion_on_off_local)
+        { 
+        case PROPORTION_1_3:
+            led_toggle_time = cycle_time_local / 4;
+            break;
+        case PROPORTION_1_2:
+            led_toggle_time = cycle_time_local / 3;
+            break;
+        case PROPORTION_1_1:
+            led_toggle_time = cycle_time_local/2;
+            break;
+        default:
+            ret = LEDERRORPARAM;
+            return ret;
+            break;
+        }
+
+     /* do the operation 1.闪烁次数 2.闪烁占空比*/
+     for(uint32_t i = 0; i < blink_time_local; i++)
+     {
+        for(uint32_t j = 0; j < cycle_time_local; j++)
+        {
+            if(j < led_toggle_time)
+            {
+                self->p_led_opes_inst->pf_led_on ();
+            }
+            else
+            {
+                self->p_led_opes_inst->pf_led_off ();
+            }
+            self->p_os_time_delay->pf_os_delay_ms(1);
+        }
+     }
+    }
+}
+/* @brief Control the target bsp_led_drver
+ * @param self led驱动的实例对象
+ * @param cycle_time_ms 闪烁周期时间
+ * @param blink_times 闪烁次数
+ * @param proportion_on_off 闪烁占空比
+
+ * @return led_status_t 返回LED的状态
+ * @note 1. 根据LED的特性，来控制LED的闪烁
+ *       2. 根据LED的状态，来控制LED的闪烁
+ */
+ static led_status_t led_driver_control(bsp_led_driver_t * const self,
+                                uint32_t cycle_time_ms,
+                                uint32_t blink_times,
+                                proportion_t proportion_on_off)
+ {  
+    /**********checking the target status**********/
+    led_status_t ret = LED_OK;
+    /** 1. 检查是否初始化了 check if the target has benn initialized
+     *  2. 如果没有被初始化，就返回error
+     *  3. 加入互斥锁 option waite for the target to be ready 完成确定性调度，保证在多线程的情况下，能够正确的去访问这个对象
+     */
+    if(NULL == self)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance is NULL\r\n");
+#endif // DEBUG
+        ret = LEDERRORPARAM;
+        return ret;
+    }
+    if(INITED != self->is_inited)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance is not inited\r\n");
+#endif // DEBUG
+        ret = LEDERRORSTATUS;
+        return ret;
+    }
+
+    /**********checking the parameters**********/
+    /* 把握好参数的范围，来保证代码的健壮性，来防止代码的崩溃 具体由项目决定 */
+    if (0 == cycle_time_ms || 0 == blink_times || PROPORTION_x_x == proportion_on_off)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance parameters are invalid\r\n");
+#endif // DEBUG
+        ret = LEDERRORPARAM;
+        return ret;
+    }
+    /*updata new parameters for the led driver instance */
+    self->cycle_time_ms = cycle_time_ms;
+    self->blink_times = blink_times;
+    self->proportion_on_off = proportion_on_off;
+    self->pf_led_control = led_driver_control; // 这里是为了让用户能够在外部调用这个接口来控制LED的闪烁的特性，来实现不同的闪烁效果的。
+    /*根据LED的状态，来控制LED的闪烁*/
+    /********* run the operation of led*****************/
+    /** 怎么解决多线程的问题？ 时间序列强度相关，例如led在这里闪烁10s，让core切走，不要在这里死等？
+    TODO： 1. 实现非阻塞的model*/
+
+    /* 1. call the fuciton to blink  */
+    led_blink(self); // 根据self去解析状态
+
+ }
 /** @brief instaiation of led driver instance 
  * steps:
  * 1. adding the core interfaces into the led driver instance
@@ -210,11 +346,12 @@ led_status_t led_driver_init(bsp_led_driver_t * const self)
  * @return led_status_t 返回LED的状态
  * @note 按照arm的规范，如果参数>4个的时候，就要用stack来传了 S-BUS --->flash里面会把code读出来然后进行压栈 （优化方向，进行参数优化，包装到一个结构体里面）
  */
-led_status_t led_driver_inst(bsp_led_driver_t *  const   self
+led_status_t led_driver_inst(
+    bsp_led_driver_t *  const   self,
                             led_operations_t * const led_ops
 #ifdef OS_SUPPORT
-                            time_base_t      *const time_base
-                            os_delay_t       * const os_delay
+    time_base_t      *const time_base,
+    os_delay_t       * const os_delay
 #endif
                              )
 {   
@@ -264,6 +401,7 @@ led_status_t led_driver_inst(bsp_led_driver_t *  const   self
        self->p_led_opes_inst = NULL;
        self->p_time_base_ms = NULL;
        self->p_os_delay_ms = NULL;
+       self->led_control =  NULL;
        return ret
     }
     self-> is_inited = INITED;
@@ -330,6 +468,8 @@ void StartDefaultTask(void *argument)
   printf("hello world\r\n");
   bsp_led_driver_t led_driver;// 在这里都是脏数据，都是随机的，不能直接使用
   led_driver_inst(&led_driver, &led_ops, &time_base, &os_delay);
+  led_driver.led_control(&led_driver, 1000, 10, PROPORTION_1_2); // 1000ms的周期，闪烁10次，亮和灭的时间占比为1:1
+  /*怎么去找到这led1的内初空间？----> 把led1的对象也传入进去，当做this指针使用*/
   for(;;)
   {
     osDelay(1);
@@ -337,3 +477,41 @@ void StartDefaultTask(void *argument)
   /* USER CODE END StartDefaultTask */
 }
 ```     
+
+在这里进行了一个简单的单元测试，来验证这个led驱动的正确性，是否能够正确的调用接口，是否能够正确的进行闪烁。
+
+之后就可以直接的在应用层去调用这个led驱动的接口了，来实现不同的闪烁效果了。
+
+那么所有的GPIO的pin脚都不同，但是bsp层都可以根据不同的硬件平台去实现不同的GPIO接口，来满足不同的LED驱动的需求了。
+
+> 写代码的时候，一定要考虑到os的竟态问题，考虑到多线程的安全问题，如果多线程都在用这个实例对象led，那么这些control的控制一定会发生段错误（hardware fault）
+> 1. 一定要考虑到target_status 的检查
+>  - 检查是否初始化了 check if the target has benn initialized
+>  - 如果没有被初始化，就返回error
+>  - 加入互斥锁 option waite for the target to be ready 完成确定性调度，保证在多线程的情况下，能够正确的去访问这个对象
+> 2. 一定要考虑到参数的检查 check the parameters
+
+
+> 在之这里的面向对象的封装已经完成了，后面就可以去生成不同的led进行不同的闪烁了，来满足不同的需求了。
+
+``` cpp
+
+void StartDefaultTask(void *argument)
+{
+  /* USER CODE BEGIN StartDefaultTask */
+  /* Infinite loop */
+  printf("hello world\r\n");
+  bsp_led_driver_t led_driver;// 在这里都是脏数据，都是随机的，不能直接使用
+  bsp_led_driver_t led_driver2;// 在这里都是脏数据，都是随机的，不能直接使用
+  led_driver_inst(&led_driver, &led_ops, &time_base, &os_delay);
+  led_driver.led_control(&led_driver, 1000, 10, PROPORTION_1_2); // 1000ms的周期，闪烁10
+  
+  led_driver_inst(&led_driver2, &led_ops, &time_base, &os_delay);
+  led_driver2.led_control(&led_driver2, 500, 20, PROPORTION_1_3); // 500ms的周期，闪烁20次，亮和灭的时间占比为1:3
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartDefaultTask */
+}
+```
