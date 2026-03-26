@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-03-25T00:00:00.000Z" agent="Codex" version="24.7.17">
+  <diagram id="led-bridge-overview" name="LED Bridge Overview">
+    <mxGraphModel dx="1320" dy="760" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="&lt;font style=&quot;font-size:22px;&quot;&gt;&lt;b&gt;LED 桥接模式总览&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="260" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="app" value="&lt;b&gt;应用层 / 业务层&lt;/b&gt;&lt;br&gt;调用 handler 控制 LED&lt;br&gt;例如: 状态灯、告警灯、配网灯" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="60" y="90" width="1040" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="handler" value="&lt;b&gt;LED_Handler&lt;/b&gt;&lt;br&gt;管理多个 LED 实例&lt;br&gt;注册对象 / 统一调度 / 对外暴露控制入口" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="60" y="240" width="1040" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="driver1" value="&lt;b&gt;bsp_led_driver_t #1&lt;/b&gt;&lt;br&gt;cycle_time_ms&lt;br&gt;blink_times&lt;br&gt;proportion_on_off&lt;br&gt;pf_led_control" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="80" y="430" width="220" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="driver2" value="&lt;b&gt;bsp_led_driver_t #2&lt;/b&gt;&lt;br&gt;不同 LED 参数&lt;br&gt;不同闪烁节奏&lt;br&gt;共享统一接口" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="340" y="430" width="220" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="driver3" value="&lt;b&gt;bsp_led_driver_t #N&lt;/b&gt;&lt;br&gt;实例数组&lt;br&gt;led_instance_group[10]&lt;br&gt;由 handler 统一管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="600" y="430" width="220" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="ops" value="&lt;b&gt;硬件抽象接口&lt;/b&gt;&lt;br&gt;led_operations_t&lt;br&gt;pf_led_on / pf_led_off" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="860" y="430" width="240" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="time" value="&lt;b&gt;时间基准接口&lt;/b&gt;&lt;br&gt;time_base_t&lt;br&gt;pf_get_time_ms" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="860" y="520" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="osdelay" value="&lt;b&gt;OS 延时接口&lt;/b&gt;&lt;br&gt;os_delay_t&lt;br&gt;pf_os_delay_ms" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="860" y="600" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="hal" value="&lt;b&gt;HAL / GPIO / Timer / RTOS&lt;/b&gt;&lt;br&gt;具体平台实现&lt;br&gt;替换 MCU 或 BSP 时只改这一层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="60" y="690" width="1040" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" value="控制请求" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#7f8c8d;endArrow=block;" edge="1" parent="1" source="app" target="handler">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="管理 / 注册" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#7f8c8d;endArrow=block;" edge="1" parent="1" source="handler" target="driver1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#7f8c8d;endArrow=block;" edge="1" parent="1" source="handler" target="driver2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#7f8c8d;endArrow=block;" edge="1" parent="1" source="handler" target="driver3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" value="调用接口" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#7f8c8d;endArrow=block;" edge="1" parent="1" source="driver3" target="ops">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#7f8c8d;endArrow=block;" edge="1" parent="1" source="driver3" target="time">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#7f8c8d;endArrow=block;" edge="1" parent="1" source="driver3" target="osdelay">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#7f8c8d;endArrow=block;" edge="1" parent="1" source="ops" target="hal">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#7f8c8d;endArrow=block;" edge="1" parent="1" source="time" target="hal">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#7f8c8d;endArrow=block;" edge="1" parent="1" source="osdelay" target="hal">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="note" value="核心点: handler 负责管理对象，driver 负责单灯行为，底层通过函数指针完成平台解耦。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="370" width="1040" height="35" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
