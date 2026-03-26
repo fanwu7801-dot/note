@@ -579,6 +579,9 @@ extern "C" {
 #define DEBUG      1         /* 是否开启调试模式 */
 #define DEBUG_OUT(X) printf(X)     /* 调试输出接口 */
 
+#define INIT_AR_PATTERN (0xFFFFFFFF) /* 初始化数组的模式 */
+#define MAX_INSTANCE_NUM \
+                         (10) /* 最大的LED实例对象的数量 这里可以根据项目的需求进行调整*/
 
 
 typedef struct bsp_led_driver bsp_led_driver_t; // 前向声明，来解决循环依赖的问题了
@@ -598,6 +601,33 @@ typedef enum { HAN_OK = 0,
                HAN_BLINKING } 
 led_handler_status_t;
 
+typdef struct {
+    uint32_t           led_instance_num;        /* LED实例对象的数量 */
+    bsp_led_driver_t * led_instance_group [MAX_INSTANCE_NUM]; 
+                        /* 目标LED对象 指针数组*/
+}instance_registered_t;
+
+#ifdef OS_SUPPORT
+typedfef struct {
+    /*os queue create*/
+    /*这里讲解一下为什么void **,因为作为bsp层的接口，都需要返回一个led_handler_status_t的状态，所以不能直接的返回一个queue_handle的指针了，所以只能通过参数传入一个void **queue_handle来返回这个queue_handle的指针了。*/
+    led_handler_status_t (*pf_os_queue_create)(uint32_t const item_num,
+                                               uint32_t const item_size,
+                                               void     **queue_handle);
+    /*os queue put*/
+    led_handler_status_t (*pf_os_queue_put )(void *queue_handle,
+                                            void *         item,
+                                            uint32_t timeout_ms);
+    /*os queue get*/
+    led_handler_status_t (*pf_os_queue_get)(void *queue_handle,
+                                            void *         msg,
+                                            uint32_t timeout_ms);
+    /*os queue delete*/
+    led_handler_status_t (*pf_os_queue_delete)(void *queue_handle);
+} handler_os_queue_t;
+
+#endif //OS_SUPPORT
+
 
 typedef struct {
     led_handler_status_t (*pf_get_time_ms)(uint32_t *const);
@@ -613,17 +643,25 @@ typedef struct {
 typedef led_status_t (*pf_led_control_t)(bsp_led_driver_t *const p_led_driver_inst);
 
 typedef struct {
-    / **target of inernal status* /
+    /*********************Internal runtime data***********************/
+    //TBD :add lock for the target status, to guarantee the thread safety of the target status
+    / *target of inernal status* /
     uint8_t init_status; /* LED的状态 用于判断是否初始化*/
-    bsp_led_driver_t * led_instance_group [10]; /* 目标LED对象 指针数组*/
-
+    instance_registered_t instances; /* LED实例对象的挂载情况 */
     /****Target of Features****/
 
+    /********************Interfaces for internal*********************/
 
     /****************IOS 需要的的接口*****************/
-    time_base_t *p_time_base_ms;
+    time_base_t            *p_time_base_ms;
 #ifdef OS_SUPPORT
-    os_delay_t *p_os_delay_ms;
+    os_delay_t              *p_os_delay_ms;
+    /*Queue_creart get put delete
+      Thread_creat delet 
+      这样就可以把接口随便的传入进来，不用传任何的os的头文件，实现解耦
+      */
+    handler_os_queue_t *p_handler_os_queue;
+
 #endif
 
     /*************提供的API********************/
@@ -650,6 +688,7 @@ led_handler_status_t led_driver_inst(bsp_led_driver_t *  const   self
 #ifdef OS_SUPPORT
                              const time_base_t      *const time_base
                              const os_delay_t       * const os_delay
+                             const handler_os_queue_t * const handler_os_queue
 #endif
                              );
 
@@ -657,14 +696,6 @@ led_handler_status_t led_driver_inst(bsp_led_driver_t *  const   self
 }
 #endif
 
-
-/** * @brief Register the target bsp_led_handler_t
-    @param self led_handler的实例对象
-    @param led_driver_inst led驱动的实例对象
-    @return led_handler_status_t 返回LED的状态    
- */
-led_handler_status_t led_register_inst(bsp_led_handler_t * const self,
-                                bsp_led_driver_t * const led_driver_inst);
 
 
 #endif /* BSP_LED_HANDLER_H */
@@ -685,12 +716,82 @@ led_handler_status_t led_register_inst(bsp_led_handler_t * const self,
     * @note 1 tab == 4 space    
 、*******************************************************/
 
-#incude "bsp_led_handler.h"
+#include "bsp_led_handler.h"
+static led_handler_status_t __array_init(bsp_led_driver_t * led_instance_group[]，  uint32_t size)
+{   
+    led_handler_status_t ret = HAN_OK;
+    for(int i = 0; i < size; i++)
+    {
+        led_instance_group[i] = (bsp_led_driver_t *)INIT0_AR_PATTERN;
+        
+    }
+    //TBD: volid the memory is initialized successfully or not
+     return ret;
+}
+led_handler_status_t led_register_inst(bsp_led_handler_t * const self,
+                                       bsp_led_driver_t * const led_driver)
+{
+/**************checking the traget parameters*****************/
+    led_handler_status_t ret = HAN_OK;
+    if(NULL == self || NULL == led_driver)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led handler instance or led driver instance is NULL\r\n");
+#endif // DEBUG
+        ret = HAN_ERRORPAMETER;
+        return ret;
+    }
+/**************1.checking the traget status********************/
+    if(HANDLER_INITED != self->init_status)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led handler instance is not inited\r\n");
+#endif // DEBUG
+       // 2， if instanceted , return error to caller
+       // TBD ： 3.option - mutex to upgrade low priority task to target ASAP
+        ret = HAN_ERRORPARAMETER;
+        return ret;
+    }
+/***************cheking the input parameters******************/
+    if(self->instances.led_instance_num >= MAX_INSTANCE_NUM)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led handler instance is full\r\n");
+#endif // DEBUG
+        ret = HAN_ERRORPARAMETER;
+        return ret;
+}
+/***************Adding the instance in target array******************/
+    if(MAX_INSTANCE_NUM - self->instances.led_instance_num > 0)
+    {
+    self->instances.led_instance_group[self->instances.led_instance_num] = led_driver;
+    self->instances.led_instance_num++;
+    }
+    ret = HAN_OK;   
 
+static led_handler_status_t led_driver_control(bsp_led_driver_t * const self,
+                                uint32_t cycle_time_ms,
+                                uint32_t blink_times,
+                                proportion_t proportion_on_off);
+{
+
+}
+
+led_handler_status_t led_driver_inst(bsp_led_driver_t *  const   self
+#ifdef OS_SUPPORT
+                             const time_base_t      *const time_base
+                             const os_delay_t       * const os_delay
+                             const handler_os_queue_t * const handler_os_queue
+#endif
+                             );
+{
+
+}
 
 led_handler_status_t led_register_inst(bsp_led_handler_t * const self,
 #ifdef OS_SUPPORT
-                                       os_delay_t * const os_delay,         
+                                       os_delay_t * const os_delay,     
+                                       handler_os_queue_t * const handler_os_queue,    
 #endif
                                         time_base_t * const time_base,
                                  )
@@ -699,6 +800,7 @@ led_handler_status_t led_register_inst(bsp_led_handler_t * const self,
     if(NULL == self || 
 #ifdef OS_SUPPORT
     NULL == os_delay ||
+    
 #endif
     NULL == time_base)
     {
@@ -709,7 +811,7 @@ led_handler_status_t led_register_inst(bsp_led_handler_t * const self,
         return ret;
     }
 
-    if(HANDLER_INITED == self->init_status)
+    if(HANDLER_INITED == led_dirver->init_status)
     {
 #ifdef DEBUG
         DEBUG_OUT("led handler instance is already inited\r\n");
@@ -718,10 +820,37 @@ led_handler_status_t led_register_inst(bsp_led_handler_t * const self,
 
 
 /* adding the inetrface of time base and os delay into the led handler instance */
+    // mount external interfaces
+    self->p_time_base_ms = time_base;
+#ifdef OS_SUPPORT
+    self->p_os_delay_ms  = os_delay;
+    self->p_handler_os_queue = handler_os_queue;
+#endif
 
+    // mount inernal interfaces
+    self->pf_led_control  = led_driver_control;
+    self->pf_led_register = led_register_inst;
+
+    // init the target status
+    // init the variables will be used
+    self->instances.led_instance_num = 0U; // init the instace number to 0
+    __array_init(self->led_instance_group， MAX_INSTANCE_NUM); // init the instance array
+    self->init_status = HANDLER_INITED;
+    ret = HAN_OK;
+#if DEBUG 
+    DEBUG_OUT("led handler instance is inited successfully\r\n");
+#endif // DEBUG
     return ret;
 }
 
 
 
 ```
+
+
+在之前的blink的时候，都是硬执行的，之后执行问for循环之后才能有一个ret的返回，这样会导致其他任务被阻塞
+所以在之类的Blink实现就需要使用mutex和fifo等机制来实现非阻塞的模型。
+
+> 使用rots做消息队列，先执行发送队列消息，不会直接的进行闪灯的操作，先判断是否有其他的任务在闪灯，在闪灯的任务执行完之后，在去执行这个闪灯的操作，这样就实现了非阻塞的模型了。这样就是异步的，程序的复杂度就会下降。
+>所以在这里直接考虑队列的创建，push和get的数据。
+![alt text](image-7.png)
