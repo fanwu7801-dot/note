@@ -594,12 +594,28 @@ typedef enum {
     HANDLER_INITED,
 } handler_init_status_t;
 
+
+typedef enum {
+    LED_INDEX_1 = 0,
+    LED_INDEX_2,
+    LED_INDEX_3,
+    LED_INDEX_4,
+    LED_INDEX_5,
+    LED_INDEX_6,
+    LED_INDEX_7,
+    LED_INDEX_8,
+    LED_INDEX_9,
+    LED_MAX_INDEX 
+} led_index_t;
+
 typedef enum { HAN_OK = 0,
                HAN_ERROR,
                HAN_ERRORTIMOUT,
                HAN_ON, 
                HAN_BLINKING } 
 led_handler_status_t;
+
+
 
 typdef struct {
     uint32_t           led_instance_num;        /* LED实例对象的数量 */
@@ -625,6 +641,12 @@ typedfef struct {
     /*os queue delete*/
     led_handler_status_t (*pf_os_queue_delete)(void *queue_handle);
 } handler_os_queue_t;
+
+
+typedef struct {
+    led_handler_status_t (*pf_os_critical_enter)(void);
+    led_handler_status_t (*pf_os_critical_exit)(void);
+} handler_os_critical_t;
 
 #endif //OS_SUPPORT
 
@@ -728,12 +750,13 @@ static led_handler_status_t __array_init(bsp_led_driver_t * led_instance_group[]
     //TBD: volid the memory is initialized successfully or not
      return ret;
 }
-led_handler_status_t led_register_inst(bsp_led_handler_t * const self,
-                                       bsp_led_driver_t * const led_driver)
+led_handler_status_t led_register(bsp_led_handler_t * const       self,
+                                  bsp_led_driver_t  * const led_driver,
+                                  uint32_t          * const      index)
 {
 /**************checking the traget parameters*****************/
     led_handler_status_t ret = HAN_OK;
-    if(NULL == self || NULL == led_driver)
+    if(NULL == self || NULL == led_driver|| NULL == index)
     {
 #ifdef DEBUG
         DEBUG_OUT("led handler instance or led driver instance is NULL\r\n");
@@ -759,15 +782,43 @@ led_handler_status_t led_register_inst(bsp_led_handler_t * const self,
         DEBUG_OUT("led handler instance is full\r\n");
 #endif // DEBUG
         ret = HAN_ERRORPARAMETER;
-        return ret;
+        return ret; 
 }
 /***************Adding the instance in target array******************/
+    /* 1。防止数组越界 */
+    if((MAX_INSTANCE_NUM - self->instances.led_instance_num) == 0)
+    {   ret = HAN_ERRORPARAMETER;
+        return ret;
+    }
+    /* 临界区的逻辑需要考虑安全性，如果在临界区里面retrun会导致os死锁 */
     if(MAX_INSTANCE_NUM - self->instances.led_instance_num > 0)
     {
-    self->instances.led_instance_group[self->instances.led_instance_num] = led_driver;
+#ifdef OS_SUPPORTING
+    self->p_os_critical_enter(); // 进入临界区，来保证线程安全
+#endif
+    // TBD: add mutex forthis register (离线断点？ or 临界区？)
+    self->instances.led_instance_group[self->instances.led_instance_num] = 
+                                                                led_driver;
     self->instances.led_instance_num++;
+    *index = self->instances.led_instance_num - 1; // 返回当前注册的LED实例对象的索引
+#ifdef OS_SUPPORTING
+    self->p_os_critical_exit(); // 退出临界区，来保证线程安全
+#endif
+    }
+    else
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led handler instance is full\r\n");
+#endif // DEBUG
+
+        ret = HAN_ERRORPARAMETER;
     }
     ret = HAN_OK;   
+
+#endif
+
+}
+
 
 static led_handler_status_t led_driver_control(bsp_led_driver_t * const self,
                                 uint32_t cycle_time_ms,
@@ -854,3 +905,233 @@ led_handler_status_t led_register_inst(bsp_led_handler_t * const self,
 > 使用rots做消息队列，先执行发送队列消息，不会直接的进行闪灯的操作，先判断是否有其他的任务在闪灯，在闪灯的任务执行完之后，在去执行这个闪灯的操作，这样就实现了非阻塞的模型了。这样就是异步的，程序的复杂度就会下降。
 >所以在这里直接考虑队列的创建，push和get的数据。
 ![alt text](image-7.png)
+
+> 那么都挂载到了LED_handler上了，那么怎么知道我挂载的是哪一个LED呢？
+> 1. 创建一个led的索引的枚举类型，来区分不同的LED
+> 2. 在注册LED实例对象的时候，传入一个索引，来区分不同的LED
+``` cpp
+typedef enum {
+    LED_INDEX_1 = 0,
+    LED_INDEX_2,
+    LED_INDEX_3,
+    LED_INDEX_4,
+    LED_INDEX_5,
+    LED_INDEX_6,
+    LED_INDEX_7,
+    LED_INDEX_8,
+    LED_INDEX_9,
+    LED_MAX_INDEX 
+} led_index_t;
+
+led_handler_status_t led_register(bsp_led_handler_t * const       self,
+                                  bsp_led_driver_t  * const led_driver,
+                                  uint32_t          * const      index)
+{
+    // 1. checking the parameters
+    // 2. checking the target status
+    // 3. checking the input parameters
+    // 4. adding the instance in target array
+}
+```
+
+__单元测试__：在这里写完了register的接口之后，就可以在这个.c文件里面去写一个简单的单元测试了，来验证这个register接口的正确性了。
+``` cpp
+
+void StartDefaultTask(void *argument)
+{
+  /* USER CODE BEGIN StartDefaultTask */
+  /* Infinite loop */
+//   printf("hello world\r\n");
+//   bsp_led_handler_t led_handler;// 在这里都是脏数据，都是随机的，不能直接使用
+//   led_register_inst(&led_handler, &time_base, &os_delay, &handler_os_queue);
+//   bsp_led_driver_t led_driver;// 在这里都是脏数据，都是随机的，不能直接使用
+//   uint32_t index;
+//   led_register(&led_handler, &led_driver, &index); // 注册一个LED实例对象，来验证这个接口的正确性了。
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartDefaultTask */
+}
+
+// self test ::driver-layer-testing
+void Test_1 ()
+{
+   printf("hello world\r\n");
+   bsp_led_handler_t led_handler;// 在这里都是脏数据，都是随机的，不能直接使用
+   led_register_inst(&led_handler,
+                     &time_base, 
+                     &os_delay, 
+                     &handler_os_queue);
+   bsp_led_driver_t led_driver;// 在这里都是脏数据，都是随机的，不能直接使用
+   uint32_t index;
+   led_register(&led_handler, &led_driver, &index); // 注册一个LED实例对象，
+   // 来验证这个接口的正确性了
+}
+
+// self test :: handler-layer-testing
+void Test_2 ()
+{
+   printf("hello world\r\n");
+   led_handler_status_t ret = HAN_OK;
+   bsp_led_handler_t led_handler_1;
+   bsp_led_handler_t led_handler_2;
+   ret = led_register_inst(&led_handler_1, 
+                           &time_base, 
+                           &os_delay, 
+                           &handler_os_queue);
+   bsp_led_driver_t led_driver;// 在这里都是脏数据，都是随机的，不能直接使用
+   uint32_t index;
+   led_register(&led_handler_1, &led_driver, &index); // 注册一个LED实例对象，
+   // 来验证这个接口的正确性了
+}  
+
+os_delay_t os_delay = {
+    .pf_os_delay_ms = pf_os_delay_ms_handler_1,
+};
+
+
+led_handler_status_t pf_os_delay_ms_handler_1(uint32_t delay_ms)
+{
+#ifdef OS_SUPPORTING
+    return os_delay.pf_os_delay_ms(delay_ms);
+#else
+    return LED_ERROR;
+#endif
+}
+
+
+
+led_handler_status_t pf_os_queue_create_handler_1(uint32_t const item_num,
+                                                 uint32_t const item_size,
+                                                 void     **queue_handle)
+{
+#ifdef OS_SUPPORTING
+       QueueHandle_t temp_queue_handle = xQueueCreate(item_num, item_size);
+       if(NULL == temp_queue_handle)
+       {
+#ifdef DEBUG
+        DEBUG_OUT("os queue create failed\r\n");
+#endif // DEBUG
+        return HAN_ERRORRESOURCE;
+       }
+       else
+       {
+        *queue_handle = temp_queue_handle;// 把创建的queue handle返回给调用者了
+        return HAN_OK;
+       }
+       //xQueueCreate(item_num, item_size);
+#endif
+}
+
+
+led_handler_status_t pf_os_queue_put_handler_1(void *queue_handle,
+                                               void *         item,
+                                               uint32_t timeout_ms)
+{   
+    led_handler_status_t ret = HAN_OK;
+#ifdef OS_SUPPORTING
+    if(NULL == queue_handle     || 
+       NULL == item             ||
+       timeout_ms > proMAX_DELAY) 
+    {
+        return HAN_ERRORPARAMETER;
+    }
+    else
+    {
+        ret = xQueueSend(queue_handle, item, timeout_ms);
+    }
+    if(pdPASS == ret)
+    {
+        return HAN_OK;
+    }
+    else
+    {
+#ifdef DEBUG
+        DEBUG_OUT("os queue put failed\r\n");
+#endif // DEBUG
+        return HAN_ERROR;
+    }
+#endif
+}
+
+led_handler_status_t pf_os_queue_get_handler_1(void *queue_handle,
+                                               void *         msg,
+                                               uint32_t timeout_ms)
+{   
+    led_handler_status_t ret = HAN_OK;
+#ifdef OS_SUPPORTING
+    if(NULL == queue_handle     || 
+       NULL == msg              ||
+       timeout_ms > proMAX_DELAY) 
+    {
+        return HAN_ERRORPARAMETER;
+    }
+    else
+    {
+        ret = xQueueReceive(queue_handle, msg, timeout_ms);
+        if(pdPASS == ret)
+        {
+            return HAN_OK;
+        }
+        else
+        {
+#ifdef DEBUG
+            DEBUG_OUT("os queue get failed\r\n");
+#endif // DEBUG 
+            return HAN_ERROR;
+        }
+    }
+#endif
+}
+
+
+led_handler_status_t pf_os_queue_delete_handler_1(void *queue_handle)
+{   
+    led_handler_status_t ret = HAN_OK;
+#ifdef OS_SUPPORTING
+    if(NULL == queue_handle)
+    {
+        return HAN_ERRORPARAMETER;
+    }
+    else
+    {
+        vQueueDelete(queue_handle);
+        return HAN_OK;
+    }
+#endif
+}
+
+handler_os_queue_t handler_os_queue = {
+    .pf_os_queue_create = pf_os_queue_create_handler_1,
+    .pf_os_queue_put    = pf_os_queue_put_handler_1,
+    .pf_os_queue_get    = pf_os_queue_get_handler_1,
+    .pf_os_queue_delete = pf_os_queue_delete_handler_1,
+};
+
+led_handler_status_t pf_os_critical_enter_handler_1(void)
+{
+    //TBD ； if Alrady in critical, return error to caller
+#ifdef OS_SUPPORTING
+    vportENTER_CRITICAL();
+    return HAN_OK;
+#else
+    return HAN_ERROR;
+#endif
+}
+led_handler_status_t pf_os_critical_exit_handler_1(void)
+{
+#ifdef OS_SUPPORTING
+    //TBD ； if not in critical, return error to caller
+    vportEXIT_CRITICAL();
+    return HAN_OK;
+#else   
+    return HAN_ERROR;
+#endif
+}   
+
+handler_os_critical_t handler_os_critical = {
+    .pf_os_critical_enter = pf_os_critical_enter_handler_1,
+    .pf_os_critical_exit  = pf_os_critical_exit_handler_1,
+};
+```
