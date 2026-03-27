@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>蓝牙 6.0 特性研究报告</title>
+  <style>
+    :root {
+      --primary: #0057B8;
+      --primary-light: #E8F0FF;
+      --accent: #00A3E0;
+      --success: #00C26B;
+      --warning: #FF9500;
+      --danger: #FF3B30;
+      --dark: #1A1A2E;
+      --text: #2D3748;
+      --text-muted: #718096;
+      --border: #E2E8F0;
+      --bg: #F7F9FC;
+      --card: #FFFFFF;
+      --gradient-start: #0057B8;
+      --gradient-end: #00A3E0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+      color: #fff;
+      padding: 72px 0 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: -60px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; right: -40px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 24px;
+      padding: 4px 18px;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .hero h1 span {
+      background: linear-gradient(90deg,#fff,#a8d8ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: 1.1rem;
+      opacity: .85;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      opacity: .9;
+    }
+    .hero-meta-item .icon { font-size: 18px; }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 56px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .section-header .tag {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 20px;
+      padding: 4px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    .section-header h2 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 12px;
+    }
+    .section-header p {
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto;
+      font-size: 15px;
+    }
+
+    /* ===== TIMELINE ===== */
+    .timeline-section { background: var(--card); }
+    .timeline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      overflow-x: auto;
+      padding: 16px 0 8px;
+    }
+    .timeline-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 110px;
+    }
+    .timeline-dot {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .timeline-dot.past { background: #CBD5E0; color: #fff; }
+    .timeline-dot.current {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      box-shadow: 0 0 0 6px rgba(0,87,184,0.15);
+      width: 56px; height: 56px; font-size: 14px;
+    }
+    .timeline-line {
+      flex: 1;
+      height: 3px;
+      background: linear-gradient(90deg, #CBD5E0, var(--primary));
+      min-width: 40px;
+    }
+    .timeline-label {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .timeline-label strong { display: block; color: var(--text); font-size: 13px; }
+    .timeline-item.current .timeline-label strong { color: var(--primary); font-size: 14px; }
+
+    /* ===== FEATURE CARDS ===== */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 28px rgba(0,87,184,0.12);
+    }
+    .feature-card.highlight {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, #f0f5ff 0%, #fff 100%);
+    }
+    .feature-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      margin-bottom: 18px;
+    }
+    .feature-icon.blue { background: #E8F0FF; }
+    .feature-icon.green { background: #E6FAF2; }
+    .feature-icon.purple { background: #F3EEFF; }
+    .feature-icon.orange { background: #FFF4E6; }
+    .feature-icon.teal { background: #E6F9FF; }
+    .feature-icon.red { background: #FFF0F0; }
+    .feature-card h3 {
+      font-size: 16px; font-weight: 700;
+      color: var(--dark); margin-bottom: 8px;
+    }
+    .feature-card p {
+      font-size: 14px; color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+    .feature-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .feature-tag {
+      font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+      background: var(--primary-light); color: var(--primary);
+    }
+
+    /* ===== COMPARISON TABLE ===== */
+    .comparison-section { background: #F0F4FF; }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    }
+    .comparison-table thead tr {
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      color: #fff;
+    }
+    .comparison-table thead th {
+      padding: 16px 20px;
+      text-align: left;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .comparison-table thead th:first-child { width: 22%; }
+    .comparison-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+    .comparison-table tbody tr:last-child { border-bottom: none; }
+    .comparison-table tbody tr:hover { background: var(--primary-light); }
+    .comparison-table td {
+      padding: 16px 20px;
+      font-size: 14px;
+      vertical-align: top;
+    }
+    .comparison-table td:first-child {
+      font-weight: 600; color: var(--dark);
+      background: #FAFBFF;
+    }
+    .comparison-table td.old { color: var(--text-muted); }
+    .comparison-table td.new { color: var(--primary); font-weight: 500; }
+    .comparison-table td.diff { }
+    .badge-new {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 6px;
+      vertical-align: middle;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-enhanced {
+      display: inline-block;
+      background: var(--success);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 6px;
+      vertical-align: middle;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== CHANNEL SOUNDING DEEP DIVE ===== */
+    .cs-section { background: var(--dark); color: #fff; }
+    .cs-section .section-header .tag { background: rgba(0,163,224,0.2); color: var(--accent); }
+    .cs-section .section-header h2 { color: #fff; }
+    .cs-section .section-header p { color: rgba(255,255,255,0.6); }
+    .cs-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .cs-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 24px;
+      backdrop-filter: blur(6px);
+    }
+    .cs-card h4 {
+      font-size: 15px; font-weight: 700;
+      color: var(--accent); margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cs-card p {
+      font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.6;
+    }
+
+    /* ===== USE CASES ===== */
+    .usecases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 18px;
+    }
+    .usecase-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 22px 18px;
+      text-align: center;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: transform .2s;
+    }
+    .usecase-card:hover { transform: translateY(-4px); }
+    .usecase-icon { font-size: 36px; margin-bottom: 12px; }
+    .usecase-card h4 { font-size: 14px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .usecase-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+    /* ===== METRICS ===== */
+    .metrics-section { background: var(--card); }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .metric-card {
+      background: var(--bg);
+      border-radius: 14px;
+      padding: 28px 20px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    .metric-value {
+      font-size: 2.4rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .metric-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+
+    /* ===== VERSION HISTORY ===== */
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .history-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      border-left: 4px solid var(--border);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    }
+    .history-card.v6 { border-left-color: var(--primary); background: linear-gradient(135deg,#f0f5ff,#fff); }
+    .history-card h4 { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+    .history-card .year { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+    .history-card ul { padding-left: 16px; }
+    .history-card li { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+    .history-card.v6 li { color: var(--text); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 32px;
+      font-size: 13px;
+    }
+    footer strong { color: #fff; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .hero { padding: 48px 0 36px; }
+      section { padding: 36px 0; }
+      .features-grid, .cs-cards, .usecases-grid { grid-template-columns: 1fr; }
+      .comparison-table { font-size: 12px; }
+      .comparison-table td, .comparison-table th { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">技术研究报告</div>
+    <h1>蓝牙 <span>6.0</span> 特性深度解析</h1>
+    <p class="hero-sub">全面解读蓝牙核心规范 6.0 的革命性升级，以及与蓝牙 5.3 的技术差异对比</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span class="icon">📅</span> 发布时间：2024 年 9 月</div>
+      <div class="hero-meta-item"><span class="icon">🏛️</span> 发布机构：Bluetooth SIG</div>
+      <div class="hero-meta-item"><span class="icon">🔖</span> 规范版本：Core Spec v6.0</div>
+      <div class="hero-meta-item"><span class="icon">📊</span> 研究日期：2026 年 3 月</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TIMELINE ===== -->
+<section class="timeline-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">版本演进</div>
+      <h2>蓝牙技术发展历程</h2>
+      <p>从蓝牙 5.0 到 6.0，技术持续演进突破</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot past">5.0</div>
+        <div class="timeline-label"><strong>蓝牙 5.0</strong>2016 年</div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-item">
+        <div class="timeline-dot past">5.1</div>
+        <div class="timeline-label"><strong>蓝牙 5.1</strong>2019 年</div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-item">
+        <div class="timeline-dot past">5.2</div>
+        <div class="timeline-label"><strong>蓝牙 5.2</strong>2020 年</div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-item">
+        <div class="timeline-dot past">5.3</div>
+        <div class="timeline-label"><strong>蓝牙 5.3</strong>2021 年</div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-item">
+        <div class="timeline-dot past">5.4</div>
+        <div class="timeline-label"><strong>蓝牙 5.4</strong>2023 年</div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-item current">
+        <div class="timeline-dot current">6.0</div>
+        <div class="timeline-label"><strong>蓝牙 6.0</strong>2024 年 ✨</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== KEY METRICS ===== -->
+<section class="metrics-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">核心数据</div>
+      <h2>蓝牙 6.0 关键指标</h2>
+    </div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-value">cm级</div>
+        <div class="metric-label">Channel Sounding 测距精度<br>（相比5.x米级精度）</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">6</div>
+        <div class="metric-label">重大新增特性<br>相比 5.3 版本</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">4路</div>
+        <div class="metric-label">Channel Sounding<br>最大天线路径数</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">可变</div>
+        <div class="metric-label">帧间隔（原固定 150µs<br>现支持协商动态调整）</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">双向</div>
+        <div class="metric-label">Channel Sounding<br>测距通信方式</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">新特性解析</div>
+      <h2>蓝牙 6.0 六大核心新特性</h2>
+      <p>蓝牙 6.0 在定位、能效、音频和连接灵活性四大方向实现重大突破</p>
+    </div>
+    <div class="features-grid">
+
+      <!-- Channel Sounding -->
+      <div class="feature-card highlight">
+        <div class="feature-icon blue">📡</div>
+        <h3>① 蓝牙信道探测（Channel Sounding）⭐️ 核心亮点</h3>
+        <p>
+          6.0 最重大的新特性。通过<strong>往返时间（RTT）</strong>和<strong>相位测距（PBR）</strong>实现双向精确测距，精度达厘米级，接近 UWB 技术水平。支持最多 4 条天线路径（8 种天线组合），有效抵抗多径干扰。内置安全机制防范中间人攻击与重放攻击，无需额外硬件即可集成到现有 LE 设备中。
+        </p>
+        <div class="feature-tags">
+          <span class="feature-tag">精确定位</span>
+          <span class="feature-tag">RTT 测距</span>
+          <span class="feature-tag">相位测距</span>
+          <span class="feature-tag">防攻击</span>
+          <span class="feature-tag">🆕 全新特性</span>
+        </div>
+      </div>
+
+      <!-- Decision-Based Advertising Filtering -->
+      <div class="feature-card">
+        <div class="feature-icon green">🔍</div>
+        <h3>② 基于决策的广播过滤</h3>
+        <p>
+          扫描设备可根据主广播信道数据包内容，智能决定是否进一步扫描辅助信道，避免无效扫描消耗资源。有效减少待机功耗，提升扫描效率和数据吞吐量，对 IoT 设备长续航尤为重要。
+        </p>
+        <div class="feature-tags">
+          <span class="feature-tag">节能优化</span>
+          <span class="feature-tag">智能扫描</span>
+          <span class="feature-tag">🆕 全新特性</span>
+        </div>
+      </div>
+
+      <!-- Monitoring Advertisers -->
+      <div class="feature-card">
+        <div class="feature-icon teal">📶</div>
+        <h3>③ 监控广播设备</h3>
+        <p>
+          解决了 5.x 版本中过滤重复广播包后无法感知设备是否离开范围的问题。通过 HCI 事件主动通知主机设备进出范围状态，避免对已离去设备进行无效高功耗扫描，大幅节省能源消耗。
+        </p>
+        <div class="feature-tags">
+          <span class="feature-tag">范围感知</span>
+          <span class="feature-tag">功耗优化</span>
+          <span class="feature-tag">🆕 全新特性</span>
+        </div>
+      </div>
+
+      <!-- ISOAL Enhancement -->
+      <div class="feature-card">
+        <div class="feature-icon purple">🎵</div>
+        <h3>④ 同步适配层增强（ISOAL）</h3>
+        <p>
+          改进了 ISOAL（等时适配层），新增低延迟帧模式，降低了特定应用生成帧协议数据单元（PDU）的延迟，提高了同步数据传输的可靠性。对 LE Audio、无线耳机、实时游戏音频等场景带来明显改善。
+        </p>
+        <div class="feature-tags">
+          <span class="feature-tag">低延迟音频</span>
+          <span class="feature-tag">LE Audio 增强</span>
+          <span class="feature-tag">🔼 功能增强</span>
+        </div>
+      </div>
+
+      <!-- LL Extended Feature Set -->
+      <div class="feature-card">
+        <div class="feature-icon orange">🔗</div>
+        <h3>⑤ 链路层扩展功能集</h3>
+        <p>
+          增强了蓝牙 LE 设备间交换链路层功能信息的能力，支持更多数量的功能协商。随着蓝牙 LE 越来越复杂，确保功能丰富的设备能够有效互操作，并为未来更多功能扩展奠定基础。
+        </p>
+        <div class="feature-tags">
+          <span class="feature-tag">功能协商</span>
+          <span class="feature-tag">互操作性</span>
+          <span class="feature-tag">🔼 功能增强</span>
+        </div>
+      </div>
+
+      <!-- Frame Space Update -->
+      <div class="feature-card">
+        <div class="feature-icon red">⏱️</div>
+        <h3>⑥ 帧间隔更新</h3>
+        <p>
+          将连接事件或同步流中相邻数据包间的时间间隔，从原来固定的 <strong>150µs</strong> 改为可协商的动态值。可根据具体应用灵活调整为更短或更长的间隔，为优化连接参数提供全新维度，提升吞吐量和能效。
+        </p>
+        <div class="feature-tags">
+          <span class="feature-tag">动态帧间隔</span>
+          <span class="feature-tag">吞吐量优化</span>
+          <span class="feature-tag">🔼 功能增强</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== CHANNEL SOUNDING DEEP DIVE ===== -->
+<section class="cs-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">深度解析</div>
+      <h2>Channel Sounding 工作原理</h2>
+      <p>蓝牙 6.0 最革命性的特性——厘米级精准测距技术详解</p>
+    </div>
+    <div class="cs-cards">
+      <div class="cs-card">
+        <h4>🎯 两大测距方法</h4>
+        <p>
+          <strong style="color:#fff;">RTT（往返时间）</strong>：记录信号发出时间（ToD）和到达时间（ToA），通过飞行时间（ToF）计算距离，误差小。<br><br>
+          <strong style="color:#fff;">PBR（相位测距）</strong>：利用发射与接收信号的相位差精确计算距离，在短距场景精度更高。
+        </p>
+      </div>
+      <div class="cs-card">
+        <h4>📻 双角色机制</h4>
+        <p>
+          <strong style="color:#fff;">发起设备（Initiator）</strong>：主动发送探测信号，发起测距流程。<br><br>
+          <strong style="color:#fff;">反射设备（Reflector）</strong>：接收信号并回应，配合完成双向时间差测量，精度远超单向 RSSI 估算。
+        </p>
+      </div>
+      <div class="cs-card">
+        <h4>📡 多天线路径</h4>
+        <p>
+          支持最多 <strong style="color:#fff;">4 条天线路径</strong>（8 种天线组合），可有效应对室内复杂环境中的多径干扰、反射和遮挡，提升测距的鲁棒性和稳定性。
+        </p>
+      </div>
+      <div class="cs-card">
+        <h4>🔒 内置安全机制</h4>
+        <p>
+          采用<strong style="color:#fff;">分布式随机比特生成器（DRBG）</strong>，所有测距和数据交换均在加密连接上进行，有效防范<strong style="color:#fff;">中间人攻击</strong>、<strong style="color:#fff;">重放攻击</strong>和<strong style="color:#fff;">距离欺骗攻击</strong>。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMPARISON TABLE ===== -->
+<section class="comparison-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">版本对比</div>
+      <h2>蓝牙 6.0 vs 蓝牙 5.3 全面对比</h2>
+      <p>从技术规格维度深度剖析两大版本的核心差异</p>
+    </div>
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>对比维度</th>
+          <th>蓝牙 5.3（2021）</th>
+          <th>蓝牙 6.0（2024）</th>
+          <th>核心差异</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>精确测距 / 定位</td>
+          <td class="old">依赖 RSSI 信号强度，误差达米级；5.1 引入 AoA/AoD 方向查找，但精度有限</td>
+          <td class="new">Channel Sounding：RTT + PBR 双模测距，厘米级精度 <span class="badge-new">全新</span></td>
+          <td>精度从米级跃升至厘米级，接近 UWB 水平</td>
+        </tr>
+        <tr>
+          <td>连接子评级</td>
+          <td class="old">引入连接子评级（Connection Subrating），允许动态切换连接间隔节省功耗</td>
+          <td class="new">继承并进一步优化，结合可变帧间隔提供更灵活的连接控制 <span class="badge-enhanced">增强</span></td>
+          <td>5.3 引入基础机制，6.0 整体连接管理更灵活</td>
+        </tr>
+        <tr>
+          <td>广播扫描效率</td>
+          <td class="old">基础扫描机制，对主/辅助信道无差别扫描，能耗较高</td>
+          <td class="new">基于决策的广播过滤：按主信道内容决定是否扫描辅助信道 <span class="badge-new">全新</span></td>
+          <td>智能跳过无效辅助信道扫描，显著降低待机功耗</td>
+        </tr>
+        <tr>
+          <td>设备范围感知</td>
+          <td class="old">过滤重复包后无法感知设备是否仍在范围内，可能持续高功耗扫描</td>
+          <td class="new">监控广播设备：HCI 事件实时通知设备进出范围 <span class="badge-new">全新</span></td>
+          <td>主动感知设备状态，避免无效连接和能量浪费</td>
+        </tr>
+        <tr>
+          <td>同步数据传输（音频）</td>
+          <td class="old">ISOAL 基础支持（5.2 引入 LE Audio），帧模式固定，延迟和可靠性有限</td>
+          <td class="new">ISOAL 增强：新增低延迟帧模式，提升可靠性 <span class="badge-enhanced">增强</span></td>
+          <td>LE Audio 体验进一步改善，更低延迟更高可靠性</td>
+        </tr>
+        <tr>
+          <td>链路层功能协商</td>
+          <td class="old">基本功能交换机制，随功能增加面临容量瓶颈</td>
+          <td class="new">LL 扩展功能集：支持更多功能项的交换与协商 <span class="badge-enhanced">增强</span></td>
+          <td>适应越来越复杂的设备功能，为未来扩展预留空间</td>
+        </tr>
+        <tr>
+          <td>帧间隔（IFS）</td>
+          <td class="old">固定帧间隔 150µs，无法根据应用需求调整</td>
+          <td class="new">可协商的动态帧间隔，根据场景灵活设置更短或更长间隔 <span class="badge-new">全新</span></td>
+          <td>吞吐量、响应时间与功耗可在应用层进行针对性优化</td>
+        </tr>
+        <tr>
+          <td>安全性</td>
+          <td class="old">加密密钥大小控制增强（5.3 新增），LE 连接安全性提升</td>
+          <td class="new">Channel Sounding 内置 DRBG 安全机制，防距离欺骗/中间人攻击 <span class="badge-enhanced">增强</span></td>
+          <td>在定位/测距安全方面有突破性强化</td>
+        </tr>
+        <tr>
+          <td>信道分类</td>
+          <td class="old">信道分类增强（5.3 新增），外围设备可向中央报告信道质量</td>
+          <td class="new">继承，Channel Sounding 进一步利用多信道采集提升测距精度 <span class="badge-enhanced">增强</span></td>
+          <td>5.3 在射频层面奠定基础，6.0 进一步应用于测距场景</td>
+        </tr>
+        <tr>
+          <td>传输速率</td>
+          <td class="old">最高 2 Mbps（LE 2M PHY），与 5.0 一致</td>
+          <td class="new">维持最高 2 Mbps，传输效率通过帧间隔优化提升 <span class="badge-enhanced">增强</span></td>
+          <td>不追求速率突破，而是聚焦效率和实际吞吐量</td>
+        </tr>
+        <tr>
+          <td>主要应用方向</td>
+          <td class="old">音频流优化、低功耗物联网、方向查找</td>
+          <td class="new">精确室内定位、数字钥匙、资产追踪、工业物联网、高性能 LE Audio</td>
+          <td>定位与高精度感知成为全新核心应用方向</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== USE CASES ===== -->
+<section style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">应用场景</div>
+      <h2>蓝牙 6.0 典型应用场景</h2>
+      <p>新特性驱动下的创新应用领域</p>
+    </div>
+    <div class="usecases-grid">
+      <div class="usecase-card">
+        <div class="usecase-icon">🔑</div>
+        <h4>数字车钥匙</h4>
+        <p>厘米级测距确保只有合法用户在指定距离内才能解锁车辆，防止中继攻击</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">🐾</div>
+        <h4>宠物/儿童追踪</h4>
+        <p>精确感知追踪目标位置，在嘈杂环境下仍能准确定位</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">🏭</div>
+        <h4>工厂资产追踪</h4>
+        <p>生产线设备和物料的厘米级精度实时定位，提升工厂管理效率</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">🏠</div>
+        <h4>智能门锁</h4>
+        <p>感知用户距离，实现自动解锁/上锁，安全性远超传统方案</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">🎧</div>
+        <h4>无线耳机</h4>
+        <p>ISOAL 增强和帧间隔优化带来更低延迟、更稳定的音频传输</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">🗺️</div>
+        <h4>室内导航</h4>
+        <p>大型商场、医院等复杂室内场景的精准导航定位</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">🎮</div>
+        <h4>游戏外设</h4>
+        <p>极低延迟的游戏手柄和耳机连接，帧间隔可协商大幅改善游戏体验</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">🏥</div>
+        <h4>医疗设备</h4>
+        <p>可穿戴医疗设备的精准位置感知与低功耗长续航需求完美结合</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VERSION HISTORY ===== -->
+<section style="background:var(--card);">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">历史版本</div>
+      <h2>蓝牙 5.x 版本关键特性回顾</h2>
+      <p>了解蓝牙 5.x 系列的演进脉络，更好理解 6.0 的革新意义</p>
+    </div>
+    <div class="history-grid">
+      <div class="history-card">
+        <h4>蓝牙 5.0</h4>
+        <div class="year">2016 年 · 里程碑版本</div>
+        <ul>
+          <li>速度提升至 2 Mbps（LE 2M PHY）</li>
+          <li>传输距离扩大 4 倍（约 240m）</li>
+          <li>广播容量提升 8 倍</li>
+          <li>引入编码 PHY（LE Coded PHY）</li>
+        </ul>
+      </div>
+      <div class="history-card">
+        <h4>蓝牙 5.1</h4>
+        <div class="year">2019 年 · 方向感知</div>
+        <ul>
+          <li>引入 AoA（到达角）定位</li>
+          <li>引入 AoD（出发角）定位</li>
+          <li>广告信道索引增强</li>
+          <li>GATT 缓存增强</li>
+        </ul>
+      </div>
+      <div class="history-card">
+        <h4>蓝牙 5.2</h4>
+        <div class="year">2020 年 · LE Audio 基础</div>
+        <ul>
+          <li>引入 LE Audio 框架</li>
+          <li>等时信道（Isochronous Channels）</li>
+          <li>LC3 编解码器支持</li>
+          <li>扩展广播增强</li>
+        </ul>
+      </div>
+      <div class="history-card">
+        <h4>蓝牙 5.3</h4>
+        <div class="year">2021 年 · 能效优化</div>
+        <ul>
+          <li>连接子评级（Connection Subrating）</li>
+          <li>周期性广播增强</li>
+          <li>信道分类增强（外围设备上报信道质量）</li>
+          <li>加密密钥大小控制增强</li>
+        </ul>
+      </div>
+      <div class="history-card">
+        <h4>蓝牙 5.4</h4>
+        <div class="year">2023 年 · 广播增强</div>
+        <ul>
+          <li>周期性广播响应（PAwR）</li>
+          <li>加密广告数据（EAD）</li>
+          <li>LE GATT 安全级别特性</li>
+          <li>广播/响应链路优化</li>
+        </ul>
+      </div>
+      <div class="history-card v6">
+        <h4>🚀 蓝牙 6.0</h4>
+        <div class="year">2024 年 · 精准定位时代</div>
+        <ul>
+          <li>Channel Sounding（厘米级测距）</li>
+          <li>基于决策的广播过滤</li>
+          <li>监控广播设备</li>
+          <li>ISOAL 增强 + 可变帧间隔</li>
+          <li>LL 扩展功能集</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <p>
+      <strong>蓝牙 6.0 特性研究报告</strong> · 数据来源：Bluetooth SIG 官方规范 · Silicon Labs · everything RF<br>
+      蓝牙核心规范 v6.0 正式版本日期：2024 年 8 月 27 日 · 报告生成：2026 年 3 月 27 日
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
