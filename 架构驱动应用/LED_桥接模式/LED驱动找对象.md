@@ -1266,5 +1266,73 @@ led_event_t led_event
         .Blink_times = blink_times,
         .Proportion_on_off = proportion_on_off
     };
-
+    /*考虑用携程或者线程来执行这个闪烁的操作，来实现非阻塞的模型了。*/
+    ret = self->p_os_queue_interface->pf_os_queue_put(self->q_handler,
+                                                      &led_event, 0); 
+    //  发送事件到LED队列中，来实现非阻塞的模型了。
+#ifdef DEBUG
+        DEBUG_OUT("led event is sent to led queue successfully\r\n");
+#endif // DEBUG
+    return ret;
 }
+```
+
+---
+
+
+``` cpp
+
+
+void test3()
+{
+//******************************* Handler *******************************//
+   printf("System Starting\r\n");
+    
+   led_handler_status_t ret = HANDLER_OK;
+    bsp_led_handler_t led_handler_1;
+    ret = led_register_inst(&led_handler_1, 
+                            &time_base, 
+                            &os_delay, 
+                            &handler_os_critical,
+                            &handler_os_thread,
+                            &handler_os_queue);
+    if(HAN_OK != ret)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led handler instance is initialized failed\r\n");
+#endif // DEBUG
+        return;
+    }
+//******************************* Driver *******************************//
+    led_status_t ret = LED_OK;
+    bsp_led_driver_t led_driver;// 在这里都是脏数据，都是随机的，不能直接使用
+    ret = led_driver_inst(&led_driver, 
+                             &led_ops, 
+                             &time_base, 
+                             &os_delay);
+    ret = led_register(&led_handler_1, &led_driver, &handle_index_1);
+     if(LED_OK != ret)
+     {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance is initialized failed\r\n");
+#endif // DEBUG
+        return;
+    }
+
+    // APP层调用LED_handler的接口来控制LED的闪烁了，来验证这个接口的正确性了。
+    ret = led_handler_1.pf_led_control(&led_driver, 
+    100U, 1U, PROPORTION_1_2,                      
+    handler1_index_1);
+    if(LED_OK != ret)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led control failed\r\n");
+#endif // DEBUG
+        return;
+    }
+    // LED完成了调用
+}
+```
+
+
+![alt text](image-8.png)
