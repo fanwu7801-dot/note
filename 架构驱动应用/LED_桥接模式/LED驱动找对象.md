@@ -1176,3 +1176,95 @@ handler_time_base_t handler_time_base = {
     .pf_get_time_ms = pf_get_time_ms_handler_1,
 };
 ```
+
+到这里的代码，已经完成了简单的LED_handler的实现了，那么应该怎么去挂载到led_handler上进行统一的管理呢？
+在实际的项目里面，led的注册顺序都不一定，也许led和led_1 泡在不同的task和croe上，就会出现一些偶发性问题，一定要关注到线程安全问题，用mutex或者临界区来保证线程安全问题了。
+
+``` cpp
+//*********************** Defien *******************************/
+typedef struct {
+    uint32_t   Cycle_time;
+    uint32_t   Blink_times;
+    proportion_t Proportion_on_off;
+}led_event_t;
+//***********************targer for app ***********************//
+
+typdef led_status_t (led_control_t)(bsp_led_driver_t * const self,
+                            uint32_t cycle_time_ms,
+                            uint32_t blink_times,
+                            proportion_t proportion_on_off);
+
+
+
+typdef struct {
+    uint8_t init_status; /* LED的状态 用于判断是否初始化*/
+
+    instance_registered_t instances; /* LED实例对象的挂载情况 */
+
+    handler_time_base_t *p_time_base_ms;
+
+    #ifdef OS_SUPPORTING
+    os_delay_t *p_os_delay_ms;
+    handler_os_queue_t *p_handler_os_queue;
+    handler_os_critical_t *p_handler_os_critical;
+    #endif // OS_SUPPORTING
+
+    pf_handler_led_control_t pf_led_control;
+    pf_led_register_t pf_led_register;
+
+} bsp_led_handler_t;
+
+/**
+    * @brief Control the target bsp_led_drver
+    * @param self led驱动的实例对象
+    * @param cycle_time_ms 闪烁周期时间
+    * @param blink_times 闪烁次数
+    * @param proportion_on_off 闪烁占空比
+    * @return led_status_t 返回LED的状态
+    * @note  需要设计成为异步的模型让APP层不会进行阻塞，同步modle 设
+    *        TBD：回调的模式？
+    */
+typdef led_status_t (led_control_t)(bsp_led_driver_t * const self,
+                            uint32_t cycle_time_ms,
+                            uint32_t blink_times,
+                            proportion_t proportion_on_off);
+{
+/**************checking the traget parameters*****************/
+     led_status_t ret = LED_OK;
+    if(NULL == self ||
+       NOT_INITED == self->init_status)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance is NULL\r\n");
+#endif // DEBUG
+        ret = LEDERRORPARAM;
+        return ret;
+    }
+/**************checking the traget status********************/
+    if(HANDLER_INITED != self->init_status)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance is not inited\r\n");
+#endif // DEBUG
+       ret = HANDLER_ERRORSTATUS;
+       return ret;
+    }
+/***************cheking the input parameters******************/
+    if(0 == cycle_time_ms || 0 == blink_times || PROPORTION_x_x == proportion_on_off)
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance parameters are invalid\r\n");
+#endif // DEBUG
+        ret = LEDERRORPARAM;
+        return ret;
+    }
+
+/***************sending event to LED queue******************/
+led_event_t led_event
+    {
+        .Cycle_time = cycle_time_ms,
+        .Blink_times = blink_times,
+        .Proportion_on_off = proportion_on_off
+    };
+
+}
