@@ -1336,3 +1336,74 @@ void test3()
 
 
 ![alt text](image-8.png)
+
+
+![alt text](image-9.png)
+
+>为什么这里和前面都有一个control的控制接口？
+> - 在裸机的情况下，handler的control控制接口无法单独的使用协程或者线程来执行闪烁的操作了，所以只能在handler的control接口里面直接的调用led_driver的control接口来实现闪烁的操作了。
+
+现在已经把handle和driver的接口都实现了，就可以进行handler上层业务的实现了，来进行异步编程。
+
+使用协程处理`event`，来实现非阻塞的模型。
+``` cpp
+
+
+led_handler_t __event_process(bsp_led_handler_t self,led_event_t msg)
+{
+    /****************处理事件的逻辑******************/
+    //1. 解析事件的内容，来获取闪烁的周期，闪烁的次数，闪烁的占空比等信息了。
+        // 检查driver 目标的index是否合法(挂载是否完成)
+    if((msg.index >= MAX_INSTANCE_NUM)||
+        (LED_NOT_INITED != msg.index))
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance index is invalid\r\n");
+#endif // DEBUG
+        return HAN_ERRORPARAMETER;
+    }
+    if(INIT_PATTERN == self->instance->led_instance_group[msg.index])
+    {
+#ifdef DEBUG
+        DEBUG_OUT("led driver instance is not registered\r\n");
+#endif // DEBUG
+        return HAN_ERRORPARAMETER;
+    }
+
+#ifdef DEBUG
+        DEBUG_OUT("led event is processed successfully\r\n");
+        DEBUG_OUT("start to control led driver instance __event_process\r\n");
+#endif // DEBUG
+    uint32_t cycle_time_ms = msg.Cycle_time;
+    uint32_t blink_times = msg.Blink_times;
+    proportion_t proportion_on_off = msg.Proportion_on_off;
+    //2. 调用led_driver的接口来实现闪烁的操作了。
+    led_blink( self, cycle_time_ms, blink_times, proportion_on_off);
+
+}
+
+void handler_thread(void *argument)
+{
+    /* USER CODE BEGIN handler_thread */
+    /* Infinite loop */
+    printf("handler thread is running\r\n");
+    led_event_t led_event;
+    for(;;)
+    {
+        
+        ret = p_led_handler->p_os_queue_interface->pf_os_queue_get(p_led_handler->q_handler,
+                                                              &led_event, 
+                                                              portMAX_DELAY);
+        if(HAN_OK == ret)
+        {
+#ifdef DEBUG
+            DEBUG_OUT("led event is received from led queue successfully\r\n");
+#endif // DEBUG 
+        __event_process(p_led_handler->queue_handler, led_event);
+        }
+    }
+}
+
+
+
+``` 
