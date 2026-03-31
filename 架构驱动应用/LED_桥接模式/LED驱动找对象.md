@@ -1348,7 +1348,14 @@ void test3()
 使用协程处理`event`，来实现非阻塞的模型。
 ``` cpp
 
-
+/**
+    * @brief 处理LED事件的函数
+    * @param self led_handler的实例对象
+    * @param msg LED事件的内容 包含闪烁周期，闪烁次数，闪烁占空比等信息了。
+    * @return led_handler_status_t 返回LED事件处理的状态
+    * @note 1. 需要设计成为异步的模型让APP层不会进行阻塞，同步modle 设计
+    *       TBD：回调的模式？或者是事件驱动的模式？来实现这个事件处理函数了。
+    */
 led_handler_t __event_process(bsp_led_handler_t self,led_event_t msg)
 {
     /****************处理事件的逻辑******************/
@@ -1377,6 +1384,7 @@ led_handler_t __event_process(bsp_led_handler_t self,led_event_t msg)
     uint32_t cycle_time_ms = msg.Cycle_time;
     uint32_t blink_times = msg.Blink_times;
     proportion_t proportion_on_off = msg.Proportion_on_off;
+    *(self->instance.led_instance_group[msg.index]) // 通过事件中的index来获取对应的LED实例对象了
     //2. 调用led_driver的接口来实现闪烁的操作了。
     led_blink( self, cycle_time_ms, blink_times, proportion_on_off);
 
@@ -1407,3 +1415,969 @@ void handler_thread(void *argument)
 
 
 ``` 
+
+
+> 思考如果有很多个LED都挂载在handler上，那这个handler_thread会不会成为一个性能瓶颈，应该怎么去优化这个handler_thread的性能问题了？
+> 1. 可以考虑使用多个handler_thread来处理不同的LED事件了，来实现负载均衡了。
+> 2. 可以考虑使用协程来处理LED事件了，来实现非阻塞的模型了。
+> 3. 可以考虑使用事件驱动的模型来处理LED事件了，来实现非阻塞的模型了。
+
+``` cpp
+// 轻量固定尺寸内存池（头文件风格，便于嵌入式项目直接包含）
+#ifndef MEMPOOL_H
+#define MEMPOOL_H
+
+#include <stdint.h>
+#include <stddef.h>
+
+typedef void (*mempool_lock_fn_t)(void);
+typedef void (*mempool_unlock_fn_t)(void);
+
+typedef struct {
+    uint8_t *buffer;           /* 指向原始内存块 */
+    size_t item_size;          /* 每项实际占用（已按指针对齐） */
+    uint32_t capacity;         /* 总项数 */
+    void *free_head;           /* 空闲链表头（利用块内存作 next 指针） */
+    uint32_t free_count;       /* 当前空闲数量 */
+    mempool_lock_fn_t lock;    /* 可选的临界区进入函数（NULL = 不加锁） */
+    mempool_unlock_fn_t unlock;/* 可选的临界区退出函数（NULL = 不加锁） */
+} mempool_t;
+
+static inline size_t _mempool_align_item(size_t sz) {
+    const size_t align = sizeof(void*);
+    return (sz + align - 1) & ~(align - 1);
+}
+
+/* 初始化：buffer 由调用者提供，buffer 大小须 >= align(item_size) * capacity */
+static inline void mempool_init(mempool_t *mp, void *buffer, size_t item_size,
+                                uint32_t capacity,
+                                mempool_lock_fn_t lock, mempool_unlock_fn_t unlock)
+{
+    mp->buffer = (uint8_t*)buffer;
+    mp->item_size = _mempool_align_item(item_size);
+    mp->capacity = capacity;
+    mp->lock = lock;
+    mp->unlock = unlock;
+    mp->free_count = capacity;
+    uint8_t *p = mp->buffer;
+    for (uint32_t i = 0; i < capacity; ++i) {
+        void **next = (void**)p;
+        *next = (i + 1 < capacity) ? (void*)(p + mp->item_size) : NULL;
+        p += mp->item_size;
+    }
+    mp->free_head = (void*)mp->buffer;
+}
+
+/* 分配一项，失败返回 NULL */
+static inline void *mempool_alloc(mempool_t *mp)
+{
+    if (mp->lock) mp->lock();
+    void *blk = mp->free_head;
+    if (blk) {
+        mp->free_head = *(void**)blk;
+        mp->free_count--;
+    }
+    if (mp->unlock) mp->unlock();
+    return blk;
+}
+
+/* 归还一项（会做简单合法性检查） */
+static inline void mempool_free(mempool_t *mp, void *ptr)
+{
+    if (ptr == NULL) return;
+    uintptr_t base = (uintptr_t)mp->buffer;
+    uintptr_t end = base + (uintptr_t)(mp->item_size) * mp->capacity;
+    uintptr_t p = (uintptr_t)ptr;
+    if (p < base || p >= end) return;                         /* 非池内地址，忽略 */
+    if (((p - base) % mp->item_size) != 0) return;             /* 未对齐到项边界，忽略 */
+    if (mp->lock) mp->lock();
+    *(void**)ptr = mp->free_head;
+    mp->free_head = ptr;
+    mp->free_count++;
+    if (mp->unlock) mp->unlock();
+}
+
+static inline uint32_t mempool_free_count(const mempool_t *mp) { return mp->free_count; }
+static inline uint32_t mempool_used_count(const mempool_t *mp) { return (mp->capacity - mp->free_count); }
+
+#endif // MEMPOOL_H
+```
+
+
+```  cpp
+/* 示例：基于上面内存池的 LED 事件池用法（按你的队列设计，队列应设置为存放指针，即 item_size = sizeof(void*)） */
+
+#include "mempool.h"
+
+/* 与你的文档兼容的事件结构：可按需扩展 */
+typedef struct {
+    uint32_t Cycle_time;
+    uint32_t Blink_times;
+    uint8_t  index;
+    uint8_t  proportion_on_off;
+} led_event_t;
+
+#define LED_EVENT_POOL_CAP  32
+static uint8_t led_event_pool_buf[ sizeof(led_event_t) * LED_EVENT_POOL_CAP ];
+static mempool_t led_event_pool;
+
+/* 可选：临界区包装，使用你现有的 handler_os_critical 接口（若无 OS，传 NULL） */
+static void mp_lock_wrapper(void)
+{
+#ifdef OS_SUPPORT
+    if (handler_os_critical.pf_os_critical_enter) handler_os_critical.pf_os_critical_enter();
+#endif
+}
+static void mp_unlock_wrapper(void)
+{
+#ifdef OS_SUPPORT
+    if (handler_os_critical.pf_os_critical_exit) handler_os_critical.pf_os_critical_exit();
+#endif
+}
+
+/* 在系统初始化时调用一次 */
+void led_event_pool_init(void)
+{
+    mempool_init(&led_event_pool,
+                 led_event_pool_buf,
+                 sizeof(led_event_t),
+                 LED_EVENT_POOL_CAP,
+                 /* 若无锁需求，将最后两参数改为 NULL, NULL */
+                 mp_lock_wrapper,
+                 mp_unlock_wrapper);
+}
+
+/* 发送事件（非阻塞示例）：
+   注意：队列必须按指针存放（创建时 item_size = sizeof(void*)），这里把事件指针入队 */
+int send_led_event_via_pool(void *queue_handle,
+                            uint32_t cycle_time, uint32_t blink_times,
+                            uint8_t proportion, uint8_t index)
+{
+    led_event_t *ev = (led_event_t*)mempool_alloc(&led_event_pool);
+    if (!ev) {
+        /* 池耗尽，选择丢弃、合并或返回错误 */
+        return -1;
+    }
+    ev->Cycle_time = cycle_time;
+    ev->Blink_times = blink_times;
+    ev->proportion_on_off = proportion;
+    ev->index = index;
+
+    /* 假设 pf_os_queue_put 的语义是复制 item_size 字节到队列，
+       我们要把指针入队，所以传入 &ev（指向指针的指针），队列创建时 item_size=sizeof(void*) */
+    led_handler_status_t r = handler_os_queue.pf_os_queue_put(queue_handle, &ev, 0);
+    if (r != HAN_OK) {
+        mempool_free(&led_event_pool, ev);
+        return -2;
+    }
+    return 0;
+}
+
+/* handler 线程：接收指针、处理后归还 */
+void handler_thread(void *argument)
+{
+    void *msg_ptr;
+    for (;;) {
+        led_handler_status_t r = handler_os_queue.pf_os_queue_get(p_led_handler->q_handler, &msg_ptr, portMAX_DELAY);
+        if (r == HAN_OK) {
+            led_event_t *ev = (led_event_t*)msg_ptr;
+            /* 将你的 __event_process 改为接收指针或写一个适配层 */
+            __event_process(p_led_handler, ev); /* 处理事件，非阻塞或按设计实现 */
+            mempool_free(&led_event_pool, ev);
+        }
+    }
+}
+```
+
+
+#### 系统集成和飞秒启动，差分升级，hex驱动直接引导
+##### 裁剪
+1. 在这里的driver 层面 `led_blink`接口就没有用了，在这里直接用#if 0 和#endif 来裁剪掉这个接口了，这样就不会占用ROM空间。(这里就涉及到为什么会在dirver里面也设计一个blink的算法了) os_supporting就是一个编译选项了，如果不支持os，就直接裁剪掉这个接口。
+2. 创建`inter`gorup 然后创建System文件夹，在这文件夹下边创建`system_adaption.c`文件，来适配MCU的系统底层
+``` cpp
+/******************************************************************************
+
+ * Copyright (C) 2024 EternalChip, Inc.(Gmbh) or its affiliates.
+
+ *
+
+ * All Rights Reserved.
+
+ *
+
+ * @file system_adaption.h
+
+ *
+
+ * @par dependencies
+
+ * - bsp_led_driver.h
+
+ * - bsp_led_handler.h
+
+ *
+
+ * @author Jack | R&D Dept. | EternalChip ��оǶ��ʽ
+
+ *
+
+ * @brief integrate all the resources in the system and enable them to work.
+
+ *
+
+ * Processing flow:
+
+ *
+
+ * call directly.
+
+ *
+
+ * @version V1.0 2024-10-22
+
+ *
+
+ * @note 1 tab == 4 spaces!
+
+ *
+
+ *****************************************************************************/
+
+#ifndef __SYSTEM_ADAPTION_H__
+
+#define __SYSTEM_ADAPTION_H__
+
+  
+
+//******************************** Includes *********************************//
+
+//1.Compiling system standard head file
+
+#include <stdio.h>
+
+#include <stdint.h>
+
+  
+
+//2.MCU layer head file
+
+//2.1 CPU driver
+
+#include "cmsis_os.h"    //ARM provided
+
+//2.2 Core
+
+#include "main.h"
+
+#include "usart.h"
+
+#include "gpio.h"
+
+  
+
+//3.OS layer head file
+
+#include "queue.h"
+
+#include "task.h"
+
+#include "main.h"
+
+  
+
+//4.BSP layer head file
+
+#include "bsp_led_driver.h"
+
+#include "bsp_led_handler.h"
+
+  
+
+//******************************** Includes *********************************//
+
+  
+
+//******************************** Defines **********************************//
+
+#define OS_SUPPORTING
+
+#define HANLDER_1_DEBUG
+
+#define INIT_PATTERN_SYSTEM (uint8_t)0xEC
+
+  
+
+typedef enum
+
+{
+
+    SYSTEM_OK             = 0,      /* LED Operation completed successfully  */
+
+    SYSTEM_ERROR          = 1,      /* LED Run-time error without case matc  */
+
+    SYSTEM_ERRORTIMEOUT   = 2,      /* LED Operation failed with timeout     */
+
+    SYSTEM_ERRORRESOURCE  = 3,      /* LED Resource not available.           */
+
+    SYSTEM_ERRORPARAMETER = 4,      /* LED Parameter error.                  */
+
+    SYSTEM_ERRORNOMEMORY  = 5,      /* LED Out of memory.                    */
+
+    SYSTEM_ERRORISR       = 6,      /* LED Not allowed in ISR context        */
+
+    SYSTEM_RESERVED       = 0xFF,   /* LED Reserved                          */
+
+} system_status_t;
+
+  
+
+//******************************** Defines **********************************//
+
+  
+
+//******************************** BSP Layer ********************************//
+
+  
+
+//******************************** Declaring ********************************//
+
+//************** BSP Layer Targets***********************//
+
+extern bsp_led_handler_t handler_1;
+
+extern bsp_led_driver_t led1;
+
+//************** BSP Layer Targets***********************//
+
+  
+
+//************** BSP Layer adapters**********************//
+
+/*DRIVER_Layer:---<led_operations_myown>--*/
+
+led_status_t led_on_myown                                               (void);
+
+led_status_t led_off_myown                                              (void);
+
+extern led_operations_t                                   led_operations_myown;
+
+  
+
+/*DRIVER_Layer:---<time_base_ms_myown>----*/
+
+led_status_t pf_get_time_ms_mywon               ( uint32_t * const time_stamp);
+
+extern time_base_ms_t                                       time_base_ms_myown;
+
+  
+
+/*DRIVER_Layer:---<os_delay_myown>--------*/
+
+led_status_t pf_os_delay_ms_myown                 ( const uint32_t delay_time);
+
+extern os_delay_t                                os_delay_myown;
+
+  
+
+/* =====self-test :: driver-layer-testing========*/
+
+void Test_1();
+
+  
+
+/*HANDLER_Layer:---<handler_1_os_delay>---*/
+
+led_handler_status_t os_delay_ms_hanler_1         ( const uint32_t delay_time);
+
+extern os_delay_t                                           handler_1_os_delay;
+
+  
+
+/*HANDLER_Layer:---<handler1_os_queue>----*/
+
+led_handler_status_t os_queue_create_handler_1 (
+
+                                                  uint32_t const     item_num,
+
+                                                  uint32_t const    item_size,
+
+                                                  void ** const queue_handler);
+
+led_handler_status_t os_queue_put_handler_1    (
+
+                                                  void * const  queue_handler,
+
+                                                  void * const           item,
+
+                                                  uint32_t            timeout);
+
+led_handler_status_t os_queue_get_handler_1    (
+
+                                                  void * const  queue_handler,
+
+                                                  void * const            msg,
+
+                                                  uint32_t            timeout);
+
+led_handler_status_t os_queue_delete_handler1  ( void * const   queue_handler);
+
+extern handler_os_queue_t                                    handler1_os_queue;
+
+  
+
+/*HANDLER_Layer:---<handler1_os_critical>-*/
+
+led_handler_status_t                        os_critical_enter_handler_1(void );
+
+led_handler_status_t                        os_critical_exit_handler_1 (void );
+
+extern handler_os_critical_t                              handler1_os_critical;
+
+  
+
+led_handler_status_t get_time_ms_handler1       ( uint32_t * const p_os_tick );
+
+extern handler_time_base_ms_t                               handler1_time_base;
+
+  
+
+/*HANDLER_Layer:---<handler1_os_thread>---*/
+
+led_handler_status_t thread_create_handler1 ( /* thread_create.         */
+
+                void * const                   task_code,/* Defined. Internal*/
+
+                const char * const             task_name,/* Defined. external*/
+
+                const uint32_t               stack_depth,/* Defined. external*/
+
+                void * const                  parameters,/* Defined. Internal*/
+
+                uint32_t                        priority,/* Defined. external*/
+
+                void ** const               task_handler /* Defined. Internal*/
+
+                                     );
+
+led_handler_status_t thread_delete_handler1 ( void * const queue_handler);
+
+extern handler_os_thread_t                            handler1_os_thread ;            
+
+  
+
+/* =====self-test :: handler-layer-testing=====*/
+
+void Test_3();
+
+//************** BSP Layer adapters**********************//
+
+  
+
+//************** Unity Test *************************************************//
+
+//************** Unity Test *************************************************//
+
+  
+
+/**
+
+ * @brief init all the resources.
+
+ *
+
+ * Steps:
+
+ *  1, mix up all the resources in this system.
+
+ *  
+
+ *
+
+ * @param[in] self      : Pointer to the input data.
+
+ * @param[in] led_ops   : Length of the input data.
+
+ * @param[in] os_delay  : Pointer to the input data.
+
+ * @param[in] time_base : Pointer to the input data.
+
+ *
+
+ * @return led_status_t : The status of running
+
+ *
+
+ * */
+
+led_status_t system_init_resources ( void );
+
+//******************************** Declaring ********************************//
+
+  
+
+#endif // End of __SYSTEM_ADAPTION_H__
+
+
+```
+
+
+``` cpp
+
+/******************************************************************************
+ * Copyright (C) 2024 EternalChip, Inc.(Gmbh) or its affiliates.
+ * 
+ * All Rights Reserved.
+ * 
+ * @file system_adaption.c
+ * 
+ * @par dependencies 
+ * - system_adaption.h
+ * 
+ * 
+ * @author Jack | R&D Dept. | EternalChip 立芯嵌入式
+ * 
+ * @brief integrate all the resources in the system and enable them to work.
+ * 
+ * Processing flow:
+ * 
+ * call directly.
+ * 
+ * @version V1.0 2024-10-18
+ *
+ * @note 1 tab == 4 spaces!
+ * 
+ *****************************************************************************/
+//******************************** Includes *********************************//
+#include "system_adaption.h"
+
+//******************************** Includes *********************************//
+
+//******************************** Defines **********************************//
+
+// self-test :: handler-layer-testing
+__attribute__((used,section("bsp_target")))
+bsp_led_handler_t handler_1 = {INIT_PATTERN_SYSTEM};
+__attribute__((used,section("bsp_target")))
+bsp_led_driver_t led1 = {INIT_PATTERN_SYSTEM};
+
+led_status_t led_on_myown  (void)
+{
+    printf("led is on\r\n");
+    return LED_OK;
+}
+
+led_status_t led_off_myown  (void)
+{
+    printf("led is off\r\n");
+    return LED_OK;
+}
+
+led_operations_t led_operations_myown = {
+    .pf_led_on  = led_on_myown,
+    .pf_led_off = led_off_myown
+};
+
+led_status_t pf_get_time_ms_mywon( uint32_t * const time_stamp)
+{
+     printf("get time now timezero\r\n");
+     *time_stamp = 0;
+     return LED_OK;
+}
+
+time_base_ms_t time_base_ms_myown = {
+    .pf_get_time_ms = pf_get_time_ms_mywon
+};
+
+led_status_t pf_os_delay_ms_myown  ( const uint32_t delay_time)
+{
+    //printf("pf_os_delay_ms now delay 1ms\r\n");
+    //test
+//    for(int i = delay_time; i > 0 ; i --)
+//    {
+//    
+//    }
+    vTaskDelay(delay_time);
+    printf("delay [%d]ms finished\r\n", delay_time);
+    return LED_OK;
+}
+
+os_delay_t os_delay_myown = {
+    .pf_os_delay_ms = pf_os_delay_ms_myown
+};
+
+// self-test :: driver-layer-testing
+void Test_1()
+{
+  led_status_t ret = LED_OK;
+  bsp_led_driver_t led1;
+  bsp_led_driver_t led2;
+  ret = led_driver_inst(&led1,
+                        &led_operations_myown,
+                        &os_delay_myown,
+                        &time_base_ms_myown); 
+  ret = led_driver_inst(&led2,
+                        &led_operations_myown,
+                        &os_delay_myown,
+                        &time_base_ms_myown); 
+  ret = led1.pf_led_countroler(&led1,5, 30, PROPORTIONN_1_1);
+  ret = led1.pf_led_countroler(&led2,2, 10, PROPORTIONN_1_1);
+    
+}
+
+
+led_handler_status_t os_delay_ms_hanler_1  ( const uint32_t delay_time)
+{
+    vTaskDelay(delay_time);
+#ifdef HANLDER_1_DEBUG
+      printf("os_delay_ms_hanler_1 \r\n");
+#endif // HANLDER_1_DEBUG
+    return LED_OK;
+}
+
+os_delay_t handler_1_os_delay = {
+   .pf_os_delay_ms = os_delay_ms_hanler_1
+};
+
+led_handler_status_t os_queue_create_handler_1 (
+                                                  uint32_t const     item_num,
+                                                  uint32_t const    item_size,
+                                                  void ** const queue_handler)
+{
+#ifdef HANLDER_1_DEBUG
+      printf("os_queue_create_handler_1 \r\n");
+#endif // HANLDER_1_DEBUG
+  QueueHandle_t temp_queue_handle = NULL;
+  temp_queue_handle = xQueueCreate(item_num, item_size);
+  if( NULL == temp_queue_handle)
+  {
+    return HANDLER_ERRORRESOURCE;
+  }
+  else
+  {
+    *queue_handler = temp_queue_handle;
+    return HANDLER_OK;
+  }
+}
+
+led_handler_status_t os_queue_put_handler_1 (
+                                              void * const  queue_handler,
+                                              void * const           item,
+                                              uint32_t            timeout)
+{
+#ifdef HANLDER_1_DEBUG
+      printf("os_queue_put_handler_1 \r\n");
+#endif // HANLDER_1_DEBUG
+  led_handler_status_t ret = HANDLER_OK;
+  if( NULL == queue_handler ||
+      NULL == item          ||
+      timeout > portMAX_DELAY )
+  {
+    return HANDLER_ERRORRESOURCE;
+  }
+  else
+  {
+    ret = xQueueSend(queue_handler, item , timeout);
+    if (ret == pdFALSE)
+    {
+      ret = HANDLER_ERROR;
+    }
+    return HANDLER_OK;
+  }
+}
+
+led_handler_status_t os_queue_get_handler_1 (
+                                              void * const  queue_handler,
+                                              void * const            msg,
+                                              uint32_t            timeout)
+{
+#ifdef HANLDER_1_DEBUG
+      printf("os_queue_get_handler_1 \r\n");
+#endif // HANLDER_1_DEBUG
+  led_handler_status_t ret = HANDLER_OK;
+  if( NULL == queue_handler ||
+      NULL == msg           ||
+      timeout > portMAX_DELAY )
+  {
+    return HANDLER_ERRORRESOURCE;
+  }
+  else
+  {
+    ret = xQueueReceive(queue_handler, msg , timeout);
+
+    if ( pdPASS == ret)
+    {
+        return HANDLER_OK;
+    }
+    
+
+    return HANDLER_ERROR;
+  }
+}
+led_handler_status_t os_queue_delete_handler1  ( void * const      queue_handler)
+{
+#ifdef HANLDER_1_DEBUG
+      printf("os_queue_delete_handler1 \r\n");
+#endif // HANLDER_1_DEBUG
+    led_handler_status_t ret = HANDLER_OK;
+    if( NULL == queue_handler )
+    {
+      return HANDLER_ERRORRESOURCE;
+    }
+    vQueueDelete(queue_handler);
+    return HANDLER_OK;
+}
+
+handler_os_queue_t handler1_os_queue = {
+  .pf_os_queue_create = os_queue_create_handler_1,
+  .pf_os_queue_put    =    os_queue_put_handler_1,
+  .pf_os_queue_get    =    os_queue_get_handler_1,
+  .pf_os_queue_delete =  os_queue_delete_handler1
+};
+
+led_handler_status_t os_critical_enter_handler_1 (void )
+{
+#ifdef HANLDER_1_DEBUG
+      printf("os_critical_enter_handler_1 \r\n");
+#endif // HANLDER_1_DEBUG
+  //TBD:if Already in critical state, return error
+  vPortEnterCritical(); 
+  return    HANDLER_OK;
+}
+
+led_handler_status_t os_critical_exit_handler_1 (void )
+{
+#ifdef HANLDER_1_DEBUG
+      printf("os_critical_exit_handler_1 \r\n");
+#endif // HANLDER_1_DEBUG
+  //TBD:if Already in critical state, return error
+  vPortExitCritical(); 
+  return HANDLER_ERROR;
+}
+
+handler_os_critical_t handler1_os_critical = {
+    .pf_os_critical_enter = os_critical_enter_handler_1,
+    .pf_os_critical_exit  = os_critical_exit_handler_1
+};
+
+led_handler_status_t get_time_ms_handler1  ( uint32_t * const p_os_tick )
+{
+    if( NULL == p_os_tick )
+    {
+      return HANDLER_ERRORRESOURCE;
+    }
+    *p_os_tick = HAL_GetTick();
+}
+
+handler_time_base_ms_t handler1_time_base = {
+    .pf_get_time_ms = get_time_ms_handler1
+};
+
+
+led_handler_status_t thread_create_handler1 ( /* thread_create.         */
+                void * const                   task_code,/* Defined. Internal*/
+                const char * const             task_name,/* Defined. external*/
+                const uint32_t               stack_depth,/* Defined. external*/
+                void * const                  parameters,/* Defined. Internal*/
+                uint32_t                        priority,/* Defined. external*/
+                void ** const               task_handler /* Defined. Internal*/
+                                     )
+{
+    BaseType_t ret = pdPASS;
+#ifdef HANLDER_1_DEBUG
+    printf("parameters = [%p]\r\n",parameters);
+      printf("thread_create_handler1 \r\n");
+#endif // HANLDER_1_DEBUG
+    ret =  xTaskCreate(	                      task_code,
+                                        "led_handler_1",		
+                                                128 * 4,
+                                             parameters,
+                        (osPriority_t) osPriorityNormal,
+                   (TaskHandle_t * const)task_handler );
+#ifdef HANLDER_1_DEBUG
+      printf("thread_create_handler1 ret = [%d]\r\n", ret);
+#endif // HANLDER_1_DEBUG
+    if ( pdPASS != ret )
+    {
+        return HANDLER_ERRORRESOURCE;
+    }
+    else
+    {
+        return HANDLER_OK;
+    }
+
+    
+}
+
+led_handler_status_t thread_delete_handler1 ( void * const queue_handler)
+{
+    led_handler_status_t ret = HANDLER_OK;
+
+    if ( NULL == queue_handler )
+    {
+       return HANDLER_ERRORRESOURCE;
+    }
+
+    vTaskDelete(queue_handler);
+
+    return ret;
+}
+
+
+handler_os_thread_t handler1_os_thread = {
+  .pf_os_thread_create = thread_create_handler1,
+  .pf_os_thread_delete = thread_delete_handler1
+};
+
+void Test_2()
+{
+//******************************** Handler **********************************//
+    led_handler_status_t ret = HANDLER_OK;   
+    bsp_led_handler_t handler_1;         
+    ret = led_handler_inst ( &handler_1,            //跑在线程3上，Core1
+                            &handler_1_os_delay,
+                            &handler1_os_queue,
+                            &handler1_os_critical,
+                            &handler1_os_thread,
+                            //tbd &
+                            &handler1_time_base
+                            );
+                  
+     printf("handler_1.pf_led_countroler\r\n");
+//******************************** Driver **********************************//
+    led_status_t ret1 = LED_OK;
+    bsp_led_driver_t led1;
+    bsp_led_driver_t led2;
+    ret1 = led_driver_inst(&led1,
+                            &led_operations_myown,
+                            &os_delay_myown,
+                            &time_base_ms_myown); 
+    ret1 = led_driver_inst(&led2,
+                            &led_operations_myown,
+                            &os_delay_myown,
+                            &time_base_ms_myown); 
+    //ret1 = led1.pf_led_countroler(&led1,5, 30, PROPORTIONN_1_1);
+    //ret1 = led2.pf_led_countroler(&led2,2, 10, PROPORTIONN_1_1);
+
+//******************************** Integrated Test **************************//
+    led_index_t handler_1_led_index_1 = LED_NOT_INITIALIZED;
+    ret = handler_1.pf_led_register( &handler_1,    //跑在线程1上，Core1
+                                          &led1,
+                         &handler_1_led_index_1);
+            
+    printf("The return of handler_1.pf_led_register is [%d]\r\n", \
+                                                    ret);                          
+    printf("The registered &led1 index is LED_[%d]\r\n", \
+                                                   (handler_1_led_index_1+1));
+    
+    led_index_t handler_1_led_index_2 = LED_NOT_INITIALIZED;
+    ret = handler_1.pf_led_register( &handler_1,   //跑在线程2上，Core2
+                                          &led2,
+                         &handler_1_led_index_2);
+            
+    printf("The return of handler_1.pf_led_register is [%d]\r\n", \
+                                                    ret);                          
+    printf("The registered &led2 index is LED_[%d]\r\n", \
+                                                   (handler_1_led_index_2+1));
+
+    
+//******************************Test the API for APP ************************//
+
+    //APP1 线程4
+    
+    handler_1.pf_led_countroler(&handler_1,
+                                100U,
+                                1U,
+                                PROPORTIONN_1_2,
+                                handler_1_led_index_1);
+}
+
+void Test_3()
+{
+//APP工程师：
+//******************************** Driver Handler ***************************//
+
+    led_handler_status_t ret = HANDLER_OK; 
+    //APP1 线程1
+    led_index_t handler_1_led_index_1 = LED_NOT_INITIALIZED;
+    ret = handler_1.pf_led_register( &handler_1,    //跑在线程1上，Core1
+                                          &led1,
+                         &handler_1_led_index_1);
+    
+    if (HANDLER_OK == ret )
+    {
+        printf("leds have been registered \r\n");
+    }
+
+    //APP1 线程2
+    ret = handler_1.pf_led_countroler(&handler_1,
+                                100U,
+                                1U,
+                                PROPORTIONN_1_2,
+                                handler_1_led_index_1);
+    if (HANDLER_OK == ret )
+    {
+        printf("led1 has been controlled\r\n");
+    }
+
+    // 到这一步时，APP完成调用
+    //UI
+    while(1);
+}
+
+/**
+ * @brief init all the resources.
+ * 
+ * Steps:
+ *  1, mix up all the resources in this system.
+ *  
+ * 
+ * @param[in] self      : Pointer to the input data.
+ * @param[in] led_ops   : Length of the input data.
+ * @param[in] os_delay  : Pointer to the input data.
+ * @param[in] time_base : Pointer to the input data.
+ * 
+ * @return led_status_t : The status of running
+ * 
+ * */
+ #if 1
+led_status_t system_init_resources ( void )
+{
+    
+//系统集成工程师：
+//******************************** Driver Handler ***************************//
+    printf("System Starting.....\r\n");
+    led_handler_status_t ret = HANDLER_OK;   
+       
+    ret = led_handler_inst (&handler_1,            //跑在线程3上，Core1
+                            &handler_1_os_delay,
+                            &handler1_os_queue,
+                            &handler1_os_critical,
+                            &handler1_os_thread,
+                            //tbd &
+                            &handler1_time_base
+                            );
+    if (HANDLER_OK == ret )
+    {
+        printf("handler_1 has been instantiated \r\n");
+    }
+    
+    led_status_t ret1 = LED_OK;
+
+    ret1 = led_driver_inst( &led1,
+                            &led_operations_myown,
+                            &os_delay_myown,
+                            &time_base_ms_myown); 
+
+// 到这一步时，系统基础的LED handler1 服务线程 和 LED的对象已经构造完毕
+}
+ #endif
+//******************************** Defines **********************************//
+
+//******************************** Declaring ********************************//
+//******************************** Declaring ********************************//
+```
+
+在keil里面加载分散加载的配置文件，
+![alt text](image-10.png)
+
+![alt text](image-11.png)
