@@ -10,7 +10,7 @@ __学习目标__
 
 拿到了数据手册的时候，应该去拿到原厂的英文版数据手册，中文版的数据手册可能会有翻译错误，导致理解上的偏差。原厂的英文版数据手册通常会更详细和准确。
 
-一般来，数据手册的前面的部分会介绍芯片的电气信息，包括引脚定义、工作电压、工作温度范围等。这些信息对于硬件工程师非常重要。作为软件工程师更注重的是芯片的功能描述、寄存器定义、通信协议等部分。
+一般来说，数据手册的前面的部分会介绍芯片的电气信息，包括引脚定义、工作电压、工作温度范围等。这些信息对于硬件工程师非常重要。作为软件工程师更注重的是芯片的功能描述、寄存器定义、通信协议等部分。
 首先关注接口定义和SCL和SDA的接口和频率等
 ![alt text](image.png)
 
@@ -108,8 +108,9 @@ IIC的通信过程
 ``` cpp
 /* USER CODE BEGIN 0 */
 #ifdef __GNUC__
-  #else 
-    #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+  #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+  #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
 #endif
 
 PUTCHAR_PROTOTYPE
@@ -122,7 +123,7 @@ PUTCHAR_PROTOTYPE
 然后再main函数中包含stdio这个标准库
 之后进行一个printf的测试，看看串口通信是否正常
 ``` cpp
-#include <stdio.h>
+
 #include <stdio.h> 
 #ifdef __GNUC__
      #define PUTCHAR_PROTOTYPE int _io_putchar(int ch)
