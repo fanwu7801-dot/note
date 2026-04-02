@@ -666,3 +666,184 @@ taskEXIT_CRITICAL();
 在BSP的hanler里面通过事件IO驱动就实现非阻塞的逻辑，让app的代码不会被阻塞，通过事件II的回调函数来实现非阻塞的逻辑。
 
 #### 编写.h文件
+
+1. 写任何一个代码都应该先写注释
+2. 明确`function 的返回值`
+``` cpp
+typedef enum
+{
+    AHT21_OK = 0,           /* AHT21 operation successful */
+    AHT21_ERROR,            /* AHT21 operation failed     */
+    AHT21_ERRORTIMEOUT,     /* AHT21 operation timed out  */
+    AHT21_ERRORRSOURCE,     /* AHT21 resource error       */
+    AHT21_ERRORPARAMETER,   /* AHT21 parameter error      */
+    AHT21_ERRORNOMEMORY,    /* AHT21 memory error         */    
+    AHT21_ERRORISR,         /* AHT21 ISR   error          */
+    AHT21_RESERVED,         /* AHT21 reserved error code  */
+}aht21_status_t;
+```
+  
+
+3.明确所有的function接口
+
+```cpp
+/******************************************************************************
+ * @file bsp_aht21_driver.h
+ * @author Lumos (1456925916@qq.com)
+ * @brief 创建AHT21 bsp层驱动文件 b
+ * @version 0.1
+ * @date 2026-04-02
+ * @par dependencies
+ * - bsp_aht21_reg.h
+ * - stdio.h
+ * - sddint .h
+ * @note 1 tab == 4 spaces
+ * @copyright Copyright (c) 2026
+ *
+ ******************************************************************************/
+
+#ifndef __BSP_AHT21_DRIVER_H__
+#define __BSP_AHT21_DRIVER_H__
+//********************************* Include *********************************//
+#include "bsp_aht21_reg.h"
+
+#include <stdint.h>
+#include <stdio.h>
+
+//********************************* Include *********************************//
+
+//********************************* Defines *********************************//
+#define OS_SUPPORTING
+#define HRADWARE_IIC
+#define SOFTWARE_IIC
+
+/*        return function AHT21 status enumeration        */
+typedef enum
+{
+    AHT21_OK = 0,         /* AHT21 operation successful */
+    AHT21_ERROR,          /* AHT21 operation failed     */
+    AHT21_ERRORTIMEOUT,   /* AHT21 operation timed out  */
+    AHT21_ERRORRSOURCE,   /* AHT21 resource error       */
+    AHT21_ERRORPARAMETER, /* AHT21 parameter error      */
+    AHT21_ERRORNOMEMORY,  /* AHT21 memory error         */
+    AHT21_ERRORISR,       /* AHT21 ISR   error          */
+    AHT21_RESERVED,       /* AHT21 reserved error code  */
+} aht21_status_t;
+
+//********************************* Defines *********************************//
+
+//********************************* Declaring *******************************//
+
+/*   From Core Layer : IIC protocol  */
+#ifndef HARDWARE_IIC                       /* True ：software IIC */
+typedef struct
+{
+    aht21_status_t (*pf_iic_init)(void);   /* IIC interface init     */
+    aht21_status_t (*pf_iic_deinit)(void); /* IIC interface deinit   */
+    aht21_status_t (*pf_iic_start)(void);  /* IIC interface read     */
+    aht21_status_t (*pf_iic_stop)(void);   /* IIC interface write    */
+    aht21_status_t (*pf_iic_send_ack)(void);
+    /* IIC interface send ack      */
+    aht21_status_t (*pf_iic_send_no_ack)(void);
+    /* IIC interface not ack     */
+    aht21_status_t (*pf_iic_send_byte)(uint8_t byte);
+    /* IIC interface send byte     */
+    aht21_status_t (*pf_iic_receive_byte)(uint8_t *byte);
+    /* IIC interface receive byte  */
+
+    aht21_status_t (*pf_critical_enter)(void); /* Enter critical section  */
+    aht21_status_t (*pf_critical_exit)(void);  /* Exit critical section   */
+
+} iic_driver_interface_t;
+
+#endif                                   /*end of HARDWARE_IIC */
+
+#ifdef HARDWARE_IIC                      /* True ：hardware IIC */
+typedef struct
+{
+    uint8_t (*pf_iic_init)(void);        /* IIC interface init     */
+    uint8_t (*pf_iic_deinit)(void);      /* IIC interface deinit   */
+    uint8_t (*pf_iic_send_ack)(void);    /* IIC interface read     */
+    uint8_t (*pf_iic_send_no_ack)(void); /* IIC interface write    */
+    uint8_t (*pf_iic_send_byte)(uint8_t byte);
+    /* IIC interface send byte     */
+    uint8_t (*pf_iic_receive_byte)(uint8_t *byte);
+    /* IIC interface receive byte  */
+}
+#endif /*end of HARDWARE_IIC */
+
+/* From Core Layer : TimeBase  */
+
+typedef struct
+{
+    uint32_t (*pf_get_tick_count)(void); /* Get tick count */
+} timebase_interface_t;
+
+/* From Core Layer : os_layer  */
+
+#ifdef OS_SUPPORTING
+typedef struct
+{
+    aht21_status_t (*pf_os_delay_ms)        (uint32_t ms); /* OS delay ms */
+    aht21_status_t (*pf_os_delay_us)        (uint32_t us); /* OS delay us */
+} yield_interface_t;
+#endif                                             /*end of OS_SUPPORTING */
+
+typedef struct
+{
+    iic_driver_interface_t *piic_driver_instance; /* IIC driver interface*/
+    timebase_interface_t   *ptimebase_instance;   /* Timebase interface */
+#ifdef OS_SUPPORTING
+    yield_interface_t *pyield_instance;           /* OS layer interface */
+#endif                                            /*end of OS_SUPPORTING */
+
+    uint8_t (*pfinst)(void *const                   pah21_instance,
+                      timebase_interface_t *const   ptimebase_instance,
+                      iic_driver_interface_t *const piic_driver_instance,
+#ifdef OS_SUPPORTING
+                      yield_interface_t *const pyield_instance
+#endif /*end of OS_SUPPORTING */
+    ); /* AHT21 instance init function pointer */
+
+    uint8_t (*pfinit)                   (void *const pah21_init); 
+                                        /* ah21 init function pointer */
+    uint8_t (*pfdeinit)                 (void *const pah21_deinit); 
+                                        /* ah21 deinit function pointer */      
+    uint8_t (*pfread_id)                (void *const pah21_read,
+                                         float      *temperature,
+                                         float      *humidity);
+    uint8_t (*pfread_temperature)       (void *const pah21_read,
+                                         float *temperature);              
+    /* ah21 read function pointer */
+    uint8_t (*pfread_humidity)          (void *const pah21_read, 
+                                         float *humidity);
+    /* ah21 read humidity function pointer */
+    uint8_t (*pfsleep)                  (void *const pah21_sleep);  
+                                        /* ah21 sleep function pointer */
+    uint8_t (*pfwakeup)                 (void *const pah21_wakeup); 
+                                        /* ah21 wakeup function pointer */
+} bsp_aht21_driver_t;
+
+
+/* AHT21_hal_driver 构造函数*/
+uint8_t (*pfinst)(void *const                   pah21_instance,
+                      timebase_interface_t *const   ptimebase_instance,
+                      iic_driver_interface_t *const piic_driver_instance,
+#ifdef OS_SUPPORTING
+                      yield_interface_t *const pyield_instance
+#endif /*end of OS_SUPPORTING */
+                 );/* AHT21 instance init function pointer */
+//********************************* Declaring *******************************//
+
+
+
+#endif /*End of __BSP_AHT21_DRIVER_H__ */
+```
+
+
+##### Q&A
+1. 为什么bsp和app的栈要隔离开
+> ![alt text](image-32.png)
+> bsp线程就是要短小精悍，如果bsp里面的内容过多，或者说bsp里面的函数调用了很多其他的函数，那么就会导致bsp线程的栈空间被占用过多，这样就会导致app线程的栈空间不足，最终可能会导致系统崩溃或者死锁等问题。
+>
+> 
