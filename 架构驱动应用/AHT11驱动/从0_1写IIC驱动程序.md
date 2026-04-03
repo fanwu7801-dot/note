@@ -846,4 +846,407 @@ uint8_t (*pfinst)(void *const                   pah21_instance,
 > ![alt text](image-32.png)
 > bsp线程就是要短小精悍，如果bsp里面的内容过多，或者说bsp里面的函数调用了很多其他的函数，那么就会导致bsp线程的栈空间被占用过多，这样就会导致app线程的栈空间不足，最终可能会导致系统崩溃或者死锁等问题。
 >
-> 
+
+
+#### 编写.c文件
+直接根据.h文件的接口来实现.c文件的内容，按照接口的定义来实现函数的功能，确保每个函数都能够正确地完成它的任务，并且在实现过程中要注意代码的可读性和可维护性，尽量写出清晰、简洁、易懂的代码。
+
+
+``` cpp
+
+/******************************************************************************
+ * @file bsp_aht21_driver.c
+ * @author Lumos (1456925916@qq.com)
+ * @brief   AHT21 bsp层驱动文件 by Lumos
+ * @version 0.1
+ * @date 2026-04-02
+ * 
+ *  processing flow :
+ * 1. 实例化aht21驱动结构体对象
+ * 2. 挂载IIC驱动接口函数指针
+ * 3. 挂载时间基准接口函数指针
+ * 4. 挂载OS接口函数指针（如果需要）
+ * 5. 为外部提供function interface
+ * @copyright Copyright (c) 2026
+ * 
+ * @note 1 tab == 4 spaces
+******************************************************************************/
+
+//********************************* Include *********************************//
+#include "bsp_aht21_driver.h"
+
+
+//********************************* Include *********************************//
+
+
+//********************************* Defines *********************************//
+#define DEBUG 
+
+#define AHT21_MEASURE_WATING_TIME 800   /* ms */
+#define AHT21_NOT_INTED           0     /* AHT21 not initialized */
+#define AHT21_INTED               1     /* AHT21 initialized   */
+#define AHT21_ID                  0x18  /* AHT21 device ID  */
+
+
+#define CRC8_POLYNOMIAL            0x31  /* CRC polynomial for AHT21 */
+#define CRC8_INITAL_VALUE          0xFF  /* CRC initial value for AHT21 */
+
+#define IS_INITED                  (AHT21_INTED == g_inited) 
+                                    /* Check if AHT21 is initialized */
+//********************************* Defines *********************************//
+
+
+
+//********************************* Variables *******************************//
+
+static int8_t g_inited = AHT21_NOT_INTED; /* AHT21 initialization status flag*/
+static uint8_t g_device_id = 0;           /* AHT21 device ID storage variable*/
+
+//********************************* Variables *******************************//
+
+#pragma diag_suppress=177
+
+/******************************************************************************
+ * @brief  function for calculating CRC8 for AHT21 data integrity check
+ * steps：
+ * 1. Initialize CRC with initial value (0xFF).
+ * 2. For each byte in the input data:
+ *   a. XOR the byte with the current CRC value.   
+ *   b. For each bit in the byte (8 bits):
+ * 
+ * @param p_data ： Poniter to the input data  
+ * @param length : Length of the input data in bytes
+ * @return uint8_t 
+******************************************************************************/
+static uint8_t CheckCrc8(const uint8_t *p_data , const uint8_t length)
+{
+    uint8_t crc = CRC8_INITAL_VALUE; /* Initialize CRC with initial value */
+
+    for (uint8_t i = 0; i < length; i++)
+    {
+        crc ^= p_data[i]; /* XOR byte into CRC */
+
+        for (uint8_t j = 0; j < 8; j++)
+        {
+            if (crc & 0x80) /* If the MSB is set */
+            {
+                crc = (crc << 1) ^ CRC8_POLYNOMIAL; /* Shift left and
+                                                     XOR with polynomial */
+            }
+            else
+            {
+                crc <<= 1; /* Just shift left */
+            }
+        }
+    }
+
+    return crc; /* Return the calculated CRC value */   
+}
+
+
+/******************************************************************************
+ * @brief  chek AHT21 device ID to verify communication and sensor presence
+ * 
+ * @param paht21_instance 
+ * @note : this function only staitic for internal user checkout this sensor
+ * @return aht21_status_t 
+******************************************************************************/
+static aht21_status_t __read_id(bsp_aht21_driver_t *const paht21_instance)
+{
+// 1.check if the AHT21 instance is initialized && device ID is valid
+    if(NULL == paht21_instance)
+    {
+        return AHT21_ERRORPARAMETER; /* Invalid parameter */
+    }
+    if (!IS_INITED)
+    {
+        return AHT21_ERRORPARAMETER; /* AHT21 not initialized */
+    }
+    uint8_t data = 0;
+#ifdef SOFTWARE_IIC
+    paht21_instance->piic_driver_instance->pf_critical_enter(); /* Enter c
+                                ritical section to ensure thread safety */
+#endif /*end of SOFTWARE_IIC */
+
+    /*send commd to read id */
+    paht21_instance->piic_driver_instance->pf_iic_start(); 
+    paht21_instance->piic_driver_instance->\
+                              pf_iic_send_byte((AHT21_ID << 1) | 0);
+    
+    // wait for IIC ack
+    if (AHT21_OK == \
+        paht21_instance->piic_driver_instance->pf_iic_wait_ack)
+    {
+        // receive device ID byte
+        paht21_instance->piic_driver_instance->\
+                              pf_iic_receive_byte(&data);
+        g_device_id = data; /* Store the received device ID */
+    }
+    // send stop condition
+    paht21_instance->piic_driver_instance->pf_iic_stop();
+
+#ifdef SOFTWARE_IIC
+    paht21_instance->piic_driver_instance->pf_critical_exit(); /* Exit 
+                                                    critical section */
+#endif /*end of SOFTWARE_IIC */
+
+    //chek if the received device ID is correct
+    if (AHT21_ID == (g_device_id & AHT21_ID)) /* Masking to check 
+                                            only relevant bits */
+    {
+        return AHT21_OK; /* Device ID matches, return success */
+    }
+    else
+    {   
+        g_device_id = 0; /* Clear the stored device ID */
+        return AHT21_ERROR; /* Device ID mismatch */
+    }
+}
+
+/******************************************************************************
+ * @brief Read the device ID from the AHT21 sensor
+ * 
+ * @param paht21_instance 
+ * @return aht21_status_t 
+******************************************************************************/
+static aht21_status_t aht21_read_id(bsp_aht21_driver_t *const paht21_instance)
+{
+    if(NULL == paht21_instance)
+    {
+        return AHT21_ERRORPARAMETER; /* Invalid parameter */
+    }
+    if (!IS_INITED)
+    {
+        return AHT21_ERRORPARAMETER; /* AHT21 not initialized */
+    }
+    if (AHT21_ID == g_device_id)
+    {
+        return AHT21_OK; /* Device ID is valid */
+    }
+    else
+    {
+        return AHT21_ERROR; /* Invalid device ID */
+    }
+}
+
+/******************************************************************************
+ * @brief aht21 initialization function to set up the sensor and verify
+ *        communication
+ * 
+ * @param paht21_instance 
+ * @return aht21_status_t 
+******************************************************************************/
+static aht21_status_t aht21_init(bsp_aht21_driver_t *const paht21_instance)
+{   
+    aht21_status_t status = AHT21_OK; /* Status variable for IIC operations */
+    if(NULL == paht21_instance)
+    {
+        return AHT21_ERRORPARAMETER; /* Invalid parameter */
+    }
+    if (IS_INITED)
+    {
+        return AHT21_ERRORPARAMETER; /* AHT21 already initialized */
+    }
+   
+    // Initialize the IIC interface
+#ifdef SOFTWARE_IIC
+    paht21_instance->piic_driver_instance->pf_critical_enter(); 
+            /* Enter critical section to ensure thread safety */
+#endif /*end of SOFTWARE_IIC */
+    status = paht21_instance->piic_driver_instance->pf_iic_init();
+    if (AHT21_OK != status)
+    {
+        return status; /* IIC initialization failed */
+    }
+
+    // Read and verify the device ID
+    status = __read_id(paht21_instance);
+    if (AHT21_OK != status)
+    {
+        return status; /* Device ID verification failed */
+    }
+
+    g_inited = AHT21_INTED; /* Set initialization flag */
+    return AHT21_OK; /* Initialization successful */
+}
+
+/******************************************************************************
+ * @brief deint aht21 sensor to release resources and reset state
+ * 
+ * @param paht21_instance 
+ * @return aht21_status_t 
+******************************************************************************/
+static aht21_status_t aht21_deinit(bsp_aht21_driver_t *const paht21_instance)
+{
+    if(NULL == paht21_instance)
+    {
+        return AHT21_ERRORPARAMETER; /* Invalid parameter */
+    }
+    if (!IS_INITED)
+    {
+        return AHT21_ERRORPARAMETER; /* AHT21 not initialized */
+    }
+    g_inited = AHT21_NOT_INTED; /* Clear initialization flag */
+    g_device_id = 0; /* Clear stored device ID */
+    return AHT21_OK; /* Deinitialization successful */
+}
+
+
+/******************************************************************************
+ * @brief Read the status of the AHT21 sensor
+ * 
+ * @param paht21_instance 
+ * @return uint8_t 
+******************************************************************************/
+static uint8_t aht21_read_status(bsp_aht21_driver_t * const paht21_instance)
+{
+    if(NULL == paht21_instance)
+    {
+        return AHT21_ERRORPARAMETER; /* Invalid parameter */
+    }
+    uint8_t data = 0; /* Variable to store received data byte */
+#ifdef SOFTWARE_IIC
+    paht21_instance->piic_driver_instance->pf_critical_enter(); /* Enter 
+                                critical section to ensure thread safety */
+#endif /*end of SOFTWARE_IIC */
+
+    /*send commd to read status */
+    paht21_instance->piic_driver_instance->pf_iic_start(); 
+    paht21_instance->piic_driver_instance->\
+                              pf_iic_send_byte((AHT21_ID << 1) | 0);
+    
+    // wait for IIC ack
+    if (AHT21_OK == \
+        paht21_instance->piic_driver_instance->pf_iic_wait_ack())
+    {
+        // receive status byte
+        data = *(uint8_t *)paht21_instance->piic_driver_instance->\
+                              pf_iic_receive_byte(&data);
+    }
+    // send stop condition
+    paht21_instance->piic_driver_instance->pf_iic_stop();
+#ifdef SOFTWARE_IIC
+    paht21_instance->piic_driver_instance->pf_critical_exit(); /* Exit 
+                                                    critical section */ 
+#endif /*end of SOFTWARE_IIC */
+    return data; /* Return the read status byte */
+}
+
+
+static aht21_status_t aht21_read_temperature_and_humidity(bsp_aht21_driver_t *const paht21_instance,
+                                                      float *temperature, float *humidity)
+{
+    if (!IS_INITED)
+    {
+        return AHT21_ERRORPARAMETER; /* AHT21 not initialized */
+    }
+    aht21_status_t status = AHT21_OK; /* Status variable for IIC operations */
+    uint8_t byte_1th = 0;
+    uint8_t byte_2th = 0;
+    uint8_t byte_3th = 0;
+    uint8_t byte_4th = 0;
+    uint8_t byte_5th = 0;
+    uint8_t byte_6th = 0;
+#ifdef SOFTWARE_IIC
+    paht21_instance->piic_driver_instance->pf_critical_enter(); /* Enter 
+                                critical section to ensure thread safety */
+#endif /*end of SOFTWARE_IIC */
+    
+    // Read temperature and humidity data
+    status = paht21_instance->piic_driver_instance->pf_iic_start();
+    status = paht21_instance->piic_driver_instance->pf_iic_send_byte((AHT21_ID << 1) | 1);
+    
+    // wait for IIC ack
+    if (AHT21_OK == paht21_instance->piic_driver_instance->pf_iic_wait_ack())
+    {
+        // Receive 6 bytes of data
+        status = paht21_instance->piic_driver_instance->pf_iic_receive_byte(&byte_1th);
+        status = paht21_instance->piic_driver_instance->pf_iic_receive_byte(&byte_2th);
+        status = paht21_instance->piic_driver_instance->pf_iic_receive_byte(&byte_3th);
+        status = paht21_instance->piic_driver_instance->pf_iic_receive_byte(&byte_4th);
+        status = paht21_instance->piic_driver_instance->pf_iic_receive_byte(&byte_5th);
+        status = paht21_instance->piic_driver_instance->pf_iic_receive_byte(&byte_6th);
+    }
+    else
+    {
+        status = AHT21_ERROR; /* IIC communication failed */
+    }
+    
+    status = paht21_instance->piic_driver_instance->pf_iic_stop();
+#ifdef SOFTWARE_IIC
+    paht21_instance->piic_driver_instance->pf_critical_exit();
+#endif /*end of SOFTWARE_IIC */
+    
+    return status;
+}
+```
+
+### Handler的编写
+
+#### handler的作用
+1. 向上彻底屏蔽底层的细节
+> 中间隔开一层，能够帮助操作系统进行一个更好的调度，能够让app的代码更加的清晰，app层的代码不需要关心底层的细节了，只需要调用handler提供的接口就可以了，这样就能够让app层的代码更加的清晰了。
+2. 帮助hal驱动进行一个凑接,解耦
+> handler层能够帮助hal驱动进行一个凑接，解耦了hal驱动和app层的代码，让hal驱动和app层的代码之间没有直接的联系了，这样就能够让hal驱动和app层的代码更加的独立了，也能够让hal驱动和app层的代码更加的清晰了。
+3. 维护事件IO
+> 通过传入自己的的event线程来实现非阻塞的事件IO
+4. 防止硬件资源的冲突
+> 在多线程的环境下，可能有资源竞态的情况下，handler层能够帮助我们进行一个资源的管理，防止硬件资源的冲突了，这样就能够让我们的系统更加的稳定
+>
+5. 内部数据流和局部业务的优化统筹
+>比如可以给数据定义生命周期，10s的数据是有有效的，可以给上层app发送多个aht21的数据、也可以在handler层进行一个数据的缓存，减少对hal层的调用频率了，这样就能够让我们的系统更加的高效。
+
+__分析__
+- APP 一般的业务逻辑
+  - 1. 读取温湿度
+  - 2. 更新数据
+  - 3. 扫描屏幕的触摸操作
+- aht21 的逻辑
+  - 1. 读取温湿度命令
+  - 2. 等待80ms
+  - 3. 读取温湿度数据
+如果app直接不用handler，那么app的任务栈就非常的深，调用的时间也非常的长，app的业务逻辑一定是"蜻蜓点水",这样的代码非常的慢，会导致app的任务栈空间被占用过多，最终可能会导致系统崩溃或者死锁等问题。
+
+> 类似于后面的换芯片的逻辑，handler的逻辑就不用变了，就直接改bsp，例如aht21变成层dht11了之后，handler暴露给上层app的逻辑就不用变了，直接去更改bsp的实现，iic改为one-wire去实现，直接的改bsp的读取温湿度和驱动。
+>
+#### handler的接口(低耦合)
+
+1. COre给Handler传入接口的种类（输入）
+    - 1. 时间基准接口
+    包含aht21的hal_dirver头文件，然后将时间基准接口的函数指针传入到handler层的构造函数里面去
+    - 2. IIC接口
+    包含aht21的hal_dirver头文件，然后将IIC接口的函数指针传入到handler层的构造函数里面去
+    - 3. OS接口
+  -  包含aht21的中断屏蔽以及临界区的函数指针传入到handler层的构造函数里面去
+2. OS给Handler传入事件IO的接口
+  - 1. OS的操作系统的延时函数
+  - 2. OS的队列发送函数
+
+3. Handler给APP提供接口（输出）
+  - 1. 事件IO来读取温度
+  - 2. 线程运行函数，同时提供传入参数列表
+
+
+#### 内部对应的函数的作用
+
+1. temp_humi_handler_inst/deinst
+构造自身的对象
+解构自身的对象
+
+2. temp_humi_handler_init/deinit
+初始化handler层的资源，主要是aht21的bsp层的资源
+确定挂载那个硬件设备
+
+3. 内部Handler的作用
+所有的资源都汇聚到一起管理(高内聚)，(mutex queue task_handler等)，维护事件IO，防止资源冲突，优化数据流和局部业务逻辑
+
+#### 调用流程
+
+1. 操作系统这一层
+FreeRtos->temp_humi_handler_thread->inst->init->handler->app开始调用接口
+
+
+2.handler 调用hal_driver 
+
+
+
