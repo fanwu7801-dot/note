@@ -32,6 +32,8 @@ __应用场景__：
 >在keil等编译器中，APP和BL是分开编译的，例如APP的起始地址是0x08004000，BL的起始地址是0x08000000。APP的前8字节存储了APP的栈顶地址和复位函数地址，bootloader通过读取这些信息来判断APP程序是否存在以及是否有效，并将控制权转交给APP程序的入口点开始执行。   
 
 
+讲解一下什么是
+
 ``` cpp
 tpdef void (*pFunction)(void); // 定义一个函数指针类型，用于指向APP程序的入口点
 #define APP_ADDRESS 0x08004000 // 定义APP程序的起始地址
@@ -165,7 +167,7 @@ struct MyStruct {
 
 #### BL 跳转后 CPU 是怎么继续取指的？
 
-```mermaid
+<div class="mermaid">
 flowchart TD
     A[上电/复位] --> B[进入BL: 0x08000000]
     B --> C[BL从Flash取指执行]
@@ -177,7 +179,7 @@ flowchart TD
     H --> I[跳转到APP复位入口]
     I --> J[CPU从APP Flash连续取指]
     J --> K[运行时数据在SRAM读写(XIP执行)]
-```
+</div>
 
 在这个示意图里，可以把 CPU 的执行理解成“取指令 -> 译码 -> 执行”的循环，只是取指地址发生了切换：
 
@@ -251,3 +253,4 @@ void JunToAPP(void)
         printf("app is not exist\n");
     }
 }
+```
