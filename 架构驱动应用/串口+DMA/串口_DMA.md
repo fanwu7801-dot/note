@@ -48,3 +48,171 @@ RE：接收使能位，设置为1时，USART可以接收数据。
 ![alt text](image-8.png)
 ![alt text](image-9.png)
 这里注意要用HEX模式发送
+
+
+**添加task**
+![alt text](image-10.png)
+
+![alt text](image-11.png)
+
+创建好task之后，就可以创建dobule buffer 了
+
+``` cpp
+
+#include <stdint.h>
+
+uint8_t buffer1[128];
+uint8_t buffer2[128];
+
+```
+**找到最终的中断函数**
+
+
+>os: 想要找到正在运行的task，可以使用 `oskernalgetstatus` 函数来获取当前系统的状态信息，其中包括正在运行的任务。以下是一个示例代码片段，演示如何使用 `oskernalgetstatus` 函数来获取当前正在运行的任务：
+![alt text](image-12.png)
+``` cpp
+
+printf("Current running task: %s\n", oskernalgetstatus());
+
+```
+
+在中断回调通过邮箱(基于队列的方式)通知线程A
+![alt text](image-13.png)
+先创一个queue
+![alt text](image-14.png)
+``` cpp
+#include "queue.h"
+
+QueueHandle_t queue_irq_rec_A = NULL;
+
+void uart_rec_A_func(void *argument)
+{
+  /* USER CODE BEGIN uart_rec_A_func */
+    if (NULL != queue_irq_rec_A)
+  {
+    log_i("queue_irq_rec_A is not NULL");
+  }
+  /* 添加 邮箱 
+     item size == 4 byte
+     only one */
+    queue_irq_rec_A = xQueueCreate(1, sizeof(uint32_t));
+    if (NULL != queue_irq_rec_A)
+  {
+    log_i("queue_irq_rec_A create success");
+  }
+  else
+  {
+    log_e("queue_irq_rec_A create failed");
+  }
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END uart_rec_A_func */
+}
+
+```
+
+完成了队列的创建就在中断回调函数中发送数据到队列
+
+#### 中断回调函数使用队列进行发送
+![alt text](image-15.png)
+在中断里面一定要用xQueueSendFromISR () 来发送数据到队列，不能用xQueueSend ()，因为xQueueSend () 是在任务上下文中使用的，而中断回调函数是在中断上下文中执行的，所以必须使用xQueueSendFromISR () 来确保线程安全。
+
+``` cpp
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if (huart->Instance == USART1)
+    {
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        uint32_t base_send_data = uart1_rx_byte;
+
+        if (queue_irq_rec_A != NULL)
+        {
+          (void)xQueueSendFromISR(queue_irq_rec_A, &base_send_data, &xHigherPriorityTaskWoken);
+        }
+
+        (void)HAL_UART_Receive_IT(huart, &uart1_rx_byte, 1);
+
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
+}
+```
+
+#### 创建bsp_uart_driver 
+
+创建bsp_uart_drvier_task 然后单独来处理串口接收的数据，并且由于这里的要处理中断服务函数，那么task的优先级要比中断优先级高
+
+![alt text](image-16.png)
+
+``` cpp
+
+
+
+
+/******************************** Include ************************************/
+#include "bsp_uart_driver.h"
+#include "uart_parse_task.h"
+#include "freertos.h"
+#include "task.h"
+#include "elog.h"
+#include "cmsis_os.h"
+#include "queue.h"
+#include "usart.h"
+/******************************** Include ************************************/
+
+
+/********************************* Define ************************************/
+
+#define BUFFER_A 0
+#define BUFFER_B 1
+
+/********************************* Define ************************************/
+
+/********************************** global ***********************************/
+extern QueueHandle_t queue_irq_rec_A;
+extern uint8_t uart1_rx_byte;
+
+
+uint8_t g_data_buffer_A[256];
+uint8_t g_data_buffer_B[256];
+
+uint8_t flag_AB = BUFFER_A;
+
+/******************************* Functions ***********************************/
+
+void uart_driver_fun(void *argument)
+{
+    flag_AB = BUFFER_A;
+    HAL_UART_Receive_IT(&huart1, g_data_buffer_A, 1);
+
+    /* Infinite loop */
+    for(;;)
+    {
+        osDelay(1000);
+    }
+}
+
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if (huart->Instance == USART1)
+    {
+
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        uint32_t base_send_data = uart1_rx_byte;
+
+        if (queue_irq_rec_A != NULL)
+        {
+          (void)xQueueSendFromISR(queue_irq_rec_A, &base_send_data, &xHigherPriorityTaskWoken);
+        }
+
+        (void)HAL_UART_Receive_IT(huart, &uart1_rx_byte, 1);
+        log_d("g_data_buffer = %d", g_data_buffer_A[0]);
+
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
+}
+```
