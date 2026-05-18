@@ -382,3 +382,285 @@ circular_Buffer_Status_t get_data(circular_Buffer_t* p_buffer,
 
 #endif /* __MID_CIRCULAR_BUFFER_H */
 ```
+
+基本的环形缓冲区的.h文件搭建好之后，就可以在.c文件里面实现具体的功能了
+
+> 在有操作系统的时候，一般都会用pdmalloc来分配内存，从而达到内存管理的目的，防止mcu在不断的malloc和free的过程中产生内存碎片，最终导致内存不足的情况发生，所以在createEmptyCircularBuffer函数里面要用pdmalloc来分配内存。
+> 在pdmalloc分配内存的时候，是使用一个静态的大数组来分配的，ucHeap数组的大小是由configTOTAL_HEAP_SIZE宏定义的，所以在使用pdmalloc分配内存的时候，要确保configTOTAL_HEAP_SIZE的值足够大，以满足系统的内存需求。
+> 在FreeRtos中，分配的内存是在bss段的，而malloc实在堆区的，所以在使用pdmalloc分配内存的时候，要确保堆区的大小足够大，以满足系统的内存需求。
+
+
+**编写创建环形缓冲区**
+![alt text](image-18.png)
+``` cpp
+
+/******************************************************************************
+ * @brief Create a Empty Circular Buffer object
+ * @note  返回一个指向新创建的空循环缓冲区对象的指针
+ * @TBD 1.用一个二级指针来创建这个buffer 参数传入，用于标准的嵌入式系统
+ * @return circular_Buffer_t* 
+******************************************************************************/
+circular_Buffer_t* createEmptyCircularBuffer(void)
+{   
+    /**init a empty circular buffer 
+     * 1. use pdmalloc to create a circular_Buffer_t object in heap memory
+     * 2. initialize the head and tail pointers to 0, 
+     * size to CIRCULAR_BUFFER_SIZE,and full flag to false
+    */
+#ifdef OS
+    circular_Buffer_t* p_circularBuffer = \
+    (circular_Buffer_t*)pvPortMalloc(sizeof(circular_Buffer_t));
+#else
+    circular_Buffer_t* p_circularBuffer = \
+    (circular_Buffer_t*)malloc(sizeof(circular_Buffer_t));
+#endif // OS
+    /** check the allocation result
+     * if the allocation fails, return NULL
+     * if the allocation succeeds, 
+     *  initialize the circular buffer object and return its pointer
+     */
+    if (NULL != p_circularBuffer)
+    {
+        p_circularBuffer->head = 0;
+        p_circularBuffer->tail = 0;
+        p_circularBuffer->size = CIRCULAR_BUFFER_SIZE;
+        p_circularBuffer->full = false;
+    }
+    else
+    {
+        /** allocation failed, return NULL */
+        return NULL;
+    }
+    return p_circularBuffer;
+}
+
+
+```
+标准的环形缓冲区.c文件实现
+```  cpp
+/******************************************************************************
+ * @file mid_circular_buffer.c
+ * @author Lumos (1456925916@qq.com)
+ * @brief  the source file of mid_circular_buffer.c
+ * @version 0.1
+ * @date 2026-05-18
+ * 
+ * @copyright Copyright (c) 2026
+ * 
+******************************************************************************/
+
+/******************************** Include ************************************/
+#include "mid_circular_buffer.h"
+#include "stdlib.h"
+#include "elog.h"
+#ifdef OS
+#include "cmsis_os.h"
+#endif // OS
+/******************************** Include ************************************/
+
+/********************************** Functions ********************************/
+/******************************************************************************
+ * @brief Create a Empty Circular Buffer object
+ * @note  返回一个指向新创建的空循环缓冲区对象的指针
+ * @TBD 1.用一个二级指针来创建这个buffer 参数传入，用于标准的嵌入式系统
+ * @return circular_Buffer_t* 
+******************************************************************************/
+circular_Buffer_t* createEmptyCircularBuffer(void)
+{   
+    /**init a empty circular buffer 
+     * 1. use pdmalloc to create a circular_Buffer_t object in heap memory
+     * 2. initialize the head and tail pointers to 0, 
+     * size to CIRCULAR_BUFFER_SIZE,and full flag to false
+    */
+#ifdef OS
+    circular_Buffer_t* p_circularBuffer = \
+    (circular_Buffer_t*)pvPortMalloc(sizeof(circular_Buffer_t));
+#else
+    circular_Buffer_t* p_circularBuffer = \
+    (circular_Buffer_t*)malloc(sizeof(circular_Buffer_t));
+#endif // OS
+    /** check the allocation result
+     * if the allocation fails, return NULL
+     * if the allocation succeeds, 
+     *  initialize the circular buffer object and return its pointer
+     */
+    if (NULL != p_circularBuffer)
+    {
+        p_circularBuffer->head = 0;
+        p_circularBuffer->tail = 0;
+        p_circularBuffer->size = CIRCULAR_BUFFER_SIZE;
+        p_circularBuffer->full = false;
+    }
+    else
+    {
+        /** allocation failed, return NULL */
+        return NULL;
+    }
+    return p_circularBuffer;
+}
+
+
+/******************************************************************************
+ * @brief Check if the circular buffer is empty
+ * 
+ * @param buffer Pointer to the circular buffer
+ * @return circular_Buffer_Status_t Status of the buffer (empty or not)
+******************************************************************************/
+circular_Buffer_Status_t buffer_is_empty(circular_Buffer_t* p_buffer)
+{
+    if(NULL != p_buffer)
+    {
+        return (p_buffer->full == false && p_buffer->head == p_buffer->tail) \
+        ? CIRCULAR_BUFFER_EMPTY : CIRCULAR_BUFFER_OK;
+    }
+    return CIRCULAR_BUFFER_ERROR;
+}
+
+
+/******************************************************************************
+ * @brief Check if the circular buffer is full
+ * 
+ * @param p_buffer Pointer to the circular buffer
+ * @return circular_Buffer_Status_t Status of the buffer (full or not)
+******************************************************************************/
+circular_Buffer_Status_t buffer_is_full(circular_Buffer_t* p_buffer)
+{
+    if(NULL != p_buffer)
+    {
+         return (p_buffer->full == true) \
+        ? CIRCULAR_BUFFER_FULL : CIRCULAR_BUFFER_OK;
+    }
+    return CIRCULAR_BUFFER_ERROR;
+}
+
+/******************************************************************************
+ * @brief Write data to the circular buffer
+ * 
+ * @param p_buffer Pointer to the circular buffer
+ * @param data Data to be written to the buffer
+ * @return circular_Buffer_Status_t Status of the buffer 
+ *         (success, full,or error)
+******************************************************************************/
+circular_Buffer_Status_t insert_data(circular_Buffer_t* p_buffer, 
+                                     circular_Buffer_Data_t data)
+{
+    /** check p_buffer is not NULL
+     * if p_buffer is NULL, return CIRCULAR_BUFFER_ERROR
+     * if p_buffer is not NULL, check if the buffer is full
+     * if the buffer is full, return CIRCULAR_BUFFER_FULL
+     * if the buffer is not full, write data to the buffer at head position
+     */
+    if(NULL != p_buffer)
+    {
+        if(buffer_is_full(p_buffer) == CIRCULAR_BUFFER_FULL)
+        {
+            return CIRCULAR_BUFFER_FULL;
+        }
+        p_buffer->data[p_buffer->head] = data;
+        p_buffer->head = (p_buffer->head + 1) % p_buffer->size;
+        if(p_buffer->head == p_buffer->tail)
+        {
+            p_buffer->full = true;
+        }
+        return CIRCULAR_BUFFER_OK;
+    }
+    return CIRCULAR_BUFFER_ERROR; 
+}
+
+
+
+/******************************************************************************
+ * @brief Read data from the circular buffer and will delete the data in the 
+ *      buffer after reading 
+ * 
+ * @param p_buffer Pointer to the circular buffer
+ * @param data Pointer to the variable where the read data will be stored
+ * @return circular_Buffer_Status_t Status of the buffer 
+ *         (success, empty, or error)
+******************************************************************************/
+circular_Buffer_Status_t get_data(circular_Buffer_t* p_buffer, 
+                                   circular_Buffer_Data_t* data)
+{
+    /** check p_buffer and data are not NULL
+     * if p_buffer or data is NULL, return CIRCULAR_BUFFER_ERROR
+     * if p_buffer and data are not NULL, check if the buffer is empty
+     * if the buffer is empty, return CIRCULAR_BUFFER_EMPTY
+     * if the buffer is not empty, read data from the buffer at tail position
+     * and store it in the variable pointed by data, then move tail pointer 
+     * to the next position and set full flag to false
+     */
+    if(NULL != p_buffer && NULL != data)
+    {
+        if(buffer_is_empty(p_buffer) == CIRCULAR_BUFFER_EMPTY)
+        {
+            return CIRCULAR_BUFFER_EMPTY;
+        }
+        *data = p_buffer->data[p_buffer->tail];
+        p_buffer->tail = (p_buffer->tail + 1) % p_buffer->size;
+        p_buffer->full = false;
+        return CIRCULAR_BUFFER_OK;
+    }
+    return CIRCULAR_BUFFER_ERROR;
+}
+
+/********************************** Functions ********************************/
+
+```
+在bsp_uart_driver.c里面测试一下环形缓冲区的功能
+``` cpp
+void uart_driver_fun(void *argument)
+{
+    flag_AB = BUFFER_A;
+    HAL_UART_Receive_IT(&huart1, g_data_buffer_A, 1);
+
+    /* 1。creat circular buffer */
+    circular_Buffer_t* p_circularBuffer = createEmptyCircularBuffer();
+    if (NULL == p_circularBuffer)
+    {
+        log_e("create circular buffer failed");
+        return;
+    }
+    else
+    {
+        log_i("create circular buffer success");
+    }
+    if (buffer_is_empty(p_circularBuffer) == CIRCULAR_BUFFER_EMPTY)
+    {
+        log_i("circular buffer is empty");
+    }
+    if (buffer_is_full(p_circularBuffer) == CIRCULAR_BUFFER_FULL)
+    {
+        log_i("circular buffer is full");
+    }
+    // todo : add data to circular buffer and read data from circular buffer
+    insert_data(p_circularBuffer, 0x55);
+    circular_Buffer_Data_t read_data = 0;
+    if(buffer_is_empty(p_circularBuffer) == CIRCULAR_BUFFER_EMPTY)
+    {
+        log_i("circular buffer is empty");
+    }
+    get_data(p_circularBuffer, &read_data);
+    log_i("read data from circular buffer: 0x%02X", read_data);
+
+    // todo : test circular buffer full 
+    for (int i = 0; i < CIRCULAR_BUFFER_SIZE; i++)
+    {
+        insert_data(p_circularBuffer, i);
+    }
+    if (buffer_is_full(p_circularBuffer) == CIRCULAR_BUFFER_FULL)
+    {
+        log_i("circular buffer is full");
+    }
+    if(buffer_is_empty(p_circularBuffer) == CIRCULAR_BUFFER_EMPTY)
+    {
+        log_i("circular buffer is empty free circular buffer");
+        free(p_circularBuffer);
+    }
+    /* Infinite loop */
+    for(;;)
+    {   
+        osDelay(1000);
+    }
+}
+```
+![alt text](image-19.png)
