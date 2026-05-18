@@ -216,3 +216,169 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
 }
 ```
+
+
+#### 切换buffer
+
+当有两个buffer之后，当Abuffer满了之后就切换到Bbuffer，继续接收数据，当Bbuffer满了之后就切换到Abuffer，继续接收数据，这样就实现了双buffer的功能。
+> 使用flag_AB来标志当前使用的是哪个buffer，当flag_AB == BUFFER_A的时候，说明当前使用的是Abuffer，当flag_AB == BUFFER_B的时候，说明当前使用的是Bbuffer，当Abuffer满了之后，就切换到Bbuffer，继续接收数据，当Bbuffer满了之后，就切换到Abuffer，继续接收数据，这样就实现了双buffer的功能。
+
+``` cpp
+HAL_StatusTypeDef ret = HAL_OK;
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if (huart->Instance == USART1)
+    {
+
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        uint32_t base_send_data = uart1_rx_byte;
+
+        if (queue_irq_rec_A != NULL)
+        {
+          (void)xQueueSendFromISR(queue_irq_rec_A, &base_send_data, &xHigherPriorityTaskWoken);
+        }
+
+        ret = HAL_UART_Receive_IT(huart, &uart1_rx_byte, 1);
+        log_i("g_data_buffer = %d", g_data_buffer_A[0]);
+        log_i("g_data_buffer = %d", g_data_buffer_B[0]);
+
+        if(BUFFER_A == flag_AB)
+        {
+            flag_AB = BUFFER_B;
+            ret = HAL_UART_Receive_IT(huart, g_data_buffer_B, 1);
+            if(HAL_OK != ret)
+            {
+                log_e("HAL_UART_Receive_IT error_B");
+            }
+
+        }
+        else
+        {
+            flag_AB = BUFFER_A;
+            ret = HAL_UART_Receive_IT(huart, g_data_buffer_A, 1);
+            if(HAL_OK != ret)
+            {
+                log_e("HAL_UART_Receive_IT error");
+            }
+        }
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
+}
+```
+当然在环形缓冲区里面，这个算中间件，所以在middleware
+
+
+
+#### 环形缓冲区
+
+在环形缓冲区里面，这个算中间件，所以在middleware里面创建一个circular_buffer.c和circular_buffer.h来实现环形缓冲区的功能，具体的实现可以参考一下[环形缓冲区的实现]
+![alt text](image-17.png)
+
+单独创建一个middlewares文件夹来存放中间件，然后在middlewares里面创建一个circular_buffer文件夹来存放环形缓冲区的代码
+
+> 基本的环形缓冲区的功能包括：创建一个空的环形缓冲区，检查环形缓冲区是否为空，检查环形缓冲区是否为满，向环形缓冲区写入数据，从环形缓冲区读取数据并且删除数据。
+``` cpp
+/******************************************************************************
+ * @file mid_circular_buffer.h
+ * @author Lumos (1456925916@qq.com)
+ * @brief the header file of mid_circular_buffer.c
+ * @version 0.1
+ * @date 2026-05-18
+ * @note 提供给上层应用和下层驱动使用的循环缓冲区接口
+ * @copyright Copyright (c) 2026
+ * 
+******************************************************************************/
+#ifndef __MID_CIRCULAR_BUFFER_H
+#define __MID_CIRCULAR_BUFFER_H
+
+/******************************** Include ************************************/
+#include "stdint.h"
+#include "stdbool.h"
+/******************************** Include ************************************/
+
+/********************************* Define ************************************/
+#define CIRCULAR_BUFFER_SIZE 256  // 定义循环缓冲区的大小
+
+typedef uint8_t circular_Buffer_Data_t;  // 定义循环缓冲区中存储的数据类型
+
+/******************************************************************************
+ * @brief  循环缓冲区状态枚举类型定义
+ * 
+******************************************************************************/
+typedef enum
+{
+    CIRCULAR_BUFFER_OK = 0,      // 操作成功
+    CIRCULAR_BUFFER_FULL,        // 缓冲区已满
+    CIRCULAR_BUFFER_EMPTY,       // 缓冲区为空
+    CIRCULAR_BUFFER_ERROR        // 其他错误
+} circular_Buffer_Status_t;
+
+/******************************************************************************
+ * @brief  循环缓冲区的数据结构定义
+ * 
+******************************************************************************/
+typedef struct
+{
+    circular_Buffer_Data_t  data[CIRCULAR_BUFFER_SIZE];      
+                                              // 循环缓冲区的存储空间
+    uint32_t head;                            // 头指针，指向下一个写入位置
+    uint32_t tail;                            // 尾指针，指向下一个读取位置
+    uint32_t size;                            // 循环缓冲区的总大小
+    bool full;                                // 标志位，表示缓冲区是否已满
+} circular_Buffer_t; 
+
+
+/******************************************************************************
+ * @brief Create a Empty Circular Buffer object 
+ * 
+ * @param none  
+ * @return circular_Buffer_t* 
+******************************************************************************/
+circular_Buffer_t* createEmptyCircularBuffer(void);
+
+/******************************************************************************
+ * @brief Check if the circular buffer is empty
+ * 
+ * @param buffer Pointer to the circular buffer
+ * @return circular_Buffer_Status_t Status of the buffer (empty or not)
+******************************************************************************/
+circular_Buffer_Status_t buffer_is_empty(circular_Buffer_t* p_buffer);
+
+
+/******************************************************************************
+ * @brief Check if the circular buffer is full
+ * 
+ * @param p_buffer Pointer to the circular buffer
+ * @return circular_Buffer_Status_t Status of the buffer (full or not)
+******************************************************************************/
+circular_Buffer_Status_t buffer_is_full(circular_Buffer_t* p_buffer);
+
+
+/******************************************************************************
+ * @brief Write data to the circular buffer
+ * 
+ * @param p_buffer Pointer to the circular buffer
+ * @param data Data to be written to the buffer
+ * @return circular_Buffer_Status_t Status of the buffer 
+ *         (success, full,or error)
+******************************************************************************/
+circular_Buffer_Status_t insert_data(circular_Buffer_t* p_buffer, 
+                                     circular_Buffer_Data_t data);
+
+/******************************************************************************
+ * @brief Read data from the circular buffer and will delete the data in the 
+ *      buffer after reading 
+ * 
+ * @param p_buffer Pointer to the circular buffer
+ * @param data Pointer to the variable where the read data will be stored
+ * @return circular_Buffer_Status_t Status of the buffer 
+ *         (success, empty, or error)
+******************************************************************************/
+circular_Buffer_Status_t get_data(circular_Buffer_t* p_buffer, 
+                                   circular_Buffer_Data_t* data);                                     
+/********************************* Define ************************************/
+
+
+
+#endif /* __MID_CIRCULAR_BUFFER_H */
+```
