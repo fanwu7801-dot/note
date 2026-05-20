@@ -664,3 +664,262 @@ void uart_driver_fun(void *argument)
 }
 ```
 ![alt text](image-19.png)
+
+
+#### AB buffer切换环形缓冲区
+将实现的AB_buffer切换的功能改成环形缓冲区。
+1. AB_buffer切换环形缓冲区
+> 1.1把数据的存储方式从单纯的数组改成环形缓冲区，这样就可以实现更高效的数据存储和读取，同时也可以避免数据丢失的问题。**在中断当中**
+> 测试写入后立马读取，看看数据是否正确
+> ![alt text](image-20.png)
+> ![alt text](image-21.png)
+
+``` cpp
+/******************************** Include ************************************/
+#include "bsp_uart_driver.h"
+#include "uart_parse_task.h"
+#include "freertos.h"
+#include "task.h"
+#include "elog.h"
+#include "cmsis_os.h"
+#include "queue.h"
+#include "usart.h"
+#include "mid_circular_buffer.h"
+/******************************** Include ************************************/
+
+
+/********************************* Define ************************************/
+
+#define BUFFER_A 0
+#define BUFFER_B 1
+
+/********************************* Define ************************************/
+
+/********************************** global ***********************************/
+extern QueueHandle_t queue_irq_rec_A;
+extern uint8_t uart1_rx_byte;
+
+
+uint8_t g_data_buffer_A[256];
+uint8_t g_data_buffer_B[256];
+
+uint8_t flag_AB = BUFFER_A;
+static circular_Buffer_t* gp_circularBuffer = NULL;
+/******************************* Functions ***********************************/
+
+void uart_driver_fun(void *argument)
+{
+    HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
+    // mount the circular buffer for uart driver
+    gp_circularBuffer = createEmptyCircularBuffer();
+    if (NULL == gp_circularBuffer)
+    {
+        log_e("circular buffer create failed");
+    }
+    
+    circular_Buffer_Data_t data = 0;
+    /* Infinite loop */
+    for(;;)
+    {   
+        get_data(gp_circularBuffer,&data);
+        log_i("uart_driver_fun receive data: 0x%02X", data);
+        osDelay(1000);
+    }
+}
+/******************************************************************************
+ * @brief  uart接收中断回调函数 
+ * 
+******************************************************************************/
+static void __circular_buffer_irq(void)
+{
+    if(NULL == gp_circularBuffer)
+      {
+          log_e("circular buffer is NULL gp_circularBuffer");
+          return;
+      }
+    if (CIRCULAR_BUFFER_FULL == buffer_is_full(gp_circularBuffer))
+     {
+         log_w("circular buffer is full");
+         return;
+     }
+     if (CIRCULAR_BUFFER_ERROR == insert_data(gp_circularBuffer, uart1_rx_byte))
+     {
+         log_e("put data to circular buffer failed");
+         return;
+     }
+ 
+}
+
+HAL_StatusTypeDef ret = HAL_OK;
+/******************************************************************************
+ * @brief  使用ciruclar_buffer实现uart接收中断回调函数
+ * 
+ * @param huart 
+******************************************************************************/
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if(huart->Instance == USART1)
+    {
+    
+     __circular_buffer_irq();
+    HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
+    }
+}
+
+```
+
+#### 通过邮箱通知解析线程来解析数据
+帧头帧尾的解析可以在解析线程里面来做，uart_driver_fun这个线程只负责接收数据并且存储数据，解析线程负责解析数据，这样就实现了职责分离，同时也可以提高系统的效率和稳定性。
+    帧头：0xFE
+    帧尾：0xFF
+状态机的实现：Switch
+
+在中断当中把数据传输单独事情告诉串口驱动程序(前端)，串口驱动程序在通知app解包(后端)
+系统硬件->前端->后端->系统硬件
+
+**中断**
+1. 将数据存储到环形缓冲区中
+2. 通知前端，数据已就绪(队列去通知)
+3. 开启下次接收
+``` cpp
+/******************************************************************************
+ * @brief  uart接收中断回调函数 
+ * @note 
+ * * 1.将数据放入循环缓冲区
+ * 2.通知前端数据已就绪
+ * 3.重新使能uart接收中断
+******************************************************************************/
+static void __circular_buffer_irq(void)
+{
+# if 0  //test circular buffer in uart irq callback
+    if(NULL == gp_circularBuffer)
+      {
+          log_e("circular buffer is NULL gp_circularBuffer");
+          return;
+      }
+    if (CIRCULAR_BUFFER_FULL == buffer_is_full(gp_circularBuffer))
+     {
+         log_w("circular buffer is full");
+         return;
+     }
+     if (CIRCULAR_BUFFER_ERROR == insert_data(gp_circularBuffer, uart1_rx_byte))
+     {
+         log_e("put data to circular buffer failed");
+         return;
+     }
+# endif
+
+/**
+ * 1.将数据放入循环缓冲区
+ * 2.通知前端数据已就绪
+ * 3.重新使能uart接收中断
+ */
+ if(NULL == queue_irq_notify)
+ {
+     log_e("queue is NULL queue_irq_notify");
+     return;
+ }
+ 
+ if(CIRCULAR_BUFFER_ERROR == insert_data(gp_circularBuffer, uart1_rx_byte))
+ {
+     log_e("put data to circular buffer failed");
+     return;
+ }
+ if(pdPASS != xQueueSendFromISR(queue_irq_notify, &notify_flag, NULL))
+ {
+     log_e("send queue from isr failed");
+     return;
+ }
+ else
+ {
+     log_i("send queue from isr success");
+ }
+ 
+}
+
+HAL_StatusTypeDef ret = HAL_OK;
+/******************************************************************************
+ * @brief  使用ciruclar_buffer实现uart接收中断回调函数
+ * 
+ * @param huart 
+******************************************************************************/
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if(huart->Instance == USART1)
+    {
+    
+    __circular_buffer_irq();
+    HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);//重新使能uart接收中断
+    }
+}
+```
+**前端**
+1. check buffer is full -> 停下串口
+2. 将当前数据就绪的事件发送到后端
+
+``` cpp
+/******************************************************************************
+ * @brief 创建uart驱动任务
+ * 
+ * @param argument 
+******************************************************************************/
+void uart_driver_fun(void *argument)
+{   uint32_t receive_data = 0;
+
+    HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
+    // mount the circular buffer for uart driver
+    gp_circularBuffer = createEmptyCircularBuffer();
+    if (NULL == gp_circularBuffer)
+    {
+        log_e("circular buffer create failed");
+    }
+    
+    circular_Buffer_Data_t data = 0;
+    
+    /**
+     * 创建队列用于系统硬件传递消息
+     * @note 1.队列长度为1，消息大小为uint16_t(邮箱mode)
+     * 
+     */
+    queue_irq_notify = xQueueCreate(1, 4);
+    if(NULL == queue_irq_notify)
+    {
+        log_e("queue create failed");
+    }
+    else
+    {
+        log_i("queue create success");
+    }
+
+    
+
+    /* Infinite loop */
+    for(;;)
+    {   
+        xQueueReceive(queue_irq_notify, &receive_data, portMAX_DELAY);
+        if(UART_NOTFIY_SEND == receive_data)
+        {
+            log_i("uart driver receive notify from isr");
+            /* 2 通知后端数据 已经准备好*/
+            if(pdTRUE == xQueueSend(queue_irq_rec_A, 
+                                    &send_to_end, 
+                                    portMAX_DELAY))
+            {
+                log_i("uart driver send notify to uart_rec_A_func success");
+            }
+            else
+            {
+                log_e("uart driver send notify to uart_rec_A_func failed");
+            }
+        }
+        else
+        {
+            log_w("uart driver receive unknown notify from isr");
+        }
+        osDelay(1000);
+    }
+}
+```
+
+**后端**
+1. 对数据进行解包(检测到包头开始输出，检测到包尾结束输出)
