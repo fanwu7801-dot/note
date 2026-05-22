@@ -920,6 +920,287 @@ void uart_driver_fun(void *argument)
     }
 }
 ```
-
+![alt text](image-22.png)
+因为是邮箱，所以处理的消息很慢，容易failed
 **后端**
+>  app 后端获取到通知之后，依次将数据从循环缓冲区中取出
 1. 对数据进行解包(检测到包头开始输出，检测到包尾结束输出)
+2. 如果find 帧头，开始输出数据，并且时刻检测帧尾
+3. 如果find 帧尾，结束输出数据，发送一个换行
+
+> 因为在环形缓冲区里面已经用static把它声明为静态变量，所以在不同函数中访问的是同一个缓冲区实例，为此需要用一个全局指针来访问它，用一个api获取值
+
+![alt text](image-23.png)
+
+
+``` cpp
+/******************************************************************************
+ * @file uart_parse_task.c
+ * @author Lumos (1456925916@qq.com)
+ * @brief  
+ * @version 0.1
+ * @date 2026-05-14
+ * 
+ * @copyright Copyright (c) 2026
+ * 
+******************************************************************************/
+
+/******************************** Include ************************************/
+#include "uart_parse_task.h"
+#include "freertos.h"
+#include "task.h"
+#include "elog.h"
+#include "cmsis_os.h"
+#include "queue.h"
+#include "usart.h"
+#include "mid_circular_buffer.h"
+#include "bsp_uart_driver.h"
+#include <string.h>
+/******************************** Include ************************************/
+
+/********************************* Define ************************************/
+#define MAX_DATA_LENGTH 256
+QueueHandle_t queue_irq_rec_A = NULL;
+extern uint8_t uart1_rx_byte;
+
+uint8_t buffer1[256] = {0};
+uint8_t buffer2[256] = {0};
+
+static circular_Buffer_t* gp_parse_circularBuffer = NULL;
+static uint8_t effective_data[MAX_DATA_LENGTH] = {0};
+static uint16_t g_effective_len = 0;
+static uint8_t frame_cache[MAX_DATA_LENGTH] = {0};
+static uint16_t frame_cache_len = 0;
+/********************************* Define ************************************/
+
+
+
+/******************************* Functions ***********************************/
+
+
+
+/******************************************************************************
+ * @brief  check UART data
+ * 
+ * @param data The UART data to be checked
+******************************************************************************/
+parse_data_t check_receive_data(void)
+{
+    uint32_t re_data = 0;
+
+    if (NULL == queue_irq_rec_A)
+    {
+        log_e("queue_irq_rec_A is NULL");
+        return PARSE_PAR_ERROR;
+    }
+
+    if (NULL == gp_parse_circularBuffer)
+    {
+        log_e("circular buffer is NULL");
+        return PARSE_PAR_ERROR;
+    }
+
+    if (CIRCULAR_BUFFER_EMPTY == buffer_is_empty(gp_parse_circularBuffer))
+    {
+        xQueueReceive(queue_irq_rec_A, &re_data, portMAX_DELAY);
+        if (0 != re_data)
+        {
+            log_i("uart_rec_A_func receive notify: 0x%08X", re_data);
+        }
+    }
+
+    if (CIRCULAR_BUFFER_EMPTY == buffer_is_empty(gp_parse_circularBuffer))
+    {
+        return PARSE_DATA_ERROR;
+    }
+    /* Build one complete frame from the UART byte stream. */
+    while (CIRCULAR_BUFFER_EMPTY != buffer_is_empty(gp_parse_circularBuffer))
+    {
+        uint8_t byte = 0;
+
+        if (CIRCULAR_BUFFER_ERROR == get_data(gp_parse_circularBuffer, &byte))
+        {
+            log_e("get data from circular buffer failed");
+            return PARSE_PAR_ERROR;
+        }
+
+        if ((0U == frame_cache_len) && (0xFE != byte))
+        {
+            log_w("discard byte before frame header: 0x%02X", byte);
+            continue;
+        }
+
+        if (frame_cache_len >= MAX_DATA_LENGTH)
+        {
+            log_w("frame cache overflow, restart from byte: 0x%02X", byte);
+            frame_cache_len = 0;
+            if (0xFE != byte)
+            {
+                continue;
+            }
+        }
+
+        frame_cache[frame_cache_len++] = byte;
+        log_i("uart_rec_A_func get data[%d]: 0x%02X", frame_cache_len - 1U, byte);
+
+        if ((frame_cache_len >= 2U) &&
+            (0x0A == frame_cache[frame_cache_len - 2U]) &&
+            (0x0D == frame_cache[frame_cache_len - 1U]))
+        {
+            memcpy(effective_data, frame_cache, frame_cache_len);
+            g_effective_len = frame_cache_len;
+            frame_cache_len = 0;
+            return PARSE_DATA_OK;
+        }
+    }
+
+    return PARSE_DATA_ERROR;
+}
+
+/******************************************************************************
+ * @brief  parse UART data 
+ * @note   解析 data 用于确认有用的数据 
+ *          0xFE 开头
+ *          0x0A0D 结尾
+ * 做一个最长为256的数据检查，直到数据为 0x0A0D 结尾
+ * @param data The UART data to be parsed
+******************************************************************************/
+parse_data_t __uart_parse(uint8_t* data, uint16_t len)
+{
+    if (NULL == data)
+    {
+        log_e("data is NULL");
+        return PARSE_PAR_ERROR;
+    }
+
+    /* 最短帧: 0xFE + 至少1字节数据 + 0x0A + 0x0D = 4字节 */
+    if (len < 4)
+    {
+        log_w("data length is too short: %d", len);
+        return PARSE_PAR_ERROR;
+    }
+
+    /* 检查帧头 */
+    if (data[0] != 0xFE)
+    {
+        log_w("data does not start with 0xFE, got 0x%02X", data[0]);
+        return PARSE_PAR_ERROR;
+    }
+
+    /* 检查帧尾 0x0A 0x0D */
+    if (data[len - 2] != 0x0A || data[len - 1] != 0x0D)
+    {
+        log_w("data does not end with 0x0A 0x0D");
+        return PARSE_PAR_ERROR;
+    }
+
+    return PARSE_DATA_OK;
+}
+
+
+/******************************************************************************
+ * @brief  check and parse UART data
+ * 
+ * @param argument 
+******************************************************************************/
+void uart_rec_A_func(void *argument)
+{
+  /* 获取 buffer，等待 uart_driver_fun 完成初始化 */
+  do {
+    get_circular_buffer(&gp_parse_circularBuffer);
+    if (NULL == gp_parse_circularBuffer)
+    {
+      log_w("circular buffer not ready, retrying...");
+      osDelay(10);
+    }
+  } while (NULL == gp_parse_circularBuffer);
+  /* USER CODE BEGIN uart_rec_A_func */
+    if (NULL != queue_irq_rec_A)
+  {
+    log_i("queue_irq_rec_A is not NULL");
+  }
+  /* 添加 邮箱 
+     item size == 4 byte
+     only one */
+    queue_irq_rec_A = xQueueCreate(1, sizeof(uint32_t));
+    if (NULL != queue_irq_rec_A)
+  {
+    log_i("queue_irq_rec_A create success");
+  }
+  else
+  {
+    log_e("queue_irq_rec_A create failed");
+    for(;;)
+    {
+      osDelay(1000);
+    }
+  }
+
+  
+
+  /* Infinite loop */
+  for(;;)
+  {
+   
+   if (PARSE_DATA_OK == check_receive_data())
+   {
+       if (PARSE_DATA_OK == __uart_parse(effective_data, g_effective_len))
+       {
+           /* 打印有效载荷（去掉帧头帧尾）*/
+           for (uint16_t i = 1; i < g_effective_len - 2; i++)
+           {
+               log_i("payload[%d]: 0x%02X", i - 1, effective_data[i]);
+           }
+       }
+   }
+    osDelay(1);
+  }
+  /* USER CODE END uart_rec_A_func */
+}
+
+```
+#### 在解析线程中，加入checksum
+1. 数据可能在打印后才发现，校验和不对
+2. 先把有效数据线暂存起来，check 完成之后再打印出来
+
+``` cpp
+/******************************************************************************
+ * @brief  check UART data checksum
+ * 校验和算法，不定长
+ * @note  数据最后一个字节为校验和，校验和为前面所有字节的累加和
+ * @param data 
+ * @param len 
+ * @return parse_data_t 
+******************************************************************************/
+parse_data_t __check_sum(uint8_t* data, uint16_t len)
+{
+    if (NULL == data)
+    {
+        log_e("data is NULL");
+        return PARSE_PAR_ERROR;
+    }
+
+    if (len < 2)
+    {
+        log_w("data length is too short for checksum: %d", len);
+        return PARSE_PAR_ERROR;
+    }
+
+    uint8_t sum = 0;
+    for (uint16_t i = 0; i < len - 1; i++)
+    {
+        sum += data[i];
+    }
+
+    if (sum != data[len - 1])
+    {
+        log_w("checksum mismatch: calculated 0x%02X, expected 0x%02X", sum, data[len - 1]);
+        return PARSE_DATA_ERROR;
+    }
+
+    return PARSE_DATA_OK;
+}
+```
+![alt text](image-24.png)
+### 通过DMA来接收数据       
+单字节接收的方式效率比较低，尤其是在数据量较大的情况下，CPU需要频繁地处理中断，导致系统性能下降。使用DMA（Direct Memory Access）可以让数据直接从外设传输到内存，减少CPU的干预，提高数据传输效率。
