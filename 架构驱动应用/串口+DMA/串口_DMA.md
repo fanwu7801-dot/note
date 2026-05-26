@@ -1202,5 +1202,42 @@ parse_data_t __check_sum(uint8_t* data, uint16_t len)
 }
 ```
 ![alt text](image-24.png)
-### 通过DMA来接收数据       
+
+
+
+![alt text](image-25.png)
+### 通过DMA来接收数据     
+#### 使用空闲中断来接收数据  
 单字节接收的方式效率比较低，尤其是在数据量较大的情况下，CPU需要频繁地处理中断，导致系统性能下降。使用DMA（Direct Memory Access）可以让数据直接从外设传输到内存，减少CPU的干预，提高数据传输效率。
+![alt text](image-26.png)
+![alt text](image-27.png)
+备份一下当前的代码，准备切换到DMA接收数据的方式
+
+``` cpp
+
+/******************************************************************************
+ * @brief HAL库uart空闲中断回调函数，使用ciruclar_buffer实现uart接收中断回调函数
+ * 
+ * @param huart 
+ * @param Size 
+******************************************************************************/
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+    if(huart->Instance == USART1)
+    {
+        log_i("uart receive to idle callback, received data size is %d", Size);
+        __circular_buffer_irq();
+        HAL_UARTEx_ReceiveToIdle_DMA(&huart1, gp_circularBuffer->data,
+                                     CIRCULAR_BUFFER_SIZE);
+    }
+}
+```
+#### 偏移算法
+![alt text](image-28.png)
+![alt text](image-29.png)
+
+
+![alt text](image-30.png)
+
+![alt text](image-31.png)
+```
