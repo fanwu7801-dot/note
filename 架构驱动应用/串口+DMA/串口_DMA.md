@@ -1240,4 +1240,219 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 ![alt text](image-30.png)
 
 ![alt text](image-31.png)
+
+
+### 多命令下的串口设计思路
+当一个系统当中，涉及到不同的cmd需要去parse的时候，用`switch - case`的模式是非常臃肿的，推荐使用表驱动的方式来设计串口协议的解析，这样可以让代码更加清晰，同时也更容易维护和扩展。
+#### 直接访问表
+这是最简单的一种方式，当输入的cmd是一个整数，并且这个整数可以直接作为数组的索引时，可以直接访问表来获取对应的处理函数。
+
+``` cpp
+// 定义一张数据表（直接放在常量区/Flash中，不占RAM）
+const char* ErrorTable[] = {
+    "Success",   // 索引 0
+    "Timeout",   // 索引 1
+    "CRC Error", // 索引 2
+    "Low Power"  // 索引 3
+};
+
+/**
+ * @brief 通过错误码获取错误字符串
+ * @param error_code 错误码，应该在0到3之间
+ * @return 对应的错误字符串，如果错误码无效则返回"Unknown"
+ */
+const char* GetErrorString(int error_code) {
+    // 只需要做一次越界检查，直接查表返回
+    if (error_code < 0 || error_code >= (sizeof(ErrorTable)/sizeof(char*))) {
+        return "Unknown";
+    }
+    return ErrorTable[error_code];
+}
+``` 
+
+#### 索引访问表/动作表
+这是串口通信当中最常见的一种方式，当命令是不连续的时候，比如命令是(0x11,0x3A,0x7F)，这时候就不能直接访问表了，需要先做一个映射，把命令映射到一个连续的索引上，然后再通过索引访问表来获取对应的处理函数。
+我们需要一张键值对的表，如果查出来是一个函数指针，这张表就变成了"动作表"，如果查出来是一个索引，这张表就变成了"索引访问表"。
+
+
+
+``` cpp
+
+typedef void (*CommandHandler)(uint32_t *parse_data, uint16_t len); // 定义一个函数指针类型，指向无参数无返回值的函数
+
+
+typedef struct
+{
+    uint8_t cmd; // 命令码
+    CommandHandler handler; // 对应的处理函数
+} CommandTableEntry_t; // 定义一个结构体，包含命令码和对应的处理函数
+
+// 具体的命令处理函数
+
+void MotorStartHandler(uint32_t *parse_data, uint16_t len);
+void MotorStopHandler(uint32_t *parse_data, uint16_t len);
+
+
+// 构建索引表
+const CommandTableEntry_t CommandTable[] = {
+    {0x11, MotorStartHandler}, // 命令0x11对应MotorStartHandler函数
+    {0x3A, MotorStopHandler}   // 命令0x3A对应MotorStopHandler函数
+};
+
+// 解析函数，根据输入的命令码查表并调用对应的处理函数
+void ProcessCommand(uint8_t cmd, uint32_t *parse_data, uint16_t len) {
+    // 遍历命令表，找到对应的处理函数并调用
+    for (size_t i = 0; i < sizeof(CommandTable)/sizeof(CommandTableEntry_t); i++) {
+        if (CommandTable[i].cmd == cmd) { // 找到匹配的命令码
+            CommandTable[i].handler(parse_data, len); // 调用对应的处理函数
+            return;
+        }
+    }
+    // 如果没有找到匹配的命令码，可以选择返回错误或者忽略
+    log_w("Unknown command: 0x%02X", cmd);
+}
 ```
+
+#### 阶梯访问表
+当输入不是单一的确切值，而是一个范围区间时，直接访问和索引访问都不好用，这时候就需要阶梯访问表。
+
+常见场景： 传感器数据（ADC值）映射为电量百分比、考试分数评定等级（90-100为A，80-89为B）。
+
+``` cpp
+typedef struct {
+    uint16_t voltage_mv;  // 阶梯上限阈值
+    uint8_t battery_pct;  // 对应的电量百分比
+} BatteryCurve;
+
+// 定义一条电池放电曲线表（必须按从小到大或从大到小排序）
+const BatteryCurve BatTable[] = {
+    {3300, 0},   // 低于 3300mV 算 0%
+    {3600, 20},  // 3300 - 3600mV 算 20%
+    {3800, 50},  // 3600 - 3800mV 算 50%
+    {4000, 80},  // 3800 - 4000mV 算 80%
+    {4200, 100}  // 4000 - 4200mV 算 100%
+};
+
+uint8_t GetBatteryPercentage(uint16_t current_mv) {
+    uint8_t len = sizeof(BatTable) / sizeof(BatTable[0]);
+    for (uint8_t i = 0; i < len; i++) {
+        if (current_mv <= BatTable[i].voltage_mv) {
+            return BatTable[i].battery_pct;
+        }
+    }
+    return 100; // 超过最高阈值
+}
+```
+
+
+#### 架构设计
+当已经确认了使用表驱动的方式来设计串口协议解析之后，接下来就是要设计整个架构了，通常来说，架构设计需要考虑以下几个方面：
+
+任何的动作架构都由已下3个部分组成：
+1. 触发键(key/cmdID)：唯一标识，用于表里面配对
+2. 动作函数(action handler)：当触发键被触发时要执行的函数
+3. 上下文(context)：动作函数执行时需要的上下文信息，可以是一个结构体，包含了函数执行时需要的所有信息
+
+> 核心思想：永远不要给动作函数传递散装的变量，而是封装好传递一个context 无论未来add多少参数，都不会改变函数的接口，函数的接口永远是一个context指针，这样就实现了函数接口的稳定性和可扩展性。
+
+``` cpp
+typedef struct 
+{
+    uint8_t  src_port;  // 数据来源端口（例如：UART1、UART2等）
+    uint8_t* rx_payload; // 接收到的数据指针
+    uint16_t payload_len; // 接收到的数据长度
+    uint8_t* tx_buffer;  // 用于存放处理结果的发送缓冲区
+    uint16_t* tx_len;    // 发送缓冲区的长度指针
+} Context_t;
+
+
+// 统一定义动作函数类型，所有的动作函数都必须符合这个接口
+typedef void (*ActionHandler)(Context_t* context);
+
+// 定义命令表项结构体，包含触发键和对应的动作函数
+typedef struct 
+{
+    uint8_t cmd_id;       // 触发键，例如：命令ID
+    ActionHandler handler; // 对应的动作函数
+} CommandTableEntry_t;
+
+```
+这就是一个比较完整的表驱动架构设计，核心思想是通过一个统一的Context结构体来传递所有的上下文信息，所有的动作函数都遵循同一个接口，这样就实现了代码的清晰、可维护和可扩展。
+
+
+##### 健壮性版本:统一错误码和自动应答
+动作函数不应该直接调用底层的串口发送函数去回复数据，这违背了分层原则。动作函数只需将回复数据填入 Context.tx_buffer，并返回一个标准化错误码，由“调度器（Dispatcher）”统一打包发送。
+
+``` cpp
+// 动作函数实现示例
+int32_t Handle_SetMotorSpeed(CmdContext_t* ctx) {
+    if (ctx->rx_len != 4) {
+        return ERR_INVALID_LENGTH; // 返回标准错误码
+    }
+    
+    // 执行业务逻辑...
+    uint32_t speed = /* 解析数据 */;
+    Motor_SetSpeed(speed);
+
+    // 填充回复数据
+    ctx->tx_buffer[0] = 0x00; // 0x00 表示成功
+    ctx->tx_len = 1;
+
+    return ERR_SUCCESS; 
+}
+```
+
+
+##### 终极形态：解耦的“分散注册”架构 (Linux Kernel 风格)
+
+在常规设计中，你需要维护一个全局的数组（如 const ActionEntry_t CmdTable[] = {...}）。当团队多人协作时，每次加新命令都要去修改这个集中的大数组，极易引发代码冲突（Merge Conflict）。
+
+顶级架构的设计思路是：消除集中式大表，实现分散注册。
+
+利用编译器的特性（如 GCC 的 __attribute__((section("...")))），我们可以让每个动作函数在实现的地方“自动”把自己注册进表中。
+
+原理与实现步骤：
+
+1. 定义注册宏： 在代码的任何一个 .c 文件中，写完函数后，用一个宏把 cmd_id 和函数指针绑定，并告诉链接器把它们统一放到名为 .cmd_table 的内存段中。
+``` cpp
+// 宏定义：将结构体放入自定义的内存段中
+#define EXPORT_CMD(id, func) \
+    const ActionEntry_t _cmd_##id __attribute__((used, section(".cmd_table"))) = {id, func}
+
+// 在 Motor.c 中编写业务并直接注册，无需修改其他文件！
+int32_t Handle_MotorStart(CmdContext_t* ctx) { /*...*/ return ERR_SUCCESS; }
+EXPORT_CMD(0x10, Handle_MotorStart);
+
+// 在 Sensor.c 中编写业务并直接注册！
+int32_t Handle_ReadTemp(CmdContext_t* ctx) { /*...*/ return ERR_SUCCESS; }
+EXPORT_CMD(0x11, Handle_ReadTemp);
+```
+
+
+2. 链接器脚本： 在链接阶段，链接器会把所有 .cmd_table 段的数据合并成一个连续的表。我们需要在链接器脚本中定义这个段的位置和大小。
+``` cpp
+
+// 链接器脚本中导出的外部符号，代表自定义段的起始和结束地址
+extern const ActionEntry_t _cmd_table_start;
+extern const ActionEntry_t _cmd_table_end;
+
+void Dispatcher_Run(uint8_t cmd_id, CmdContext_t* ctx) {
+    const ActionEntry_t* entry;
+    
+    // 遍历这块连续的内存区域
+    for (entry = &_cmd_table_start; entry < &_cmd_table_end; entry++) {
+        if (entry->cmd_id == cmd_id) {
+            int32_t result = entry->handler(ctx);
+            // 调度器根据 result 统一处理应答...
+            return;
+        }
+    }
+    // 未找到命令处理逻辑
+}
+```
+
+**架构设计避坑指南**
+
+- 表必须存在只读区： 如果使用的是集中定义的数组表，务必加上 const 关键字。这样这张表会被编译进 Flash/ROM 中，不会占用宝贵的 RAM 空间。
+- 耗时任务的处理： 动作函数（Handler）必须是非阻塞的。如果某个命令需要执行 2 秒钟（比如等待电机复位），Handler 应该只负责“置位标志”或“发送消息给 RTOS 队列”，然后立刻返回，绝不能在 Handler 里写 Delay()。
+- 查表效率优化： 如果命令数量少于 50 个，简单的 for 循环线性查找（$O(n)$）完全足够。如果命令上百个，可以要求注册时按 ID 排序，调度器使用二分查找（$O(\log n)$）。
