@@ -1456,3 +1456,64 @@ void Dispatcher_Run(uint8_t cmd_id, CmdContext_t* ctx) {
 - 表必须存在只读区： 如果使用的是集中定义的数组表，务必加上 const 关键字。这样这张表会被编译进 Flash/ROM 中，不会占用宝贵的 RAM 空间。
 - 耗时任务的处理： 动作函数（Handler）必须是非阻塞的。如果某个命令需要执行 2 秒钟（比如等待电机复位），Handler 应该只负责“置位标志”或“发送消息给 RTOS 队列”，然后立刻返回，绝不能在 Handler 里写 Delay()。
 - 查表效率优化： 如果命令数量少于 50 个，简单的 for 循环线性查找（$O(n)$）完全足够。如果命令上百个，可以要求注册时按 ID 排序，调度器使用二分查找（$O(\log n)$）。
+
+#### 架构设计映射表
+当有多个维度需要映射时，可以使用多维映射表来设计架构，这样可以让代码更加清晰，同时也更容易维护和扩展.
+
+不仅要映射命令，还要考虑数据（Payload）怎么转换。比如：BLE 发来的开锁命令带 1 字节密钥，而 MCU 内部开锁需要 2 字节。我们在表里加一个“数据转换函数指针”，专门负责把外部数据转换成内部格式。
+
+``` cpp
+
+// 定义数据转换函数指针
+typedef void (*PayloadConverter)(uint8_t* src_data, uint16_t src_len, uint8_t* dest_data, uint16_t* dest_len);
+
+// 映射表条目结构体
+typedef struct {
+    uint8_t          ble_cmd;       // 外部（BLE）命令
+    uint8_t          internal_cmd;  // 内部统一命令
+    PayloadConverter convert_func;  // 数据转换逻辑，不需要转换就填 NULL
+} BleMapEntry_t;
+
+// 实际的数据转换示例：BLE 1字节转MCU 2字节
+void Convert_SeatLockData(uint8_t* src, uint16_t src_len, uint8_t* dest, uint16_t* dest_len) {
+    dest[0] = src[0]; // 复制密钥
+    dest[1] = 0x55;   // 补上MCU需要的验证尾
+    *dest_len = 2;
+}
+
+// 注册映射表
+const BleMapEntry_t BleMapTable[] = {
+    {0x17, 0x11, Convert_SeatLockData}, // 0x17映射为0x11，并调用转换函数
+    {0x18, 0x12, NULL}                  // 0x18映射为0x12，不需要数据转换
+};
+
+// BLE 接收中断/回调函数
+void BLE_Parse_Handler(uint8_t* ble_rx_buf, uint16_t ble_rx_len) {
+    uint8_t ble_cmd = ble_rx_buf[0]; // 假设第0字节是Cmd ID
+    
+    // 查表
+    for (uint8_t i = 0; i < sizeof(BleMapTable)/sizeof(BleMapTable[0]); i++) {
+        if (BleMapTable[i].ble_cmd == ble_cmd) {
+            uint8_t mcu_payload[16] = {0};
+            uint16_t mcu_len = 0;
+            
+            // 如果有转换函数就转换，没有就直接复制
+            if (BleMapTable[i].convert_func != NULL) {
+                BleMapTable[i].convert_func(&ble_rx_buf[1], ble_rx_len - 1, mcu_payload, &mcu_len);
+            } else {
+                memcpy(mcu_payload, &ble_rx_buf[1], ble_rx_len - 1);
+                mcu_len = ble_rx_len - 1;
+            }
+            
+            // 翻译完成，直接喂给 MCU 的主调度器
+            MCU_Main_Dispatcher(BleMapTable[i].internal_cmd, mcu_payload, mcu_len);
+            return;
+        }
+    }
+    // 异常处理：没找到映射
+}
+```
+
+
+
+
