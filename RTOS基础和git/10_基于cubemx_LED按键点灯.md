@@ -1,26 +1,26 @@
 ## 原理图讲解
 
 ### key和LED的说明
-![key](embedded-development-note-main/RTOS基础和git/image-8.png)
+![key](image-8.png)
 >默认情况下，key没有被按下，现在的电平就是浮空状态，按下的时候，电平变为低电平(GND)
 
-![LED](embedded-development-note-main/RTOS基础和git/image-9.png)
+![LED](image-9.png)
 >PC13 这里只要输出低电平，LED就会点亮，输出高电平，LED熄灭
  下边的PWR_LED是电源指示灯，常亮(输出高电平)
 
 ## 使用CubeMX配置定时器实现LED按键控制(裸机)
-![alt text](embedded-development-note-main/RTOS基础和git/image-10.png)
+![alt text](image-10.png)
 >Debug 这里选中Serial Wire Viewer (SWV) ITM Data Console
 
-![时钟配置](embedded-development-note-main/RTOS基础和git/image-11.png)
+![时钟配置](image-11.png)
 > 这里要和外部的原理图匹配
 
 __根据刚才的原理图，我们知道LED接在PC13口，所以我们要把PC13口配置成GPIO_Output模式,还有key是PA0，需要变成GPIO_Input模式__
-![alt text](embedded-development-note-main/RTOS基础和git/image-12.png)
+![alt text](image-12.png)
 
 ### 下载
 
-![alt text](embedded-development-note-main/RTOS基础和git/image-13.png)
+![alt text](image-13.png)
 __进入Debug模式，选择SWD接口，点击下载按钮即可把代码下载到MCU中__
 
 ### 代码控制延时和闪烁
