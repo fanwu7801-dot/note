@@ -1,0 +1,111 @@
+{
+  "type": "shapes",
+  "output": {
+    "canvas": "svg",
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "font": "Microsoft YaHei",
+      "fontsize": 15,
+      "color": "#25374b"
+    }
+  },
+  "items": [
+    {
+      "kind": "rect",
+      "xy": [
+        0.0,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "01\n外部脉冲\n指定边沿到来",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4.05,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "02\n滤波与极性\n选择有效边沿",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8.1,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "03\n捕获动作\nCCR ← CNT",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.0,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "04\n读取捕获值\n保存时间位置",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4.05,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "05\n计算差值\n处理溢出与顺序",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8.1,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "06\n发布测量\n周期、频率、有效性",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    }
+  ]
+}

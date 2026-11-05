@@ -1,0 +1,111 @@
+{
+  "type": "shapes",
+  "output": {
+    "canvas": "svg",
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "font": "Microsoft YaHei",
+      "fontsize": 15,
+      "color": "#25374b"
+    }
+  },
+  "items": [
+    {
+      "kind": "rect",
+      "xy": [
+        0.0,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "01\n生产者\n形成完整数据",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4.05,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "02\n队列发送\n按元素大小复制",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8.1,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "03\n队列存储\n可能满或超时",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.0,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "04\n消费者等待\n收到后继续",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4.05,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "05\n业务处理\n检查有效性与时间",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8.1,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "06\n结果发布\n保持一致快照",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    }
+  ]
+}

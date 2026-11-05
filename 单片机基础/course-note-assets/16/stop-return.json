@@ -1,0 +1,193 @@
+{
+  "type": "shapes",
+  "output": {
+    "canvas": "svg",
+    "dpi": 165,
+    "theme": {
+      "bgcolor": "white",
+      "font": "Microsoft YaHei",
+      "color": "#25374b"
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "xy": [
+        5.5,
+        4.3
+      ],
+      "text": "Stop 唤醒后：时钟恢复先于依赖它的业务",
+      "fontsize": 17,
+      "color": "#25374b",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0,
+        1.7
+      ],
+      "w": 2.6,
+      "h": 1.2,
+      "label": "确认通信/存储完成",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4,
+        1.7
+      ],
+      "w": 2.6,
+      "h": 1.2,
+      "label": "配置唤醒源\n进入 Stop",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8,
+        1.7
+      ],
+      "w": 2.6,
+      "h": 1.2,
+      "label": "有效事件唤醒\nF1 先使用 HSI",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8,
+        -1.3
+      ],
+      "w": 2.6,
+      "h": 1.3,
+      "label": "恢复 HSE / PLL\n等待就绪",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4,
+        -1.3
+      ],
+      "w": 2.6,
+      "h": 1.3,
+      "label": "恢复时钟配置\n检查接口参数",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0,
+        -1.3
+      ],
+      "w": 2.6,
+      "h": 1.3,
+      "label": "恢复业务\n发布有效状态",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          2.6,
+          2.3
+        ],
+        [
+          4,
+          2.3
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          6.6,
+          2.3
+        ],
+        [
+          8,
+          2.3
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          9.3,
+          1.7
+        ],
+        [
+          9.3,
+          0
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          8,
+          -0.65
+        ],
+        [
+          6.6,
+          -0.65
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          4,
+          -0.65
+        ],
+        [
+          2.6,
+          -0.65
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    }
+  ]
+}

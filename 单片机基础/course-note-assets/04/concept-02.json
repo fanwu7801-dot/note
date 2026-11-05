@@ -1,0 +1,111 @@
+{
+  "type": "shapes",
+  "output": {
+    "canvas": "svg",
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "font": "Microsoft YaHei",
+      "fontsize": 15,
+      "color": "#25374b"
+    }
+  },
+  "items": [
+    {
+      "kind": "rect",
+      "xy": [
+        0.0,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "01\n外设 A 请求\n优先级已配置",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4.05,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "02\n比较抢占优先级\n值小通常更高",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8.1,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "03\n更高者可抢占\n前提是允许响应",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.0,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "04\n抢占等级相同\n不能互相嵌套",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4.05,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "05\n同时挂起再排序\n比较子优先级",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8.1,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "06\n执行完毕\n恢复原程序现场",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    }
+  ]
+}

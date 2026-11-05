@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="768pt" height="251.808pt" viewBox="0 0 768 251.808" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-20T15:03:00.250331</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 251.808 
+L 768 251.808 
+L 768 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="table_1">
+    <g id="patch_2">
+     <path d="M 7.2 137.755679 
+L 195.6 137.755679 
+L 195.6 114.213306 
+L 7.2 114.213306 
+z
+" style="fill: #dceafa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_1">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="101.4" y="129.476798" transform="rotate(-0 101.4 129.476798)">输入含义</text>
+    </g>
+    <g id="patch_3">
+     <path d="M 195.6 137.755679 
+L 384 137.755679 
+L 384 114.213306 
+L 195.6 114.213306 
+z
+" style="fill: #dceafa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_2">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="289.8" y="129.511485" transform="rotate(-0 289.8 129.511485)">实际字节（Hex）</text>
+    </g>
+    <g id="patch_4">
+     <path d="M 384 137.755679 
+L 572.4 137.755679 
+L 572.4 114.213306 
+L 384 114.213306 
+z
+" style="fill: #dceafa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_3">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="478.2" y="129.471173" transform="rotate(-0 478.2 129.471173)">文本解释</text>
+    </g>
+    <g id="patch_5">
+     <path d="M 572.4 137.755679 
+L 760.8 137.755679 
+L 760.8 114.213306 
+L 572.4 114.213306 
+z
+" style="fill: #dceafa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_4">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="666.6" y="129.511485" transform="rotate(-0 666.6 129.511485)">字节数</text>
+    </g>
+    <g id="patch_6">
+     <path d="M 7.2 161.298053 
+L 195.6 161.298053 
+L 195.6 137.755679 
+L 7.2 137.755679 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_5">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="101.4" y="153.053858" transform="rotate(-0 101.4 153.053858)">单字节 0x41</text>
+    </g>
+    <g id="patch_7">
+     <path d="M 195.6 161.298053 
+L 384 161.298053 
+L 384 137.755679 
+L 195.6 137.755679 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_6">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="289.8" y="152.878429" transform="rotate(-0 289.8 152.878429)">41</text>
+    </g>
+    <g id="patch_8">
+     <path d="M 384 161.298053 
+L 572.4 161.298053 
+L 572.4 137.755679 
+L 384 137.755679 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_7">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="478.2" y="152.878429" transform="rotate(-0 478.2 152.878429)">可显示 A</text>
+    </g>
+    <g id="patch_9">
+     <path d="M 572.4 161.298053 
+L 760.8 161.298053 
+L 760.8 137.755679 
+L 572.4 137.755679 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_8">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="666.6" y="152.878429" transform="rotate(-0 666.6 152.878429)">1</text>
+    </g>
+    <g id="patch_10">
+     <path d="M 7.2 184.840426 
+L 195.6 184.840426 
+L 195.6 161.298053 
+L 7.2 161.298053 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_9">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="101.4" y="176.596232" transform="rotate(-0 101.4 176.596232)">字符串 "41"</text>
+    </g>
+    <g id="patch_11">
+     <path d="M 195.6 184.840426 
+L 384 184.840426 
+L 384 161.298053 
+L 195.6 161.298053 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_10">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="289.8" y="176.420802" transform="rotate(-0 289.8 176.420802)">34 31</text>
+    </g>
+    <g id="patch_12">
+     <path d="M 384 184.840426 
+L 572.4 184.840426 
+L 572.4 161.298053 
+L 384 161.298053 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_11">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="478.2" y="176.596232" transform="rotate(-0 478.2 176.596232)">字符 4 和 1</text>
+    </g>
+    <g id="patch_13">
+     <path d="M 572.4 184.840426 
+L 760.8 184.840426 
+L 760.8 161.298053 
+L 572.4 161.298053 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_12">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="666.6" y="176.420802" transform="rotate(-0 666.6 176.420802)">2</text>
+    </g>
+    <g id="patch_14">
+     <path d="M 7.2 208.382799 
+L 195.6 208.382799 
+L 195.6 184.840426 
+L 7.2 184.840426 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_13">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="101.4" y="200.098292" transform="rotate(-0 101.4 200.098292)">数值 123 的文本</text>
+    </g>
+    <g id="patch_15">
+     <path d="M 195.6 208.382799 
+L 384 208.382799 
+L 384 184.840426 
+L 195.6 184.840426 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_14">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="289.8" y="199.963175" transform="rotate(-0 289.8 199.963175)">31 32 33</text>
+    </g>
+    <g id="patch_16">
+     <path d="M 384 208.382799 
+L 572.4 208.382799 
+L 572.4 184.840426 
+L 384 184.840426 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_15">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="478.2" y="200.138605" transform="rotate(-0 478.2 200.138605)">字符 1、2、3</text>
+    </g>
+    <g id="patch_17">
+     <path d="M 572.4 208.382799 
+L 760.8 208.382799 
+L 760.8 184.840426 
+L 572.4 184.840426 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_16">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="666.6" y="199.963175" transform="rotate(-0 666.6 199.963175)">3</text>
+    </g>
+   </g>
+  </g>
+  <g id="text_17">
+   <text style="font-size: 17px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="384" y="21.50125" transform="rotate(-0 384 21.50125)">字节、数值、字符和字符串的区别</text>
+  </g>
+ </g>
+</svg>

@@ -1,0 +1,111 @@
+{
+  "type": "shapes",
+  "output": {
+    "canvas": "svg",
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "font": "Microsoft YaHei",
+      "fontsize": 15,
+      "color": "#25374b"
+    }
+  },
+  "items": [
+    {
+      "kind": "rect",
+      "xy": [
+        0.0,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "01\nS50：1 KB\n1024 字节",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4.05,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "02\n16 个扇区\n每区 4 块",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8.1,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "03\n每块 16 字节\n总共 64 块",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.0,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "04\n普通数据块\n保存应用数据",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4.05,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "05\n扇区控制块\n密钥与访问条件",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8.1,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "06\n扇区 0 的块 0\n厂商相关信息",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    }
+  ]
+}

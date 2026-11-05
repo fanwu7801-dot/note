@@ -1,0 +1,111 @@
+{
+  "type": "shapes",
+  "output": {
+    "canvas": "svg",
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "font": "Microsoft YaHei",
+      "fontsize": 15,
+      "color": "#25374b"
+    }
+  },
+  "items": [
+    {
+      "kind": "rect",
+      "xy": [
+        0.0,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "01\nSTM32 应用\n请求读卡或写卡",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4.05,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "02\n模块接口\n本课通过串口交互",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8.1,
+        0.0
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "03\nRFID 读写器\n管理射频事务",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.0,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "04\n射频场\n供能与无线交互",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4.05,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "05\nPICC 卡片\n响应和保存数据",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8.1,
+        -2.3000000000000003
+      ],
+      "w": 3.65,
+      "h": 1.85,
+      "label": "06\n返回结果\n状态、卡号、数据",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "cornerradius": 0,
+      "lw": 1.1
+    }
+  ]
+}

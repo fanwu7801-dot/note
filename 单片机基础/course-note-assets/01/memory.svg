@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="768pt" height="294.576pt" viewBox="0 0 768 294.576" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-20T15:02:56.073253</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 294.576 
+L 768 294.576 
+L 768 -0 
+L 0 -0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 21.554286 271.972452 
+L 247.634286 271.972452 
+L 247.634286 102.533427 
+L 21.554286 102.533427 
+z
+" clip-path="url(#p626766daef)" style="fill: #eaf3ff; stroke: #2563a6; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 272.754286 271.972452 
+L 498.834286 271.972452 
+L 498.834286 102.533427 
+L 272.754286 102.533427 
+z
+" clip-path="url(#p626766daef)" style="fill: #eaf7ef; stroke: #2563a6; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 523.954286 271.972452 
+L 750.034286 271.972452 
+L 750.034286 102.533427 
+L 523.954286 102.533427 
+z
+" clip-path="url(#p626766daef)" style="fill: #fff3df; stroke: #2563a6; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 14px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="134.594286" y="141.042296" transform="rotate(-0 134.594286 141.042296)">Flash</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(92.111473 194.079511)">0x08000000 起</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(104.594286 214.594824)">程序、常量</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(110.594286 235.009824)">掉电保留</text>
+   </g>
+   <g id="text_3">
+    <text style="font-weight: 700; font-size: 14px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="385.794286" y="141.042296" transform="rotate(-0 385.794286 141.042296)">SRAM</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(343.311473 194.079511)">0x20000000 起</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(349.794286 214.570449)">变量、栈、堆</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(322.779286 235.038886)">普通 SRAM 掉电不保留</text>
+   </g>
+   <g id="text_5">
+    <text style="font-weight: 700; font-size: 14px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="636.994286" y="141.042296" transform="rotate(-0 636.994286 141.042296)">外设区域</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(588.511473 194.115136)">0x40000000 区域</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(588.994286 214.483261)">配置、状态、数据</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(576.994286 235.045449)">读写可能触发硬件动作</text>
+   </g>
+  </g>
+  <g id="text_7">
+   <text style="font-size: 17px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="384" y="21.453437" transform="rotate(-0 384 21.453437)">同一个地址空间中，三类位置做不同的事</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p626766daef">
+   <rect x="7.2" y="79.428105" width="753.6" height="207.947895"/>
+  </clipPath>
+ </defs>
+</svg>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="696pt" height="351.6pt" viewBox="0 0 696 351.6" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-20T15:03:01.100607</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 351.6 
+L 696 351.6 
+L 696 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="line2d_1">
+    <path d="M 104.571429 234.993488 
+L 348 174.212093 
+" clip-path="url(#p93a6345043)" style="fill: none; stroke: #9baec3; stroke-width: 2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 104.571429 234.993488 
+L 348 295.774884 
+" clip-path="url(#p93a6345043)" style="fill: none; stroke: #9baec3; stroke-width: 2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 348 174.212093 
+L 591.428571 131.665116 
+" clip-path="url(#p93a6345043)" style="fill: none; stroke: #9baec3; stroke-width: 2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_4">
+    <path d="M 348 174.212093 
+L 591.428571 216.75907 
+" clip-path="url(#p93a6345043)" style="fill: none; stroke: #9baec3; stroke-width: 2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_5">
+    <path d="M 348 295.774884 
+L 591.428571 295.774884 
+" clip-path="url(#p93a6345043)" style="fill: none; stroke: #9baec3; stroke-width: 2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_6">
+    <path d="M 348 174.212093 
+L 348 295.774884 
+" clip-path="url(#p93a6345043)" style="fill: none; stroke: #9baec3; stroke-width: 2; stroke-linecap: square"/>
+   </g>
+   <g id="PathCollection_1">
+    <defs>
+     <path id="mff1cce14d6" d="M 0 26.457513 
+C 7.016614 26.457513 13.746791 23.669783 18.708287 18.708287 
+C 23.669783 13.746791 26.457513 7.016614 26.457513 0 
+C 26.457513 -7.016614 23.669783 -13.746791 18.708287 -18.708287 
+C 13.746791 -23.669783 7.016614 -26.457513 0 -26.457513 
+C -7.016614 -26.457513 -13.746791 -23.669783 -18.708287 -18.708287 
+C -23.669783 -13.746791 -26.457513 -7.016614 -26.457513 0 
+C -26.457513 7.016614 -23.669783 13.746791 -18.708287 18.708287 
+C -13.746791 23.669783 -7.016614 26.457513 0 26.457513 
+z
+" style="stroke: #d9eaff"/>
+    </defs>
+    <g clip-path="url(#p93a6345043)">
+     <use xlink:href="#mff1cce14d6" x="104.571429" y="234.993488" style="fill: #d9eaff; stroke: #d9eaff"/>
+    </g>
+   </g>
+   <g id="PathCollection_2">
+    <defs>
+     <path id="meb7e10e43c" d="M 0 26.457513 
+C 7.016614 26.457513 13.746791 23.669783 18.708287 18.708287 
+C 23.669783 13.746791 26.457513 7.016614 26.457513 0 
+C 26.457513 -7.016614 23.669783 -13.746791 18.708287 -18.708287 
+C 13.746791 -23.669783 7.016614 -26.457513 0 -26.457513 
+C -7.016614 -26.457513 -13.746791 -23.669783 -18.708287 -18.708287 
+C -23.669783 -13.746791 -26.457513 -7.016614 -26.457513 0 
+C -26.457513 7.016614 -23.669783 13.746791 -18.708287 18.708287 
+C -13.746791 23.669783 -7.016614 26.457513 0 26.457513 
+z
+" style="stroke: #e4f3e9"/>
+    </defs>
+    <g clip-path="url(#p93a6345043)">
+     <use xlink:href="#meb7e10e43c" x="348" y="174.212093" style="fill: #e4f3e9; stroke: #e4f3e9"/>
+    </g>
+   </g>
+   <g id="PathCollection_3">
+    <g clip-path="url(#p93a6345043)">
+     <use xlink:href="#meb7e10e43c" x="348" y="295.774884" style="fill: #e4f3e9; stroke: #e4f3e9"/>
+    </g>
+   </g>
+   <g id="PathCollection_4">
+    <defs>
+     <path id="m68ef7af3c5" d="M 0 26.457513 
+C 7.016614 26.457513 13.746791 23.669783 18.708287 18.708287 
+C 23.669783 13.746791 26.457513 7.016614 26.457513 0 
+C 26.457513 -7.016614 23.669783 -13.746791 18.708287 -18.708287 
+C 13.746791 -23.669783 7.016614 -26.457513 0 -26.457513 
+C -7.016614 -26.457513 -13.746791 -23.669783 -18.708287 -18.708287 
+C -23.669783 -13.746791 -26.457513 -7.016614 -26.457513 0 
+C -26.457513 7.016614 -23.669783 13.746791 -18.708287 18.708287 
+C -13.746791 23.669783 -7.016614 26.457513 0 26.457513 
+z
+" style="stroke: #fff0d8"/>
+    </defs>
+    <g clip-path="url(#p93a6345043)">
+     <use xlink:href="#m68ef7af3c5" x="591.428571" y="131.665116" style="fill: #fff0d8; stroke: #fff0d8"/>
+    </g>
+   </g>
+   <g id="PathCollection_5">
+    <g clip-path="url(#p93a6345043)">
+     <use xlink:href="#m68ef7af3c5" x="591.428571" y="216.75907" style="fill: #fff0d8; stroke: #fff0d8"/>
+    </g>
+   </g>
+   <g id="PathCollection_6">
+    <g clip-path="url(#p93a6345043)">
+     <use xlink:href="#m68ef7af3c5" x="591.428571" y="295.774884" style="fill: #fff0d8; stroke: #fff0d8"/>
+    </g>
+   </g>
+   <g id="text_1">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="104.571429" y="238.421106" transform="rotate(-0 104.571429 238.421106)">协调器</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="348" y="177.715648" transform="rotate(-0 348 177.715648)">路由 1</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="348" y="299.278438" transform="rotate(-0 348 299.278438)">路由 2</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="591.428571" y="135.175233" transform="rotate(-0 591.428571 135.175233)">终端 1</text>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="591.428571" y="220.269187" transform="rotate(-0 591.428571 220.269187)">终端 2</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="591.428571" y="299.285001" transform="rotate(-0 591.428571 299.285001)">终端 3</text>
+   </g>
+  </g>
+  <g id="text_7">
+   <text style="font-size: 17px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="348" y="21.535781" transform="rotate(-0 348 21.535781)">ZigBee 示意网络：转发节点与终端角色分开</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p93a6345043">
+   <rect x="7.2" y="83.04" width="681.6" height="261.36"/>
+  </clipPath>
+ </defs>
+</svg>

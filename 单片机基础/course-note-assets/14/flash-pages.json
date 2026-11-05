@@ -1,0 +1,116 @@
+{
+  "type": "shapes",
+  "output": {
+    "canvas": "svg",
+    "dpi": 165,
+    "theme": {
+      "bgcolor": "white",
+      "font": "Microsoft YaHei",
+      "color": "#25374b"
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "xy": [
+        5.5,
+        4.3
+      ],
+      "text": "独立参数页必须从链接布局中保留出来",
+      "fontsize": 17,
+      "color": "#25374b",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        2,
+        2.5
+      ],
+      "w": 7.3,
+      "h": 1,
+      "label": "Flash 起始 0x08000000",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        2,
+        0.3
+      ],
+      "w": 7.3,
+      "h": 1.8,
+      "label": "程序 / 常量 / 其他已分配区域\n边界由实际链接布局决定",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        2,
+        -1.7
+      ],
+      "w": 7.3,
+      "h": 1.2,
+      "label": "候选末页 0x0800FC00～0x0800FFFF\n只有明确独立保留后才能作为参数区",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          -1.5
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "text",
+      "xy": [
+        1,
+        -2.1
+      ],
+      "text": "地址增大",
+      "fontsize": 12,
+      "color": "#25374b",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        5.65,
+        -3
+      ],
+      "text": "F103C8 标称 64 KiB；示意图不是当前工程的链接证据",
+      "fontsize": 12,
+      "color": "#25374b",
+      "align": [
+        "center",
+        "center"
+      ]
+    }
+  ]
+}

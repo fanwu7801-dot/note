@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="768pt" height="294.576pt" viewBox="0 0 768 294.576" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-20T15:03:00.993567</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 294.576 
+L 768 294.576 
+L 768 -0 
+L 0 -0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 21.554286 271.972452 
+L 247.634286 271.972452 
+L 247.634286 102.533427 
+L 21.554286 102.533427 
+z
+" clip-path="url(#pe482addfb0)" style="fill: #eaf3ff; stroke: #2563a6; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 272.754286 271.972452 
+L 498.834286 271.972452 
+L 498.834286 102.533427 
+L 272.754286 102.533427 
+z
+" clip-path="url(#pe482addfb0)" style="fill: #eaf7ef; stroke: #2563a6; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 523.954286 271.972452 
+L 750.034286 271.972452 
+L 750.034286 102.533427 
+L 523.954286 102.533427 
+z
+" clip-path="url(#pe482addfb0)" style="fill: #fff3df; stroke: #2563a6; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 14px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="134.594286" y="141.042296" transform="rotate(-0 134.594286 141.042296)">UART</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(100.744911 194.068261)">9600 等参数</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(92.594286 214.582636)">只约束本地串口</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(104.594286 235.016386)">先验证收发</text>
+   </g>
+   <g id="text_3">
+    <text style="font-weight: 700; font-size: 14px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="385.794286" y="141.042296" transform="rotate(-0 385.794286 141.042296)">无线网络</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(337.717411 194.127324)">NETID / 节点地址</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(355.794286 214.577011)">模式与固件</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(355.794286 235.009824)">决定可达性</text>
+   </g>
+   <g id="text_5">
+    <text style="font-weight: 700; font-size: 14px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="636.994286" y="141.042296" transform="rotate(-0 636.994286 141.042296)">应用层</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(606.994286 194.068261)">命令与参数</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(606.994286 214.594824)">序号与应答</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(600.994286 235.027636)">决定业务结果</text>
+   </g>
+  </g>
+  <g id="text_7">
+   <text style="font-size: 17px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="384" y="21.519844" transform="rotate(-0 384 21.519844)">相同业务消息经过三个不同层次</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pe482addfb0">
+   <rect x="7.2" y="79.428105" width="753.6" height="207.947895"/>
+  </clipPath>
+ </defs>
+</svg>

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="767.45625pt" height="337.3365pt" viewBox="0 0 767.45625 337.3365" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-20T16:30:41.371111</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M -0 337.3365 
+L 767.45625 337.3365 
+L 767.45625 -0 
+L -0 -0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 52.377266 293.237828 
+L 760.25625 293.237828 
+L 760.25625 82.308105 
+L 52.377266 82.308105 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 84.553583 293.237828 
+L 220.032815 293.237828 
+L 220.032815 111.792905 
+L 84.553583 111.792905 
+z
+" clip-path="url(#p622730f2b5)" style="fill: #cd7516"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 253.902622 293.237828 
+L 389.381854 293.237828 
+L 389.381854 202.515367 
+L 253.902622 202.515367 
+z
+" clip-path="url(#p622730f2b5)" style="fill: #2563a6"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 423.251662 293.237828 
+L 558.730893 293.237828 
+L 558.730893 262.997008 
+L 423.251662 262.997008 
+z
+" clip-path="url(#p622730f2b5)" style="fill: #25835b"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 592.600701 293.237828 
+L 728.079933 293.237828 
+L 728.079933 278.117418 
+L 592.600701 278.117418 
+z
+" clip-path="url(#p622730f2b5)" style="fill: #2563a6"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <path d="M 152.293199 293.237828 
+L 152.293199 82.308105 
+" clip-path="url(#p622730f2b5)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_2">
+      <defs>
+       <path id="m5f1644c0c5" d="M 0 0 
+L 0 3.5 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m5f1644c0c5" x="152.293199" y="293.237828" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="152.293199" y="309.981969" transform="rotate(-0 152.293199 309.981969)">9600</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_3">
+      <path d="M 321.642238 293.237828 
+L 321.642238 82.308105 
+" clip-path="url(#p622730f2b5)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#m5f1644c0c5" x="321.642238" y="293.237828" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="321.642238" y="309.981969" transform="rotate(-0 321.642238 309.981969)">19200</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_5">
+      <path d="M 490.991277 293.237828 
+L 490.991277 82.308105 
+" clip-path="url(#p622730f2b5)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#m5f1644c0c5" x="490.991277" y="293.237828" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="490.991277" y="309.981969" transform="rotate(-0 490.991277 309.981969)">57600</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_7">
+      <path d="M 660.340317 293.237828 
+L 660.340317 82.308105 
+" clip-path="url(#p622730f2b5)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#m5f1644c0c5" x="660.340317" y="293.237828" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="660.340317" y="309.981969" transform="rotate(-0 660.340317 309.981969)">115200</text>
+     </g>
+    </g>
+    <g id="text_5">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="406.316758" y="327.095484" transform="rotate(-0 406.316758 327.095484)">UART波特率 / bit/s（8N1）</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_9">
+      <defs>
+       <path id="m6c9e4b4ae3" d="M 0 0 
+L -3.5 0 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m6c9e4b4ae3" x="52.377266" y="293.237828" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: end" x="45.377266" y="298.109898" transform="rotate(-0 45.377266 298.109898)">0</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#m6c9e4b4ae3" x="52.377266" y="259.216905" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: end" x="45.377266" y="264.088975" transform="rotate(-0 45.377266 264.088975)">100</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_11">
+      <g>
+       <use xlink:href="#m6c9e4b4ae3" x="52.377266" y="225.195982" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: end" x="45.377266" y="230.068052" transform="rotate(-0 45.377266 230.068052)">200</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_12">
+      <g>
+       <use xlink:href="#m6c9e4b4ae3" x="52.377266" y="191.175059" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: end" x="45.377266" y="196.047129" transform="rotate(-0 45.377266 196.047129)">300</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_13">
+      <g>
+       <use xlink:href="#m6c9e4b4ae3" x="52.377266" y="157.154136" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_10">
+      <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: end" x="45.377266" y="162.026206" transform="rotate(-0 45.377266 162.026206)">400</text>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_14">
+      <g>
+       <use xlink:href="#m6c9e4b4ae3" x="52.377266" y="123.133213" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_11">
+      <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: end" x="45.377266" y="128.005283" transform="rotate(-0 45.377266 128.005283)">500</text>
+     </g>
+    </g>
+    <g id="ytick_7">
+     <g id="line2d_15">
+      <g>
+       <use xlink:href="#m6c9e4b4ae3" x="52.377266" y="89.11229" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_12">
+      <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: end" x="45.377266" y="93.98436" transform="rotate(-0 45.377266 93.98436)">600</text>
+     </g>
+    </g>
+    <g id="text_13">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="17.225625" y="187.772967" transform="rotate(-90 17.225625 187.772967)">512 B 的理想串行发送时间 / ms</text>
+    </g>
+   </g>
+   <g id="patch_7">
+    <path d="M 52.377266 293.237828 
+L 52.377266 82.308105 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 52.377266 293.237828 
+L 760.25625 293.237828 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="152.293199" y="109.071232" transform="rotate(-0 152.293199 109.071232)">533.3 ms</text>
+   </g>
+   <g id="text_15">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="321.642238" y="199.793693" transform="rotate(-0 321.642238 199.793693)">266.7 ms</text>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="490.991277" y="260.275334" transform="rotate(-0 490.991277 260.275334)">88.9 ms</text>
+   </g>
+   <g id="text_17">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="660.340317" y="275.395744" transform="rotate(-0 660.340317 275.395744)">44.4 ms</text>
+   </g>
+  </g>
+  <g id="text_18">
+   <text style="font-size: 17px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="383.45625" y="21.50125" transform="rotate(-0 383.45625 21.50125)">无线再快，9600波特UART发512字节也至少约533 ms</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p622730f2b5">
+   <rect x="52.377266" y="82.308105" width="707.878984" height="210.929723"/>
+  </clipPath>
+ </defs>
+</svg>

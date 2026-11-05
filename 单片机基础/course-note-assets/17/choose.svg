@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="768pt" height="323.088pt" viewBox="0 0 768 323.088" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-20T15:03:03.360617</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 323.088 
+L 768 323.088 
+L 768 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="table_1">
+    <g id="patch_2">
+     <path d="M 7.2 146.402074 
+L 258.4 146.402074 
+L 258.4 120.414084 
+L 7.2 120.414084 
+z
+" style="fill: #dceafa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_1">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="132.8" y="136.864759" transform="rotate(-0 132.8 136.864759)">需求</text>
+    </g>
+    <g id="patch_3">
+     <path d="M 258.4 146.402074 
+L 509.6 146.402074 
+L 509.6 120.414084 
+L 258.4 120.414084 
+z
+" style="fill: #dceafa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_2">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="384" y="136.871321" transform="rotate(-0 384 136.871321)">可选机制</text>
+    </g>
+    <g id="patch_4">
+     <path d="M 509.6 146.402074 
+L 760.8 146.402074 
+L 760.8 120.414084 
+L 509.6 120.414084 
+z
+" style="fill: #dceafa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_3">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="635.2" y="136.894759" transform="rotate(-0 635.2 136.894759)">关键限制</text>
+    </g>
+    <g id="patch_5">
+     <path d="M 7.2 172.390063 
+L 258.4 172.390063 
+L 258.4 146.402074 
+L 7.2 146.402074 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_4">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="132.8" y="162.893998" transform="rotate(-0 132.8 162.893998)">传一条完整采样消息</text>
+    </g>
+    <g id="patch_6">
+     <path d="M 258.4 172.390063 
+L 509.6 172.390063 
+L 509.6 146.402074 
+L 258.4 146.402074 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_5">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="384" y="162.800248" transform="rotate(-0 384 162.800248)">队列</text>
+    </g>
+    <g id="patch_7">
+     <path d="M 509.6 172.390063 
+L 760.8 172.390063 
+L 760.8 146.402074 
+L 509.6 146.402074 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_6">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="635.2" y="162.888373" transform="rotate(-0 635.2 162.888373)">元素大小、容量、满处理</text>
+    </g>
+    <g id="patch_8">
+     <path d="M 7.2 198.378053 
+L 258.4 198.378053 
+L 258.4 172.390063 
+L 7.2 172.390063 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_7">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="132.8" y="188.928863" transform="rotate(-0 132.8 188.928863)">保护同一设备</text>
+    </g>
+    <g id="patch_9">
+     <path d="M 258.4 198.378053 
+L 509.6 198.378053 
+L 509.6 172.390063 
+L 258.4 172.390063 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_8">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="384" y="188.8473" transform="rotate(-0 384 188.8473)">互斥锁</text>
+    </g>
+    <g id="patch_10">
+     <path d="M 509.6 198.378053 
+L 760.8 198.378053 
+L 760.8 172.390063 
+L 509.6 172.390063 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_9">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="635.2" y="188.887613" transform="rotate(-0 635.2 188.887613)">持有时间、优先级继承</text>
+    </g>
+    <g id="patch_11">
+     <path d="M 7.2 224.366042 
+L 258.4 224.366042 
+L 258.4 198.378053 
+L 7.2 198.378053 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_10">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="132.8" y="214.911227" transform="rotate(-0 132.8 214.911227)">等待多个条件成立</text>
+    </g>
+    <g id="patch_12">
+     <path d="M 258.4 224.366042 
+L 509.6 224.366042 
+L 509.6 198.378053 
+L 258.4 198.378053 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_11">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="384" y="214.840915" transform="rotate(-0 384 214.840915)">事件组</text>
+    </g>
+    <g id="patch_13">
+     <path d="M 509.6 224.366042 
+L 760.8 224.366042 
+L 760.8 198.378053 
+L 509.6 198.378053 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_12">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="635.2" y="214.869977" transform="rotate(-0 635.2 214.869977)">位是条件，不是累计次数</text>
+    </g>
+    <g id="patch_14">
+     <path d="M 7.2 250.354032 
+L 258.4 250.354032 
+L 258.4 224.366042 
+L 7.2 224.366042 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_13">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="132.8" y="240.893592" transform="rotate(-0 132.8 240.893592)">通知一个已知任务</text>
+    </g>
+    <g id="patch_15">
+     <path d="M 258.4 250.354032 
+L 509.6 250.354032 
+L 509.6 224.366042 
+L 258.4 224.366042 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_14">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="384" y="240.893592" transform="rotate(-0 384 240.893592)">任务通知</text>
+    </g>
+    <g id="patch_16">
+     <path d="M 509.6 250.354032 
+L 760.8 250.354032 
+L 760.8 224.366042 
+L 509.6 224.366042 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_15">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="635.2" y="240.863592" transform="rotate(-0 635.2 240.863592)">计数/覆盖/位语义</text>
+    </g>
+    <g id="patch_17">
+     <path d="M 7.2 276.342021 
+L 258.4 276.342021 
+L 258.4 250.354032 
+L 7.2 250.354032 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_16">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="132.8" y="266.881581" transform="rotate(-0 132.8 266.881581)">硬件中断唤醒任务</text>
+    </g>
+    <g id="patch_18">
+     <path d="M 258.4 276.342021 
+L 509.6 276.342021 
+L 509.6 250.354032 
+L 258.4 250.354032 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_17">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="384" y="266.840331" transform="rotate(-0 384 266.840331)">FromISR 相关接口</text>
+    </g>
+    <g id="patch_19">
+     <path d="M 509.6 276.342021 
+L 760.8 276.342021 
+L 760.8 250.354032 
+L 509.6 250.354032 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_18">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="635.2" y="266.887206" transform="rotate(-0 635.2 266.887206)">中断优先级合法，不能阻塞</text>
+    </g>
+   </g>
+  </g>
+  <g id="text_19">
+   <text style="font-size: 17px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="384" y="21.3525" transform="rotate(-0 384 21.3525)">根据数据关系选择同步机制</text>
+  </g>
+ </g>
+</svg>

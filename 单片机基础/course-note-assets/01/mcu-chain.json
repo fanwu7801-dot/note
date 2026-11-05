@@ -1,0 +1,206 @@
+{
+  "type": "shapes",
+  "output": {
+    "canvas": "svg",
+    "dpi": 165,
+    "theme": {
+      "bgcolor": "white",
+      "font": "Microsoft YaHei",
+      "color": "#25374b"
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "xy": [
+        5.5,
+        4.3
+      ],
+      "text": "输入、程序与输出在 MCU 内怎样协作",
+      "fontsize": 17,
+      "color": "#25374b",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0,
+        0
+      ],
+      "w": 2.4,
+      "h": 1.3,
+      "label": "输入外设\nGPIO / ADC",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4,
+        0
+      ],
+      "w": 2.4,
+      "h": 1.3,
+      "label": "CPU\n执行程序",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8,
+        0
+      ],
+      "w": 2.4,
+      "h": 1.3,
+      "label": "输出外设\nGPIO / TIM",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4,
+        2.6
+      ],
+      "w": 2.4,
+      "h": 1.2,
+      "label": "Flash\n保存指令与常量",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4,
+        -2.5
+      ],
+      "w": 2.4,
+      "h": 1.2,
+      "label": "SRAM\n保存运行变量",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          2.4,
+          0.65
+        ],
+        [
+          4,
+          0.65
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          6.4,
+          0.65
+        ],
+        [
+          8,
+          0.65
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          5.2,
+          2.6
+        ],
+        [
+          5.2,
+          1.3
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          4.7,
+          0
+        ],
+        [
+          4.7,
+          -1.3
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          5.7,
+          -1.3
+        ],
+        [
+          5.7,
+          0
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "text",
+      "xy": [
+        1.2,
+        -0.5
+      ],
+      "text": "外部电压/数据",
+      "fontsize": 12,
+      "color": "#25374b",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        9.2,
+        -0.5
+      ],
+      "text": "控制负载/发出数据",
+      "fontsize": 12,
+      "color": "#25374b",
+      "align": [
+        "center",
+        "center"
+      ]
+    }
+  ]
+}

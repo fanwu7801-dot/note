@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="768pt" height="251.808pt" viewBox="0 0 768 251.808" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-20T15:03:02.672247</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 251.808 
+L 768 251.808 
+L 768 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="table_1">
+    <g id="patch_2">
+     <path d="M 7.2 137.293948 
+L 195.6 137.293948 
+L 195.6 113.649843 
+L 7.2 113.649843 
+z
+" style="fill: #dceafa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_1">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="101.4" y="128.9642" transform="rotate(-0 101.4 128.9642)">模式</text>
+    </g>
+    <g id="patch_3">
+     <path d="M 195.6 137.293948 
+L 384 137.293948 
+L 384 113.649843 
+L 195.6 113.649843 
+z
+" style="fill: #dceafa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_2">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="289.8" y="128.987638" transform="rotate(-0 289.8 128.987638)">普通 SRAM</text>
+    </g>
+    <g id="patch_4">
+     <path d="M 384 137.293948 
+L 572.4 137.293948 
+L 572.4 113.649843 
+L 384 113.649843 
+z
+" style="fill: #dceafa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_3">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="478.2" y="128.958575" transform="rotate(-0 478.2 128.958575)">时钟/供电特征</text>
+    </g>
+    <g id="patch_5">
+     <path d="M 572.4 137.293948 
+L 760.8 137.293948 
+L 760.8 113.649843 
+L 572.4 113.649843 
+z
+" style="fill: #dceafa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_4">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="666.6" y="128.9642" transform="rotate(-0 666.6 128.9642)">恢复重点</text>
+    </g>
+    <g id="patch_6">
+     <path d="M 7.2 160.938053 
+L 195.6 160.938053 
+L 195.6 137.293948 
+L 7.2 137.293948 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_5">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="101.4" y="152.467563" transform="rotate(-0 101.4 152.467563)">Sleep</text>
+    </g>
+    <g id="patch_7">
+     <path d="M 195.6 160.938053 
+L 384 160.938053 
+L 384 137.293948 
+L 195.6 137.293948 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_6">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="289.8" y="152.543617" transform="rotate(-0 289.8 152.543617)">保留</text>
+    </g>
+    <g id="patch_8">
+     <path d="M 384 160.938053 
+L 572.4 160.938053 
+L 572.4 137.293948 
+L 384 137.293948 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_7">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="478.2" y="152.608305" transform="rotate(-0 478.2 152.608305)">外设可运行</text>
+    </g>
+    <g id="patch_9">
+     <path d="M 572.4 160.938053 
+L 760.8 160.938053 
+L 760.8 137.293948 
+L 572.4 137.293948 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_8">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="666.6" y="152.608305" transform="rotate(-0 666.6 152.608305)">通常继续执行</text>
+    </g>
+    <g id="patch_10">
+     <path d="M 7.2 184.582158 
+L 195.6 184.582158 
+L 195.6 160.938053 
+L 7.2 160.938053 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_9">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="101.4" y="176.111668" transform="rotate(-0 101.4 176.111668)">Stop</text>
+    </g>
+    <g id="patch_11">
+     <path d="M 195.6 184.582158 
+L 384 184.582158 
+L 384 160.938053 
+L 195.6 160.938053 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_10">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="289.8" y="176.187722" transform="rotate(-0 289.8 176.187722)">保留</text>
+    </g>
+    <g id="patch_12">
+     <path d="M 384 184.582158 
+L 572.4 184.582158 
+L 572.4 160.938053 
+L 384 160.938053 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_11">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="478.2" y="176.30491" transform="rotate(-0 478.2 176.30491)">主要高速时钟停止</text>
+    </g>
+    <g id="patch_13">
+     <path d="M 572.4 184.582158 
+L 760.8 184.582158 
+L 760.8 160.938053 
+L 572.4 160.938053 
+z
+" style="fill: #fafcff; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_12">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="666.6" y="176.25241" transform="rotate(-0 666.6 176.25241)">先恢复所需时钟</text>
+    </g>
+    <g id="patch_14">
+     <path d="M 7.2 208.226262 
+L 195.6 208.226262 
+L 195.6 184.582158 
+L 7.2 184.582158 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_13">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="101.4" y="199.75003" transform="rotate(-0 101.4 199.75003)">Standby</text>
+    </g>
+    <g id="patch_15">
+     <path d="M 195.6 208.226262 
+L 384 208.226262 
+L 384 184.582158 
+L 195.6 184.582158 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_14">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="289.8" y="199.919952" transform="rotate(-0 289.8 199.919952)">普通 SRAM 丢失</text>
+    </g>
+    <g id="patch_16">
+     <path d="M 384 208.226262 
+L 572.4 208.226262 
+L 572.4 184.582158 
+L 384 184.582158 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_15">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="478.2" y="199.919952" transform="rotate(-0 478.2 199.919952)">主域停止</text>
+    </g>
+    <g id="patch_17">
+     <path d="M 572.4 208.226262 
+L 760.8 208.226262 
+L 760.8 184.582158 
+L 572.4 184.582158 
+z
+" style="fill: #f0f5fa; stroke: #ffffff; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_16">
+     <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle" x="666.6" y="199.937765" transform="rotate(-0 666.6 199.937765)">复位路径重新启动</text>
+    </g>
+   </g>
+  </g>
+  <g id="text_17">
+   <text style="font-size: 17px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="384" y="21.519844" transform="rotate(-0 384 21.519844)">F103 低功耗：先比较保留内容与恢复路径</text>
+  </g>
+ </g>
+</svg>

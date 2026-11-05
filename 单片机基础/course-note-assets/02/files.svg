@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="768pt" height="294.576pt" viewBox="0 0 768 294.576" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-20T15:02:56.479047</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 294.576 
+L 768 294.576 
+L 768 -0 
+L 0 -0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 21.554286 272.025786 
+L 247.634286 272.025786 
+L 247.634286 103.173427 
+L 21.554286 103.173427 
+z
+" clip-path="url(#pc0bc3546ff)" style="fill: #eaf3ff; stroke: #2563a6; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 272.754286 272.025786 
+L 498.834286 272.025786 
+L 498.834286 103.173427 
+L 272.754286 103.173427 
+z
+" clip-path="url(#pc0bc3546ff)" style="fill: #eaf7ef; stroke: #2563a6; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 523.954286 272.025786 
+L 750.034286 272.025786 
+L 750.034286 103.173427 
+L 523.954286 103.173427 
+z
+" clip-path="url(#pc0bc3546ff)" style="fill: #fff3df; stroke: #2563a6; stroke-width: 1.4; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 14px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="134.594286" y="141.548963" transform="rotate(-0 134.594286 141.548963)">.h</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(92.594286 194.346178)">声明、类型、宏</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(86.594286 214.76774)">解决“如何调用”</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(92.594286 235.24649)">不自动提供实现</text>
+   </g>
+   <g id="text_3">
+    <text style="font-weight: 700; font-size: 14px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="385.794286" y="141.548963" transform="rotate(-0 385.794286 141.548963)">.c / .s</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(343.794286 194.35274)">函数与启动实现</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(347.231161 214.825865)">参与编译/汇编</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(349.794286 235.27649)">形成目标文件</text>
+   </g>
+   <g id="text_5">
+    <text style="font-weight: 700; font-size: 14px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="636.994286" y="141.548963" transform="rotate(-0 636.994286 141.548963)">.axf / .hex</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(594.994286 194.387428)">链接或导出产物</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(598.431161 214.77899)">用于调试/下载</text>
+    <text style="font-size: 12px; font-family: 'Microsoft YaHei', sans-serif" transform="translate(594.994286 235.311178)">对应同一次构建</text>
+   </g>
+  </g>
+  <g id="text_7">
+   <text style="font-size: 17px; font-family: 'Microsoft YaHei', sans-serif; text-anchor: middle; fill: #25374b" x="384" y="21.418906" transform="rotate(-0 384 21.418906)">文件名不同，是因为承担的工具链职责不同</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pc0bc3546ff">
+   <rect x="7.2" y="80.148105" width="753.6" height="207.227895"/>
+  </clipPath>
+ </defs>
+</svg>

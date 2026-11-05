@@ -1,0 +1,163 @@
+{
+  "type": "shapes",
+  "output": {
+    "canvas": "svg",
+    "dpi": 165,
+    "theme": {
+      "bgcolor": "white",
+      "font": "Microsoft YaHei",
+      "color": "#25374b"
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "xy": [
+        5.5,
+        4.3
+      ],
+      "text": "接收请求、接受请求、动作完成应有不同语义",
+      "fontsize": 17,
+      "color": "#25374b",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0,
+        2
+      ],
+      "w": 3,
+      "h": 1.3,
+      "label": "收到请求\n校验帧与序号",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4,
+        2
+      ],
+      "w": 3,
+      "h": 1.3,
+      "label": "检查业务状态\n接受或拒绝",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8,
+        2
+      ],
+      "w": 3,
+      "h": 1.3,
+      "label": "返回接受确认\n仅说明已受理",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8,
+        -1
+      ],
+      "w": 3,
+      "h": 1.3,
+      "label": "执行硬件/业务动作\n可能失败或超时",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4,
+        -1
+      ],
+      "w": 3,
+      "h": 1.3,
+      "label": "返回完成结果\n关联同一事务序号",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          3,
+          2.65
+        ],
+        [
+          4,
+          2.65
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          7,
+          2.65
+        ],
+        [
+          8,
+          2.65
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          9.5,
+          2
+        ],
+        [
+          9.5,
+          0.30000000000000004
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          8,
+          -0.35
+        ],
+        [
+          7,
+          -0.35
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    }
+  ]
+}

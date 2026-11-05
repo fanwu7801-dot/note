@@ -1,0 +1,163 @@
+{
+  "type": "shapes",
+  "output": {
+    "canvas": "svg",
+    "dpi": 165,
+    "theme": {
+      "bgcolor": "white",
+      "font": "Microsoft YaHei",
+      "color": "#25374b"
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "xy": [
+        5.5,
+        4.3
+      ],
+      "text": "两页提交：新页未确认有效前，始终保留旧页",
+      "fontsize": 17,
+      "color": "#25374b",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0,
+        2
+      ],
+      "w": 3,
+      "h": 1.3,
+      "label": "A页为有效旧版本\nB页待使用",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4,
+        2
+      ],
+      "w": 3,
+      "h": 1.3,
+      "label": "擦B并写新载荷\n此时掉电选A",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8,
+        2
+      ],
+      "w": 3,
+      "h": 1.3,
+      "label": "写CRC并读回验证\n此时掉电仍选A",
+      "fill": "#fff3df",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        8,
+        -1
+      ],
+      "w": 3,
+      "h": 1.3,
+      "label": "最后写提交标记\n启动校验后可选B",
+      "fill": "#eaf3ff",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        4,
+        -1
+      ],
+      "w": 3,
+      "h": 1.3,
+      "label": "确认B有效后\n才回收旧A页",
+      "fill": "#eaf7ef",
+      "color": "#25374b",
+      "fontsize": 14,
+      "min_fontsize": 8,
+      "lw": 1.3
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          3,
+          2.65
+        ],
+        [
+          4,
+          2.65
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          7,
+          2.65
+        ],
+        [
+          8,
+          2.65
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          9.5,
+          2
+        ],
+        [
+          9.5,
+          0.30000000000000004
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          8,
+          -0.35
+        ],
+        [
+          7,
+          -0.35
+        ]
+      ],
+      "color": "#2563a6",
+      "lw": 1.4
+    }
+  ]
+}
