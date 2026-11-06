@@ -22,7 +22,7 @@ I2S的全称是Inter-IC Sound，是一种串行总线协议，用于连接数字
 ![alt text](image-5.png)
 
 该标准比较少用，在LRCLk发送偏转的是红红同事传输数据，LRCLK==等于1 的时候是左声道数据，LRCLK等于==0 的时候是右声道数据，数据的最高位在第一个时钟周期传输，最低位在最后一个时钟周期传输。
-
+![[Pasted image 20261106102353.png]]
 #### 右对齐(LSB)标准
 ![alt text](image-6.png)
 
