@@ -1,0 +1,273 @@
+{
+  "type": "shapes",
+  "title": "链表决定搬什么，请求推动什么时候搬",
+  "output": {
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "color": "#243746",
+      "unit": 3,
+      "fontsize": 14,
+      "font": "Microsoft YaHei,SimHei,DengXian,SimSun"
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "id": "title",
+      "xy": [
+        10,
+        9.55
+      ],
+      "text": "链表决定搬什么，请求推动什么时候搬",
+      "fontsize": 20,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "id": "descriptor",
+      "xy": [
+        0.7,
+        6.8
+      ],
+      "w": 4.6,
+      "h": 1.7,
+      "label": "当前描述符\n源 / 目的 / 数量 / next",
+      "fill": "#fff0d6",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "params",
+      "xy": [
+        7,
+        6.8
+      ],
+      "w": 4.7,
+      "h": 1.7,
+      "label": "当前段参数\n地址、宽度和剩余数量",
+      "fill": "#dff2e5",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "id": "load",
+      "points": [
+        [
+          5.3,
+          7.65
+        ],
+        [
+          7,
+          7.65
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "id": "load-text",
+      "xy": [
+        6.15,
+        8.15
+      ],
+      "text": "装载",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "id": "trigger",
+      "xy": [
+        0.7,
+        3.9
+      ],
+      "w": 4.6,
+      "h": 1.65,
+      "label": "外设 FIFO / 数据就绪\n产生 DMA 请求",
+      "fill": "#fff0d6",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "transfer",
+      "xy": [
+        7,
+        3.9
+      ],
+      "w": 4.7,
+      "h": 1.65,
+      "label": "DMA 按参数搬运\n请求粒度由配置决定",
+      "fill": "#dceafa",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "destination",
+      "xy": [
+        14,
+        3.9
+      ],
+      "w": 5.3,
+      "h": 1.65,
+      "label": "数据到达目的地址\n本例：外设数据寄存器",
+      "fill": "#dceafa",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "id": "request",
+      "points": [
+        [
+          5.3,
+          4.73
+        ],
+        [
+          7,
+          4.73
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "id": "request-text",
+      "xy": [
+        6.15,
+        5.25
+      ],
+      "text": "请求",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "arrow",
+      "id": "config",
+      "points": [
+        [
+          9.35,
+          6.8
+        ],
+        [
+          9.35,
+          5.55
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "id": "payload",
+      "points": [
+        [
+          11.7,
+          4.73
+        ],
+        [
+          14,
+          4.73
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "id": "payload-text",
+      "xy": [
+        12.85,
+        5.25
+      ],
+      "text": "数据",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "id": "next",
+      "xy": [
+        6.2,
+        1.4
+      ],
+      "w": 6.3,
+      "h": 1.1,
+      "label": "段完成且有下一节点 → 硬件准备下一段",
+      "fill": "#dff2e5",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "id": "complete",
+      "points": [
+        [
+          9.35,
+          3.9000000000000004
+        ],
+        [
+          9.35,
+          2.5
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "id": "caution",
+      "xy": [
+        10,
+        0.6999999999999993
+      ],
+      "text": "没有有效请求，链表正确也可能不搬；预取和装载时机以手册为准。",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    }
+  ]
+}

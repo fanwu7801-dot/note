@@ -1,0 +1,392 @@
+{
+  "type": "shapes",
+  "title": "描述符是搬运单，缓冲区是数据",
+  "output": {
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "color": "#243746",
+      "unit": 3,
+      "fontsize": 14,
+      "font": "Microsoft YaHei,SimHei,DengXian,SimSun"
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "id": "title",
+      "xy": [
+        10,
+        10.05
+      ],
+      "text": "描述符是搬运单，缓冲区是数据",
+      "fontsize": 20,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "id": "desc-a",
+      "xy": [
+        0.7,
+        6.450000000000001
+      ],
+      "w": 4.5,
+      "h": 2.6,
+      "label": "描述符 A\nsrc：缓冲区 A\ndst：同一外设寄存器\ncount：256 个半字\nnext：B",
+      "fill": "#fff0d6",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "buf-a",
+      "xy": [
+        0.7,
+        4.45
+      ],
+      "w": 4.5,
+      "h": 1.05,
+      "label": "缓冲区 A：512 字节",
+      "fill": "#dceafa",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "id": "src-a",
+      "points": [
+        [
+          2.95,
+          6.45
+        ],
+        [
+          2.95,
+          5.5
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5,
+      "ls": "--"
+    },
+    {
+      "kind": "rect",
+      "id": "desc-b",
+      "xy": [
+        6.4,
+        6.450000000000001
+      ],
+      "w": 4.5,
+      "h": 2.6,
+      "label": "描述符 B\nsrc：缓冲区 B\ndst：同一外设寄存器\ncount：256 个半字\nnext：C",
+      "fill": "#fff0d6",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "buf-b",
+      "xy": [
+        6.4,
+        4.45
+      ],
+      "w": 4.5,
+      "h": 1.05,
+      "label": "缓冲区 B：512 字节",
+      "fill": "#dceafa",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "id": "src-b",
+      "points": [
+        [
+          8.65,
+          6.45
+        ],
+        [
+          8.65,
+          5.5
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5,
+      "ls": "--"
+    },
+    {
+      "kind": "rect",
+      "id": "desc-c",
+      "xy": [
+        12.1,
+        6.450000000000001
+      ],
+      "w": 4.5,
+      "h": 2.6,
+      "label": "描述符 C\nsrc：缓冲区 C\ndst：同一外设寄存器\ncount：256 个半字\nnext：结束",
+      "fill": "#fff0d6",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "buf-c",
+      "xy": [
+        12.1,
+        4.45
+      ],
+      "w": 4.5,
+      "h": 1.05,
+      "label": "缓冲区 C：512 字节",
+      "fill": "#dceafa",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "id": "src-c",
+      "points": [
+        [
+          14.35,
+          6.45
+        ],
+        [
+          14.35,
+          5.5
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5,
+      "ls": "--"
+    },
+    {
+      "kind": "arrow",
+      "id": "next-ab",
+      "points": [
+        [
+          5.2,
+          7.8
+        ],
+        [
+          6.4,
+          7.8
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "id": "next-bc",
+      "points": [
+        [
+          10.9,
+          7.8
+        ],
+        [
+          12.1,
+          7.8
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "rect",
+      "id": "end",
+      "xy": [
+        17.8,
+        7.200000000000001
+      ],
+      "w": 1.6,
+      "h": 1.1,
+      "label": "链结束",
+      "fill": "#edf1f5",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 11,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "id": "next-end",
+      "points": [
+        [
+          16.6,
+          7.75
+        ],
+        [
+          17.8,
+          7.75
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "id": "ptr-label",
+      "xy": [
+        17.4,
+        6.0
+      ],
+      "text": "虚线：地址引用",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "id": "engine",
+      "xy": [
+        6.4,
+        1.85
+      ],
+      "w": 4.5,
+      "h": 1.1,
+      "label": "DMA：按 A / B / C 顺序搬运",
+      "fill": "#dff2e5",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "peripheral",
+      "xy": [
+        13.1,
+        1.85
+      ],
+      "w": 5,
+      "h": 1.1,
+      "label": "固定目的：外设数据寄存器",
+      "fill": "#dceafa",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "id": "data-a",
+      "points": [
+        [
+          2.95,
+          4.45
+        ],
+        [
+          8.65,
+          2.95
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "id": "data-b",
+      "points": [
+        [
+          8.65,
+          4.45
+        ],
+        [
+          8.65,
+          2.95
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "id": "data-c",
+      "points": [
+        [
+          14.35,
+          4.45
+        ],
+        [
+          8.65,
+          2.95
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "id": "data-out",
+      "points": [
+        [
+          10.9,
+          2.4000000000000004
+        ],
+        [
+          13.1,
+          2.4000000000000004
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "id": "path-label",
+      "xy": [
+        11.95,
+        3.33
+      ],
+      "text": "数据",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "id": "summary",
+      "xy": [
+        10,
+        0.8499999999999996
+      ],
+      "text": "next 指向描述符；src 指向数据。三路源按段使用，不是同时搬运。",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    }
+  ]
+}

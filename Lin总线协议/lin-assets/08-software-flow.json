@@ -1,0 +1,291 @@
+{
+  "type": "shapes",
+  "output": {
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "color": "#243746",
+      "font": "Microsoft YaHei,SimHei,DengXian,SimSun",
+      "unit": 3,
+      "fontsize": 14
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        9.45
+      ],
+      "text": "08  从总线到业务：有效报文才能更新业务快照",
+      "fontsize": 21,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        8.879999999999999
+      ],
+      "text": "软件分层教学示意，不代表当前工程已经采用了某组具体 API。",
+      "fontsize": 11.5,
+      "color": "#526477",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        2.95,
+        8.1
+      ],
+      "text": "LIN 电平",
+      "fontsize": 14,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        5.75
+      ],
+      "w": 4.3,
+      "h": 1.8,
+      "label": "收发器\n总线 / 逻辑电平转换",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        7.65,
+        8.1
+      ],
+      "text": "UART / 驱动",
+      "fontsize": 14,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        5.5,
+        5.75
+      ],
+      "w": 4.3,
+      "h": 1.8,
+      "label": "Break / Sync / PID\n长度 / 校验 / 超时",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        12.35,
+        8.1
+      ],
+      "text": "信号服务",
+      "fontsize": 14,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        10.2,
+        5.75
+      ],
+      "w": 4.3,
+      "h": 1.8,
+      "label": "按 LDF 解码\n取值检查 / 新鲜度",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        17.05,
+        8.1
+      ],
+      "text": "RTE / APP",
+      "fontsize": 14,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        14.9,
+        5.75
+      ],
+      "w": 4.3,
+      "h": 1.8,
+      "label": "读取一致快照\n执行控制与降级",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          5.1,
+          6.65
+        ],
+        [
+          5.5,
+          6.65
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          9.8,
+          6.65
+        ],
+        [
+          10.2,
+          6.65
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          14.5,
+          6.65
+        ],
+        [
+          14.9,
+          6.65
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        3.85
+      ],
+      "w": 8.9,
+      "h": 1.1,
+      "label": "cfg：波特率、ID、长度、校验、调度、超时\n规则由配置或受控标定决定",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        10.3,
+        3.85
+      ],
+      "w": 8.9,
+      "h": 1.1,
+      "label": "ctx：收发状态、索引、计时器、错误计数\n内部过程只由所属模块维护",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        2.35
+      ],
+      "w": 8.9,
+      "h": 1.1,
+      "label": "data：信号值、采样时间、valid、quality\n校验通过才更新有效信号值",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        10.3,
+        2.35
+      ],
+      "w": 8.9,
+      "h": 1.1,
+      "label": "ops：初始化、周期处理、命令、获取快照\n跨任务通过受控接口交互",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.6,
+        0.4300000000000004
+      ],
+      "w": 18.8,
+      "h": 0.72,
+      "label": "坏帧不刷新有效数据时间戳；持续收不到有效帧时，将快照标为过期并按需求降级。",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    }
+  ]
+}

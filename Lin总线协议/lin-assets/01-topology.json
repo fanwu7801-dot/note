@@ -1,0 +1,445 @@
+{
+  "type": "shapes",
+  "output": {
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "color": "#243746",
+      "font": "Microsoft YaHei,SimHei,DengXian,SimSun",
+      "unit": 3,
+      "fontsize": 14
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        9.45
+      ],
+      "text": "01  LIN 网络：MCU、收发器和单根总线",
+      "fontsize": 21,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        8.879999999999999
+      ],
+      "text": "这是功能示意图；实际引脚、终端网络和电压范围按原理图及数据手册确认。",
+      "fontsize": 11.5,
+      "color": "#526477",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        3.5,
+        8.1
+      ],
+      "text": "主节点",
+      "fontsize": 16,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        1,
+        6.45
+      ],
+      "w": 5,
+      "h": 1.25,
+      "label": "MCU\n主任务 + 从任务",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          2.4,
+          6.45
+        ],
+        [
+          2.4,
+          5.8
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          4.6,
+          5.8
+        ],
+        [
+          4.6,
+          6.45
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "xy": [
+        3.5,
+        6.12
+      ],
+      "text": "TXD       RXD",
+      "fontsize": 10,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        1,
+        4.85
+      ],
+      "w": 5,
+      "h": 0.95,
+      "label": "LIN 收发器",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          3.5,
+          4.85
+        ],
+        [
+          3.5,
+          3.8
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10.0,
+        8.1
+      ],
+      "text": "从节点 A",
+      "fontsize": 16,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        7.5,
+        6.45
+      ],
+      "w": 5,
+      "h": 1.25,
+      "label": "MCU\n从任务",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          8.9,
+          6.45
+        ],
+        [
+          8.9,
+          5.8
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          11.1,
+          5.8
+        ],
+        [
+          11.1,
+          6.45
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10.0,
+        6.12
+      ],
+      "text": "TXD       RXD",
+      "fontsize": 10,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        7.5,
+        4.85
+      ],
+      "w": 5,
+      "h": 0.95,
+      "label": "LIN 收发器",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          10.0,
+          4.85
+        ],
+        [
+          10.0,
+          3.8
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "xy": [
+        16.5,
+        8.1
+      ],
+      "text": "从节点 B",
+      "fontsize": 16,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        14,
+        6.45
+      ],
+      "w": 5,
+      "h": 1.25,
+      "label": "MCU\n从任务",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          15.4,
+          6.45
+        ],
+        [
+          15.4,
+          5.8
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          17.6,
+          5.8
+        ],
+        [
+          17.6,
+          6.45
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "xy": [
+        16.5,
+        6.12
+      ],
+      "text": "TXD       RXD",
+      "fontsize": 10,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        14,
+        4.85
+      ],
+      "w": 5,
+      "h": 0.95,
+      "label": "LIN 收发器",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          16.5,
+          4.85
+        ],
+        [
+          16.5,
+          3.8
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          0.8,
+          3.8
+        ],
+        [
+          19.2,
+          3.8
+        ]
+      ],
+      "color": "#386bb0",
+      "ls": "-",
+      "lw": 3
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        3.3499999999999996
+      ],
+      "text": "LIN 单线信号 + 节点间地参考；无条件帧的响应只有一个发布者",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        1.7
+      ],
+      "w": 8.8,
+      "h": 1.05,
+      "label": "显性 0：任一节点拉低 → 总线为低\n隐性 1：所有节点释放 → 上拉为高",
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        10.4,
+        1.7
+      ],
+      "w": 8.8,
+      "h": 1.05,
+      "label": "MCU 侧：3.3 V / 5 V 逻辑域（视芯片）\n总线侧：VBAT 域；不能直连 MCU 引脚",
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.6,
+        0.4300000000000004
+      ],
+      "w": 18.8,
+      "h": 0.72,
+      "label": "主节点通常有较强的上拉终端网络；不是照搬 CAN 两端 120 Ω 终端。",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    }
+  ]
+}

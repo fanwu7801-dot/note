@@ -1207,6 +1207,12 @@ parse_data_t __check_sum(uint8_t* data, uint16_t len)
 
 ![alt text](image-25.png)
 ### 通过DMA来接收数据     
+
+> 延伸阅读：[DMA 链式传输图解](<../../ADC_DMA/15_DMA链式传输图解.md>)。
+> 下例在回调中再次调用接收 API，展示的是软件重新提交接收，
+> 并未展示硬件描述符链。循环 DMA、A/B 缓冲和硬件链表应分别判断。
+> 是否需要重启、事件类型及 `Size` 的含义，需核对 HAL 版本和 DMA 模式。
+
 #### 使用空闲中断来接收数据  
 单字节接收的方式效率比较低，尤其是在数据量较大的情况下，CPU需要频繁地处理中断，导致系统性能下降。使用DMA（Direct Memory Access）可以让数据直接从外设传输到内存，减少CPU的干预，提高数据传输效率。
 ![alt text](image-26.png)

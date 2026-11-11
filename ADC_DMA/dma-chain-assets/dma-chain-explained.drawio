@@ -1,0 +1,278 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram id="single-vs-chain" name="下一段参数，由 CPU 还是 DMA 装载？">
+    <mxGraphModel adaptiveColors="auto" page="1" pageScale="1" pageWidth="1400" pageHeight="644">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" vertex="1" value="下一段参数，由 CPU 还是 DMA 装载？" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=42.4;">
+          <mxGeometry x="0.0" y="12.249999999999948" width="1400" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="top" parent="1" vertex="1" value="普通单次 DMA：段间由 CPU 重新配置" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=29.7;">
+          <mxGeometry x="0.0" y="68.25" width="1400" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="cpu-a" parent="1" vertex="1" value="CPU&#10;配置 A" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#fff0d6;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=29.7;">
+          <mxGeometry x="49.0" y="140" width="238.0" height="105.0" as="geometry" />
+        </mxCell>
+        <mxCell id="dma-a" parent="1" vertex="1" value="DMA&#10;搬运 A" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=29.7;">
+          <mxGeometry x="378.0" y="140" width="224.0" height="105.0" as="geometry" />
+        </mxCell>
+        <mxCell id="cpu-b" parent="1" vertex="1" value="CPU&#10;配置 B" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#fff0d6;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=29.7;">
+          <mxGeometry x="700" y="140" width="252.0" height="105.0" as="geometry" />
+        </mxCell>
+        <mxCell id="dma-b" parent="1" vertex="1" value="DMA&#10;搬运 B" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=29.7;">
+          <mxGeometry x="1050" y="140" width="245.0" height="105.0" as="geometry" />
+        </mxCell>
+        <mxCell id="bottom" parent="1" vertex="1" value="硬件链式 DMA：CPU 提前准备，DMA 自动接力" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=29.7;">
+          <mxGeometry x="0.0" y="285.24999999999994" width="1400" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="prepare" parent="1" vertex="1" value="CPU 准备&#10;A → B 的链" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#fff0d6;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=29.7;">
+          <mxGeometry x="49.0" y="357.0" width="280" height="105.0" as="geometry" />
+        </mxCell>
+        <mxCell id="chain-a" parent="1" vertex="1" value="DMA&#10;搬运 A" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=29.7;">
+          <mxGeometry x="420" y="357.0" width="224.0" height="105.0" as="geometry" />
+        </mxCell>
+        <mxCell id="load-b" parent="1" vertex="1" value="DMA 硬件&#10;装载 B 参数" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dff2e5;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=29.7;">
+          <mxGeometry x="735.0" y="357.0" width="252.0" height="105.0" as="geometry" />
+        </mxCell>
+        <mxCell id="chain-b" parent="1" vertex="1" value="DMA&#10;搬运 B" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=29.7;">
+          <mxGeometry x="1078.0" y="357.0" width="266.0" height="105.0" as="geometry" />
+        </mxCell>
+        <mxCell id="note" parent="1" vertex="1" value="两种方式的一段内部，都由 DMA 搬数据" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=29.7;">
+          <mxGeometry x="0.0" y="512.75" width="1400" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary" parent="1" vertex="1" value="箭头表示顺序，框宽不代表耗时；链式能力与更新字段以手册为准" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="0.0" y="572.2499999999999" width="1400" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="cpu-a-next" parent="1" edge="1" source="cpu-a" target="dma-a" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.9999999999999999;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dma-a-next" parent="1" edge="1" source="dma-a" target="cpu-b" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=1.0000000000000002;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cpu-b-next" parent="1" edge="1" source="cpu-b" target="dma-b" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.9999999999999999;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="prepare-next" parent="1" edge="1" source="prepare" target="chain-a" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=1.0;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="chain-a-next" parent="1" edge="1" source="chain-a" target="load-b" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.9999999999999998;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="load-b-next" parent="1" edge="1" source="load-b" target="chain-b" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.9999999999999999;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="descriptor-and-data" name="描述符是搬运单，缓冲区是数据">
+    <mxGraphModel adaptiveColors="auto" page="1" pageScale="1" pageWidth="1400" pageHeight="735">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" vertex="1" value="描述符是搬运单，缓冲区是数据" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=42.4;">
+          <mxGeometry x="210.0" y="12.249999999999948" width="980" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="desc-a" parent="1" vertex="1" value="描述符 A&#10;src：缓冲区 A&#10;dst：同一外设寄存器&#10;count：256 个半字&#10;next：B" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#fff0d6;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="49.0" y="101.5" width="315.0" height="182.0" as="geometry" />
+        </mxCell>
+        <mxCell id="buf-a" parent="1" vertex="1" value="缓冲区 A：512 字节" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=27.6;">
+          <mxGeometry x="49.0" y="350" width="315.0" height="73.5" as="geometry" />
+        </mxCell>
+        <mxCell id="desc-b" parent="1" vertex="1" value="描述符 B&#10;src：缓冲区 B&#10;dst：同一外设寄存器&#10;count：256 个半字&#10;next：C" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#fff0d6;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="448.0" y="101.5" width="315.0" height="182.0" as="geometry" />
+        </mxCell>
+        <mxCell id="buf-b" parent="1" vertex="1" value="缓冲区 B：512 字节" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=27.6;">
+          <mxGeometry x="448.0" y="350" width="315.0" height="73.5" as="geometry" />
+        </mxCell>
+        <mxCell id="desc-c" parent="1" vertex="1" value="描述符 C&#10;src：缓冲区 C&#10;dst：同一外设寄存器&#10;count：256 个半字&#10;next：结束" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#fff0d6;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="847.0" y="101.5" width="315.0" height="182.0" as="geometry" />
+        </mxCell>
+        <mxCell id="buf-c" parent="1" vertex="1" value="缓冲区 C：512 字节" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=27.6;">
+          <mxGeometry x="847.0" y="350" width="315.0" height="73.5" as="geometry" />
+        </mxCell>
+        <mxCell id="end" parent="1" vertex="1" value="链结束" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#edf1f5;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=23.3;">
+          <mxGeometry x="1246.0" y="154.0" width="112.0" height="77.0" as="geometry" />
+        </mxCell>
+        <mxCell id="ptr-label" parent="1" vertex="1" value="虚线：地址引用" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="972.9999999999999" y="295.75" width="490" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="engine" parent="1" vertex="1" value="DMA：按 A / B / C 顺序搬运" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dff2e5;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=23.3;">
+          <mxGeometry x="448.0" y="528.5" width="315.0" height="77.0" as="geometry" />
+        </mxCell>
+        <mxCell id="peripheral" parent="1" vertex="1" value="固定目的：外设数据寄存器" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="917.0" y="528.5" width="350" height="77.0" as="geometry" />
+        </mxCell>
+        <mxCell id="path-label" parent="1" vertex="1" value="数据" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="696.5" y="482.65" width="280" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="summary" parent="1" vertex="1" value="next 指向描述符；src 指向数据。三路源按段使用，不是同时搬运。" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="0.0" y="656.25" width="1400" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="src-a" parent="1" edge="1" source="desc-a" target="buf-a" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.5;exitY=0.9999999999999998;exitPerimeter=0;entryX=0.5;entryY=0.0;entryPerimeter=0;dashed=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="src-b" parent="1" edge="1" source="desc-b" target="buf-b" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.5;exitY=0.9999999999999998;exitPerimeter=0;entryX=0.5;entryY=0.0;entryPerimeter=0;dashed=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="src-c" parent="1" edge="1" source="desc-c" target="buf-c" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.5;exitY=0.9999999999999998;exitPerimeter=0;entryX=0.5;entryY=0.0;entryPerimeter=0;dashed=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="next-ab" parent="1" edge="1" source="desc-a" target="desc-b" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=1.0;exitY=0.48076923076923084;exitPerimeter=0;entryX=0.0;entryY=0.48076923076923084;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="next-bc" parent="1" edge="1" source="desc-b" target="desc-c" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=1.0;exitY=0.48076923076923084;exitPerimeter=0;entryX=0.0;entryY=0.48076923076923084;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="next-end" parent="1" edge="1" source="desc-c" target="end" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=1.0000000000000004;exitY=0.5;exitPerimeter=0;entryX=0.0;entryY=0.4999999999999998;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="data-a" parent="1" edge="1" source="buf-a" target="engine" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.5;exitY=0.9999999999999998;exitPerimeter=0;entryX=0.5;entryY=0.0;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="data-b" parent="1" edge="1" source="buf-b" target="engine" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.5;exitY=0.9999999999999998;exitPerimeter=0;entryX=0.5;entryY=0.0;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="data-c" parent="1" edge="1" source="buf-c" target="engine" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.5;exitY=0.9999999999999998;exitPerimeter=0;entryX=0.5;entryY=0.0;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="data-out" parent="1" edge="1" source="engine" target="peripheral" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=1.0;exitY=0.4999999999999998;exitPerimeter=0;entryX=0.0;entryY=0.4999999999999998;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="request-and-transfer" name="链表决定搬什么，请求推动什么时候搬">
+    <mxGraphModel adaptiveColors="auto" page="1" pageScale="1" pageWidth="1400" pageHeight="700">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" vertex="1" value="链表决定搬什么，请求推动什么时候搬" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=42.4;">
+          <mxGeometry x="105.0" y="12.249999999999948" width="1190" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="descriptor" parent="1" vertex="1" value="当前描述符&#10;源 / 目的 / 数量 / next" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#fff0d6;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=27.6;">
+          <mxGeometry x="49.0" y="105.0" width="322.0" height="119.0" as="geometry" />
+        </mxCell>
+        <mxCell id="params" parent="1" vertex="1" value="当前段参数&#10;地址、宽度和剩余数量" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dff2e5;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=27.6;">
+          <mxGeometry x="490" y="105.0" width="329.0" height="119.0" as="geometry" />
+        </mxCell>
+        <mxCell id="load-text" parent="1" vertex="1" value="装载" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="290.5" y="110.24999999999999" width="280" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="trigger" parent="1" vertex="1" value="外设 FIFO / 数据就绪&#10;产生 DMA 请求" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#fff0d6;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=27.6;">
+          <mxGeometry x="49.0" y="311.5" width="322.0" height="115.5" as="geometry" />
+        </mxCell>
+        <mxCell id="transfer" parent="1" vertex="1" value="DMA 按参数搬运&#10;请求粒度由配置决定" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=27.6;">
+          <mxGeometry x="490" y="311.5" width="329.0" height="115.5" as="geometry" />
+        </mxCell>
+        <mxCell id="destination" parent="1" vertex="1" value="数据到达目的地址&#10;本例：外设数据寄存器" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=27.6;">
+          <mxGeometry x="980" y="311.5" width="371.0" height="115.5" as="geometry" />
+        </mxCell>
+        <mxCell id="request-text" parent="1" vertex="1" value="请求" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="290.5" y="313.25" width="280" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="payload-text" parent="1" vertex="1" value="数据" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="759.5" y="313.25" width="280" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="next" parent="1" vertex="1" value="段完成且有下一节点 → 硬件准备下一段" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dff2e5;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=23.3;">
+          <mxGeometry x="434.0" y="525.0" width="441.0" height="77.0" as="geometry" />
+        </mxCell>
+        <mxCell id="caution" parent="1" vertex="1" value="没有有效请求，链表正确也可能不搬；预取和装载时机以手册为准。" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="0.0" y="631.75" width="1400" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="load" parent="1" edge="1" source="descriptor" target="params" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=1.0;exitY=0.5000000000000001;exitPerimeter=0;entryX=0.0;entryY=0.5000000000000001;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="request" parent="1" edge="1" source="trigger" target="transfer" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=1.0;exitY=0.4969696969696966;exitPerimeter=0;entryX=0.0;entryY=0.4969696969696966;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="config" parent="1" edge="1" source="params" target="transfer" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.4999999999999999;exitY=1.0000000000000002;exitPerimeter=0;entryX=0.4999999999999999;entryY=0.0;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="payload" parent="1" edge="1" source="transfer" target="destination" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.9999999999999998;exitY=0.4969696969696966;exitPerimeter=0;entryX=0.0;entryY=0.4969696969696966;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="complete" parent="1" edge="1" source="transfer" target="next" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.4999999999999999;exitY=0.9999999999999998;exitPerimeter=0;entryX=0.49999999999999994;entryY=0.0;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="double-buffer-ownership" name="A/B 循环链：DMA 读一块，CPU 准备另一块">
+    <mxGraphModel adaptiveColors="auto" page="1" pageScale="1" pageWidth="1400" pageHeight="700">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" vertex="1" value="A/B 循环链：DMA 读一块，CPU 准备另一块" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=42.4;">
+          <mxGeometry x="0.0" y="12.249999999999948" width="1400" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="a" parent="1" vertex="1" value="描述符 A&#10;源：缓冲区 A" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#fff0d6;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="287.0" y="94.5" width="287.0" height="91.0" as="geometry" />
+        </mxCell>
+        <mxCell id="b" parent="1" vertex="1" value="描述符 B&#10;源：缓冲区 B" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#fff0d6;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="826.0" y="94.5" width="287.0" height="91.0" as="geometry" />
+        </mxCell>
+        <mxCell id="a-b-label" parent="1" vertex="1" value="next → B" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=23.3;">
+          <mxGeometry x="420.0" y="71.75000000000006" width="560" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="b-a-label" parent="1" vertex="1" value="next → A" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=23.3;">
+          <mxGeometry x="420.0" y="169.75000000000003" width="560" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="phase1" parent="1" vertex="1" value="阶段 1：首次读 A" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=27.6;">
+          <mxGeometry x="-41.99999999999997" y="229.25" width="700" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="phase2" parent="1" vertex="1" value="阶段 2：切换读 B" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=27.6;">
+          <mxGeometry x="371.00000000000006" y="229.25" width="700" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="phase3" parent="1" vertex="1" value="阶段 3：回到 A" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=27.6;">
+          <mxGeometry x="819.0" y="229.25" width="630" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="label-a" parent="1" vertex="1" value="A 块" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="-84.0" y="327.25" width="280" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="label-b" parent="1" vertex="1" value="B 块" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="-84.0" y="428.75" width="280" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="first-a" parent="1" vertex="1" value="DMA 读取 A&#10;CPU 不得改写" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="140" y="304.5" width="336.0" height="84.0" as="geometry" />
+        </mxCell>
+        <mxCell id="first-b" parent="1" vertex="1" value="B 已预填&#10;可在切换前更新" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dff2e5;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="140" y="406.0" width="336.0" height="84.0" as="geometry" />
+        </mxCell>
+        <mxCell id="second-a" parent="1" vertex="1" value="CPU 更新 A&#10;须在回到 A 前完成" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dff2e5;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="553.0" y="304.5" width="336.0" height="84.0" as="geometry" />
+        </mxCell>
+        <mxCell id="second-b" parent="1" vertex="1" value="DMA 读取 B&#10;CPU 不得改写" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="553.0" y="406.0" width="336.0" height="84.0" as="geometry" />
+        </mxCell>
+        <mxCell id="third-a" parent="1" vertex="1" value="DMA 读取 A&#10;使用新一轮数据" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dceafa;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="966.0" y="304.5" width="336.0" height="84.0" as="geometry" />
+        </mxCell>
+        <mxCell id="third-b" parent="1" vertex="1" value="CPU 更新 B&#10;须在回到 B 前完成" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#dff2e5;strokeColor=#243746;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="966.0" y="406.0" width="336.0" height="84.0" as="geometry" />
+        </mxCell>
+        <mxCell id="window" parent="1" vertex="1" value="假设每段 256 个半字、消耗率 16000 半字/秒：理论窗口 16 ms" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=27.6;">
+          <mxGeometry x="0.0" y="530.25" width="1400" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="margin" parent="1" vertex="1" value="CPU 准备 + 调度 + 必要缓存维护，必须在该窗口内完成并留余量。" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="0.0" y="586.25" width="1400" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="rx" parent="1" vertex="1" value="接收 RX 方向反过来：DMA 写当前块，CPU 读已完成块；须赶在覆盖前读完。" style="text;whiteSpace=wrap;html=0;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontFamily=Microsoft YaHei;fontColor=#243746;fontSize=25.5;">
+          <mxGeometry x="0.0" y="635.25" width="1400" height="38.5" as="geometry" />
+        </mxCell>
+        <mxCell id="a-b" parent="1" edge="1" source="a" target="b" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=1.0;exitY=0.2692307692307691;exitPerimeter=0;entryX=0.0;entryY=0.2692307692307691;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b-a" parent="1" edge="1" source="b" target="a" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.0;exitY=0.7307692307692305;exitPerimeter=0;entryX=1.0;entryY=0.7307692307692305;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="first-handoff" parent="1" edge="1" source="first-a" target="second-a" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=1.0;exitY=0.5000000000000004;exitPerimeter=0;entryX=0.0;entryY=0.5000000000000004;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="second-handoff" parent="1" edge="1" source="second-a" target="third-a" style="endArrow=block;endFill=1;html=0;strokeColor=#243746;strokeWidth=1.5;exitX=0.9999999999999998;exitY=0.5000000000000004;exitPerimeter=0;entryX=0.0;entryY=0.5000000000000004;entryPerimeter=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

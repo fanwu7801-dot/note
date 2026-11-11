@@ -1,0 +1,311 @@
+{
+  "type": "shapes",
+  "output": {
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "color": "#243746",
+      "font": "Microsoft YaHei,SimHei,DengXian,SimSun",
+      "unit": 3,
+      "fontsize": 14
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        9.45
+      ],
+      "text": "03  一帧 LIN = Header + Response",
+      "fontsize": 21,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        8.879999999999999
+      ],
+      "text": "以无条件帧为例；颜色表示发送职责，字段宽度不代表真实持续时间。",
+      "fontsize": 11.5,
+      "color": "#526477",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        7.45
+      ],
+      "w": 9.1,
+      "h": 0.7,
+      "label": "Header：主任务发送",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        10.1,
+        7.45
+      ],
+      "w": 9.1,
+      "h": 0.7,
+      "label": "Response：该帧的发布者发送",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        5.65
+      ],
+      "w": 3.0,
+      "h": 1.55,
+      "label": "Break\n≥ 13 bit",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        3.8,
+        5.65
+      ],
+      "w": 1.7,
+      "h": 1.55,
+      "label": "界定符\n≥ 1 bit",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        5.5,
+        5.65
+      ],
+      "w": 2.2,
+      "h": 1.55,
+      "label": "Sync\n0x55",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        7.7,
+        5.65
+      ],
+      "w": 2.2,
+      "h": 1.55,
+      "label": "PID\n6 bit ID\n+ P0 / P1",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        10.1,
+        5.65
+      ],
+      "w": 6.3,
+      "h": 1.55,
+      "label": "Data 0 ... Data N−1\nN = 1～8 字节",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        16.4,
+        5.65
+      ],
+      "w": 2.8,
+      "h": 1.55,
+      "label": "Checksum\n1 字节",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          0.9,
+          5.1
+        ],
+        [
+          19.1,
+          5.1
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        4.7
+      ],
+      "text": "时间方向 →；帧头与响应之间可有响应间隔，字节之间可有间隔",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        2.8
+      ],
+      "w": 5.6,
+      "h": 1.25,
+      "label": "主任务\n按调度发送帧头",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        7.2,
+        2.8
+      ],
+      "w": 5.6,
+      "h": 1.25,
+      "label": "所有相关节点\n检查 PID，查本地帧配置",
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        13.6,
+        2.8
+      ],
+      "w": 5.6,
+      "h": 1.25,
+      "label": "唯一发布者发送响应\n订阅者接收并校验",
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          6.4,
+          3.4299999999999997
+        ],
+        [
+          7.2,
+          3.4299999999999997
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          12.8,
+          3.4299999999999997
+        ],
+        [
+          13.6,
+          3.4299999999999997
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        2.0999999999999996
+      ],
+      "text": "发布者可以是主节点，也可以是指定从节点；订阅者可以有多个。",
+      "fontsize": 13,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.6,
+        0.4300000000000004
+      ],
+      "w": 18.8,
+      "h": 0.72,
+      "label": "Header 不携带长度字段；LIN 2.x 的数据长度和发布 / 订阅关系来自 LDF 或静态配置。",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    }
+  ]
+}

@@ -1,0 +1,381 @@
+{
+  "type": "shapes",
+  "title": "A/B 循环链：DMA 读一块，CPU 准备另一块",
+  "output": {
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "color": "#243746",
+      "unit": 3,
+      "fontsize": 14,
+      "font": "Microsoft YaHei,SimHei,DengXian,SimSun"
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "id": "title",
+      "xy": [
+        10,
+        9.55
+      ],
+      "text": "A/B 循环链：DMA 读一块，CPU 准备另一块",
+      "fontsize": 20,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "id": "a",
+      "xy": [
+        4.1,
+        7.3500000000000005
+      ],
+      "w": 4.1,
+      "h": 1.3,
+      "label": "描述符 A\n源：缓冲区 A",
+      "fill": "#fff0d6",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "b",
+      "xy": [
+        11.8,
+        7.3500000000000005
+      ],
+      "w": 4.1,
+      "h": 1.3,
+      "label": "描述符 B\n源：缓冲区 B",
+      "fill": "#fff0d6",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "id": "a-b",
+      "points": [
+        [
+          8.2,
+          8.3
+        ],
+        [
+          11.8,
+          8.3
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "id": "b-a",
+      "points": [
+        [
+          11.8,
+          7.7
+        ],
+        [
+          8.2,
+          7.7
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "id": "a-b-label",
+      "xy": [
+        10,
+        8.7
+      ],
+      "text": "next → B",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "id": "b-a-label",
+      "xy": [
+        10,
+        7.3
+      ],
+      "text": "next → A",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "id": "phase1",
+      "xy": [
+        4.4,
+        6.45
+      ],
+      "text": "阶段 1：首次读 A",
+      "fontsize": 13,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "id": "phase2",
+      "xy": [
+        10.3,
+        6.45
+      ],
+      "text": "阶段 2：切换读 B",
+      "fontsize": 13,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "id": "phase3",
+      "xy": [
+        16.2,
+        6.45
+      ],
+      "text": "阶段 3：回到 A",
+      "fontsize": 13,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "id": "label-a",
+      "xy": [
+        0.8,
+        5.05
+      ],
+      "text": "A 块",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "id": "label-b",
+      "xy": [
+        0.8,
+        3.5999999999999996
+      ],
+      "text": "B 块",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "id": "first-a",
+      "xy": [
+        2,
+        4.45
+      ],
+      "w": 4.8,
+      "h": 1.2,
+      "label": "DMA 读取 A\nCPU 不得改写",
+      "fill": "#dceafa",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "first-b",
+      "xy": [
+        2,
+        3.0
+      ],
+      "w": 4.8,
+      "h": 1.2,
+      "label": "B 已预填\n可在切换前更新",
+      "fill": "#dff2e5",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "second-a",
+      "xy": [
+        7.9,
+        4.45
+      ],
+      "w": 4.8,
+      "h": 1.2,
+      "label": "CPU 更新 A\n须在回到 A 前完成",
+      "fill": "#dff2e5",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "second-b",
+      "xy": [
+        7.9,
+        3.0
+      ],
+      "w": 4.8,
+      "h": 1.2,
+      "label": "DMA 读取 B\nCPU 不得改写",
+      "fill": "#dceafa",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "third-a",
+      "xy": [
+        13.8,
+        4.45
+      ],
+      "w": 4.8,
+      "h": 1.2,
+      "label": "DMA 读取 A\n使用新一轮数据",
+      "fill": "#dceafa",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "id": "third-b",
+      "xy": [
+        13.8,
+        3.0
+      ],
+      "w": 4.8,
+      "h": 1.2,
+      "label": "CPU 更新 B\n须在回到 B 前完成",
+      "fill": "#dff2e5",
+      "color": "#243746",
+      "lw": 1,
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "id": "first-handoff",
+      "points": [
+        [
+          6.8,
+          5.05
+        ],
+        [
+          7.9,
+          5.05
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "id": "second-handoff",
+      "points": [
+        [
+          12.7,
+          5.05
+        ],
+        [
+          13.8,
+          5.05
+        ]
+      ],
+      "color": "#243746",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "id": "window",
+      "xy": [
+        10,
+        2.1500000000000004
+      ],
+      "text": "假设每段 256 个半字、消耗率 16000 半字/秒：理论窗口 16 ms",
+      "fontsize": 13,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "id": "margin",
+      "xy": [
+        10,
+        1.3499999999999996
+      ],
+      "text": "CPU 准备 + 调度 + 必要缓存维护，必须在该窗口内完成并留余量。",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "id": "rx",
+      "xy": [
+        10,
+        0.6500000000000004
+      ],
+      "text": "接收 RX 方向反过来：DMA 写当前块，CPU 读已完成块；须赶在覆盖前读完。",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    }
+  ]
+}

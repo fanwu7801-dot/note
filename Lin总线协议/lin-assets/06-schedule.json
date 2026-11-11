@@ -1,0 +1,311 @@
+{
+  "type": "shapes",
+  "output": {
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "color": "#243746",
+      "font": "Microsoft YaHei,SimHei,DengXian,SimSun",
+      "unit": 3,
+      "fontsize": 14
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        9.45
+      ],
+      "text": "06  调度表：谁发数据由帧定义，何时发由主节点安排",
+      "fontsize": 21,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        8.879999999999999
+      ],
+      "text": "教学网络：19.2 kbit/s；4 个 10 ms 时隙组成 40 ms 循环。",
+      "fontsize": 11.5,
+      "color": "#526477",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        0.8,
+        8.15
+      ],
+      "text": "0 ms",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        5.550000000000001
+      ],
+      "w": 4.4,
+      "h": 2.15,
+      "label": "A_Status\nID 0x01 / PID 0xC1\n2 字节数据",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        3.0,
+        5.05
+      ],
+      "text": "从 A 发布 → 主 / B 订阅",
+      "fontsize": 10.7,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        5.3999999999999995,
+        8.15
+      ],
+      "text": "10 ms",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        5.3999999999999995,
+        5.550000000000001
+      ],
+      "w": 4.4,
+      "h": 2.15,
+      "label": "B_Command\nID 0x02 / PID 0x42\n2 字节数据",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        7.6,
+        5.05
+      ],
+      "text": "主发布 → 从 B 订阅",
+      "fontsize": 10.7,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10.0,
+        8.15
+      ],
+      "text": "20 ms",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        10.0,
+        5.550000000000001
+      ],
+      "w": 4.4,
+      "h": 2.15,
+      "label": "A_Status\nID 0x01 / PID 0xC1\n2 字节数据",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        12.2,
+        5.05
+      ],
+      "text": "从 A 发布 → 主 / B 订阅",
+      "fontsize": 10.7,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        14.6,
+        8.15
+      ],
+      "text": "30 ms",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        14.6,
+        5.550000000000001
+      ],
+      "w": 4.4,
+      "h": 2.15,
+      "label": "B_Status\nID 0x03 / PID 0x03\n2 字节数据",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        16.8,
+        5.05
+      ],
+      "text": "从 B 发布 → 主订阅",
+      "fontsize": 10.7,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        19.2,
+        8.15
+      ],
+      "text": "40 ms",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          0.8,
+          4.5
+        ],
+        [
+          19.2,
+          4.5
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        4.05
+      ],
+      "text": "40 ms 后从第一项重新循环；每个时隙的 Header 都由主任务发送",
+      "fontsize": 13,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        2.1999999999999997
+      ],
+      "w": 8.9,
+      "h": 1.15,
+      "label": "A_Status：每循环出现两次\n更新周期 = 20 ms",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        10.3,
+        2.1999999999999997
+      ],
+      "w": 8.9,
+      "h": 1.15,
+      "label": "B_Command / B_Status：各一次\n更新周期 = 40 ms",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.6,
+        0.4300000000000004
+      ],
+      "w": 18.8,
+      "h": 0.72,
+      "label": "每个时隙还要容纳响应、间隔和时序裕量；帧传输耗时不等于业务端到端延迟。",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    }
+  ]
+}

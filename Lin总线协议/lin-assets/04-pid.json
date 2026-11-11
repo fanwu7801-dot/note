@@ -1,0 +1,487 @@
+{
+  "type": "shapes",
+  "output": {
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "color": "#243746",
+      "font": "Microsoft YaHei,SimHei,DengXian,SimSun",
+      "unit": 3,
+      "fontsize": 14
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        9.45
+      ],
+      "text": "04  ID 与 PID：6 bit 内容编号 + 2 bit 保护",
+      "fontsize": 21,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        8.879999999999999
+      ],
+      "text": "示例 ID = 0x01；不要把受保护的 PID 字节直接当作从节点地址。",
+      "fontsize": 11.5,
+      "color": "#526477",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        7.25
+      ],
+      "w": 2.3,
+      "h": 0.75,
+      "label": "P1",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        6.45
+      ],
+      "w": 2.3,
+      "h": 0.8,
+      "label": "1",
+      "fontsize": 16,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        1.95,
+        6.1
+      ],
+      "text": "bit 7",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        3.0999999999999996,
+        7.25
+      ],
+      "w": 2.3,
+      "h": 0.75,
+      "label": "P0",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        3.0999999999999996,
+        6.45
+      ],
+      "w": 2.3,
+      "h": 0.8,
+      "label": "1",
+      "fontsize": 16,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        4.25,
+        6.1
+      ],
+      "text": "bit 6",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        5.3999999999999995,
+        7.25
+      ],
+      "w": 2.3,
+      "h": 0.75,
+      "label": "ID5",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        5.3999999999999995,
+        6.45
+      ],
+      "w": 2.3,
+      "h": 0.8,
+      "label": "0",
+      "fontsize": 16,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        6.549999999999999,
+        6.1
+      ],
+      "text": "bit 5",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        7.699999999999999,
+        7.25
+      ],
+      "w": 2.3,
+      "h": 0.75,
+      "label": "ID4",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        7.699999999999999,
+        6.45
+      ],
+      "w": 2.3,
+      "h": 0.8,
+      "label": "0",
+      "fontsize": 16,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        8.85,
+        6.1
+      ],
+      "text": "bit 4",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        10.0,
+        7.25
+      ],
+      "w": 2.3,
+      "h": 0.75,
+      "label": "ID3",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        10.0,
+        6.45
+      ],
+      "w": 2.3,
+      "h": 0.8,
+      "label": "0",
+      "fontsize": 16,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        11.15,
+        6.1
+      ],
+      "text": "bit 3",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        12.3,
+        7.25
+      ],
+      "w": 2.3,
+      "h": 0.75,
+      "label": "ID2",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        12.3,
+        6.45
+      ],
+      "w": 2.3,
+      "h": 0.8,
+      "label": "0",
+      "fontsize": 16,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        13.450000000000001,
+        6.1
+      ],
+      "text": "bit 2",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        14.6,
+        7.25
+      ],
+      "w": 2.3,
+      "h": 0.75,
+      "label": "ID1",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        14.6,
+        6.45
+      ],
+      "w": 2.3,
+      "h": 0.8,
+      "label": "0",
+      "fontsize": 16,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        15.75,
+        6.1
+      ],
+      "text": "bit 1",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        16.9,
+        7.25
+      ],
+      "w": 2.3,
+      "h": 0.75,
+      "label": "ID0",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        16.9,
+        6.45
+      ],
+      "w": 2.3,
+      "h": 0.8,
+      "label": "1",
+      "fontsize": 16,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        18.049999999999997,
+        6.1
+      ],
+      "text": "bit 0",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        5.4
+      ],
+      "text": "上图按 bit7 → bit0 书写；在线上发送时仍从 bit0 开始",
+      "fontsize": 13,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        3.1
+      ],
+      "w": 8.9,
+      "h": 1.65,
+      "label": "P0 = ID0 ⊕ ID1 ⊕ ID2 ⊕ ID4\n本例：1 ⊕ 0 ⊕ 0 ⊕ 0 = 1",
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        10.3,
+        3.1
+      ],
+      "w": 8.9,
+      "h": 1.65,
+      "label": "P1 = NOT(ID1 ⊕ ID3 ⊕ ID4 ⊕ ID5)\n本例：NOT(0) = 1（仅取 1 bit）",
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        2.45
+      ],
+      "text": "PID = ID | (P0 << 6) | (P1 << 7) = 0x01 | 0x40 | 0x80 = 0xC1",
+      "fontsize": 13,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.6,
+        0.4300000000000004
+      ],
+      "w": 18.8,
+      "h": 0.72,
+      "label": "诊断请求：ID 0x3C → PID 0x3C；诊断响应：ID 0x3D → PID 0x7D。",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    }
+  ]
+}

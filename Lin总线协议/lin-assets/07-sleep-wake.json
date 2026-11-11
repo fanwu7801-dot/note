@@ -1,0 +1,293 @@
+{
+  "type": "shapes",
+  "output": {
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "color": "#243746",
+      "font": "Microsoft YaHei,SimHei,DengXian,SimSun",
+      "unit": 3,
+      "fontsize": 14
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        9.45
+      ],
+      "text": "07  休眠与唤醒：唤醒请求之后仍要恢复调度",
+      "fontsize": 21,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        8.879999999999999
+      ],
+      "text": "协议状态与芯片电源模式分开管理；EN / SLP / WAKE 的名称及极性以数据手册为准。",
+      "fontsize": 11.5,
+      "color": "#526477",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        6.6
+      ],
+      "w": 4.5,
+      "h": 1.2,
+      "label": "正常通信\n主节点运行调度表",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        7.7,
+        6.6
+      ],
+      "w": 4.5,
+      "h": 1.2,
+      "label": "准备休眠\n收尾事务、配置唤醒源",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        14.6,
+        6.6
+      ],
+      "w": 4.5,
+      "h": 1.2,
+      "label": "低功耗等待\n保持必要的唤醒检测",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          5.3,
+          7.2
+        ],
+        [
+          7.7,
+          7.2
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          12.2,
+          7.2
+        ],
+        [
+          14.6,
+          7.2
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "xy": [
+        6.5,
+        8.1
+      ],
+      "text": "休眠请求",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        13.4,
+        8.1
+      ],
+      "text": "满足退出条件",
+      "fontsize": 11,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        3.0
+      ],
+      "w": 4.5,
+      "h": 1.2,
+      "label": "恢复正常通信\n主节点重新发送 Header",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        7.7,
+        3.0
+      ],
+      "w": 4.5,
+      "h": 1.2,
+      "label": "恢复资源\n时钟、UART、收发器就绪",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        14.6,
+        3.0
+      ],
+      "w": 4.5,
+      "h": 1.2,
+      "label": "检测唤醒请求\n总线脉冲 / 本地唤醒源",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          16.85,
+          6.6
+        ],
+        [
+          16.85,
+          4.2
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          14.6,
+          3.5999999999999996
+        ],
+        [
+          12.2,
+          3.5999999999999996
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          7.7,
+          3.5999999999999996
+        ],
+        [
+          5.3,
+          3.5999999999999996
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          3.05,
+          4.2
+        ],
+        [
+          3.05,
+          6.6
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        2.2
+      ],
+      "text": "从节点可以发起总线唤醒请求；这不等于从节点可以自行发出普通数据帧。",
+      "fontsize": 13,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.6,
+        0.4300000000000004
+      ],
+      "w": 18.8,
+      "h": 0.72,
+      "label": "标准休眠命令：ID 0x3C，Data = 00 FF FF FF FF FF FF FF，使用 Classic 校验。",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    }
+  ]
+}

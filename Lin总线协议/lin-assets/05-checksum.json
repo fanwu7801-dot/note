@@ -1,0 +1,247 @@
+{
+  "type": "shapes",
+  "output": {
+    "dpi": 160,
+    "theme": {
+      "bgcolor": "white",
+      "color": "#243746",
+      "font": "Microsoft YaHei,SimHei,DengXian,SimSun",
+      "unit": 3,
+      "fontsize": 14
+    }
+  },
+  "items": [
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        9.45
+      ],
+      "text": "05  校验和：回卷进位求和，再逐位取反",
+      "fontsize": 21,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        8.879999999999999
+      ],
+      "text": "教学示例：PID = 0xC1，Data = [0x10, 0x20]；增强校验包含 PID。",
+      "fontsize": 11.5,
+      "color": "#526477",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        6.8500000000000005
+      ],
+      "w": 5.4,
+      "h": 1.2,
+      "label": "Classic 传统校验\n只计算 Data",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#f0f3f7",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        7.3,
+        6.8500000000000005
+      ],
+      "w": 11.9,
+      "h": 1.2,
+      "label": "Enhanced 增强校验\n计算 PID + Data；不是 6 bit 原始 ID + Data",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        5.0
+      ],
+      "w": 4.1,
+      "h": 1.2,
+      "label": "0xC1 + 0x10\n= 0xD1",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        5.8,
+        5.0
+      ],
+      "w": 4.1,
+      "h": 1.2,
+      "label": "0xD1 + 0x20\n= 0xF1",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4efff",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        10.8,
+        5.0
+      ],
+      "w": 4.1,
+      "h": 1.2,
+      "label": "逐位取反\n保留 8 bit",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        15.8,
+        5.0
+      ],
+      "w": 3.4,
+      "h": 1.2,
+      "label": "Checksum\n= 0x0E",
+      "fontsize": 14,
+      "min_fontsize": 11,
+      "fill": "#e4f5ec",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          4.9,
+          5.6
+        ],
+        [
+          5.8,
+          5.6
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          9.9,
+          5.6
+        ],
+        [
+          10.8,
+          5.6
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "arrow",
+      "points": [
+        [
+          14.9,
+          5.6
+        ],
+        [
+          15.8,
+          5.6
+        ]
+      ],
+      "color": "#243746",
+      "ls": "-",
+      "lw": 1.5
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.8,
+        3.3
+      ],
+      "w": 18.4,
+      "h": 1.05,
+      "label": "进位示例：0xF0 + 0x30 = 0x120 → 0x20 + 1 = 0x21 → Checksum = 0xDE",
+      "fontsize": 13,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        2.8
+      ],
+      "text": "接收时，把校验范围内的字节与 Checksum 做同样的回卷求和，结果应为 0xFF",
+      "fontsize": 13,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "text",
+      "xy": [
+        10,
+        2.1500000000000004
+      ],
+      "text": "本例 Classic：对 0x10 + 0x20 取反得 0xCF，与 Enhanced 的 0x0E 不同",
+      "fontsize": 12,
+      "color": "#243746",
+      "align": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "kind": "rect",
+      "xy": [
+        0.6,
+        0.4300000000000004
+      ],
+      "w": 18.8,
+      "h": 0.72,
+      "label": "ID 0x3C / 0x3D 的诊断帧使用 Classic；校验模型须与版本及帧配置一致。",
+      "fontsize": 12,
+      "min_fontsize": 11,
+      "fill": "#fff1d8",
+      "color": "#243746",
+      "lw": 1,
+      "cornerradius": 0
+    }
+  ]
+}
